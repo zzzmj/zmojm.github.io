@@ -1,8 +1,8 @@
-import './App.css'
 import Button from '../components/Button/Button'
 import Header from '../feature/Header/Header'
 import SideBar from '../feature/SideBar/SideBar'
 import Annotation from '../feature/Annotation/Annotation'
+import './App.scss'
 
 function App() {
     const handleClick = () => {

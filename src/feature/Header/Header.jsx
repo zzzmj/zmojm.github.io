@@ -1,4 +1,6 @@
 import classNames from "classnames"
+import { ReactComponent as Logo } from '../../static/logo.svg'
+
 import './Header.scss'
 
 const Header = (props) => {
@@ -13,7 +15,9 @@ const Header = (props) => {
 
     return <div className={cls}>
         <div className="left">
-            <div className="logo">这里应该放一个Logo</div>
+            <div className="logo">
+                <Logo />
+            </div>
         </div>
         <div className="right">
             <div>

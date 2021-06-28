@@ -21,6 +21,9 @@
 var data = new FormData()
 data.append('zwm', "199312123523100103")
 
+const queryData = () => {
+    
+}
 
 const getContent = (zwm) => {
     fetch('http://hsk.blcu.edu.cn/Index/get_zwm_txt', {
@@ -33,15 +36,16 @@ const getContent = (zwm) => {
         }
     })
         .then(response => response.json())
-        .then(json => console.log(json))
+        .then(json => {
+
+            console.log('json')
+        })
         .catch(err => console.log('Request Failed', err))
 }
 
 // 替换文本
-
-
 const main = () => {
-
+    
 }
 var str = ''
 str.replace(/\[.*?\]/g, '').replace(/\{.*?\}/g, '')
