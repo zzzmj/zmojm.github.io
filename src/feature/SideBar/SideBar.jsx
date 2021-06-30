@@ -1,56 +1,80 @@
+import React from "react"
+import Button from "../../components/Button/Button"
 import classNames from "classnames"
-import { Dropdown } from "react-bootstrap"
-import './SideBar.scss'
+import "./SideBar.scss"
+
+const articleList = [
+    {
+        id: "xx",
+        name: "文章的标题哦",
+    },
+    {
+        id: "xx",
+        name: "文章的标题哦",
+    },
+    {
+        id: "xx",
+        name: "文章的标题哦",
+    },
+    {
+        id: "xx",
+        name: "文章的标题哦",
+    },
+]
 
 // 侧边栏
 const SideBar = (props) => {
     const { className } = props
 
     const prefix = "zz-sidebar"
-    const cls =  classNames({
+    const cls = classNames({
         [prefix]: true,
-        [className]: className
+        [className]: className,
     })
 
     const handleSelect = (eventKey) => {
-        console.log('e', eventKey)
+        console.log("e", eventKey)
     }
 
-    const options = [
-        {
-            name: '韩国',
-            value: 'hg'
-        },{
-            name: '英国',
-            value: 'hk'
-        },
-    ]
-    return <div className={cls}>
-        <div className="select">
-            <Dropdown size>
-                <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                    版本
-                </Dropdown.Toggle>
+    const handleUpload = () => {}
 
-                <Dropdown.Menu >
-                    {
-                        options.map((item, index) => {
-                            const { name, value } = item
-                            return  <Dropdown.Item onSelect={handleSelect} key={index} eventKey={value}>{name}</Dropdown.Item>
-                        })
-                    }
-                </Dropdown.Menu>
-            </Dropdown>
+    return (
+        <div className={cls}>
+            <div className={`${prefix}-header`}>
+                <div className="title">全部文章</div>
+                <div className="add">
+                    <Button type="secondary" onClick={handleUpload}>上传文章</Button>
+                </div>
+            </div>
+            <div className={`${prefix}-input`}>
+                <div class="input-group mb-3">
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Recipient's username"
+                        aria-label="Recipient's username"
+                        aria-describedby="button-addon2"
+                    />
+                    <div class="input-group-append">
+                        <Button type="secondary">筛选</Button>
+                    </div>
+                </div>
+            </div>
+            <ul className={`${prefix}-list list-group`}>
+                {articleList.map((item) => {
+                    const { id, name } = item
+                    const btnCls = classNames({
+                        "list-group-item": true,
+                    })
+                    return (
+                        <Button key={id} className={btnCls}>
+                            {name}
+                        </Button>
+                    )
+                })}
+            </ul>
         </div>
-        <ul>
-            <li>标题标题标题</li>
-            <li>标题标题标题</li>
-            <li>标题标题标题</li>
-            <li>标题标题标题</li>
-            <li>标题标题标题</li>
-            <li>标题标题标题</li>
-        </ul>
-    </div>
+    )
 }
 
 export default SideBar
