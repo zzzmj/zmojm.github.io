@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import { ReactComponent as Logo } from '../../static/logo.svg'
-
+import Button from '../../components/Button/Button'
 import './Header.scss'
 
 const Header = props => {
@@ -21,7 +21,7 @@ const Header = props => {
                 </div>
             </div>
             <div className='right'>
-                <div>这边有一些操作按钮</div>
+                <Button type='outline-secondary'>上传配置</Button>
             </div>
         </div>
     )

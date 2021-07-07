@@ -1,7 +1,12 @@
-
 .zz-header {
     display: flex;
     height: 56px;
     border-bottom: 1px solid #eef2f8;
     justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    .left {
+        display: flex;
+        align-items: center;
+    }
 }

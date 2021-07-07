@@ -1,13 +1,15 @@
 /**
  * 数据格式设计
+ * 
+ * 
  * [{
  *   code: '',
  *   nationality: '',
  *   sex: '',
  *   time: '',
- *   title: '',
- *   score: '',
- *   certificate: '',
+ *   title: '', 1. 标题
+ *   score: '', 2. 水平（中级和高级）
+ *   certificate: '', 3. 体裁 4. 国籍 5. 文章内容 6. 来源 7. 自定义
  *   content: {
  *     info: '',
  *     txt: ''
@@ -47,5 +49,6 @@ const getContent = (zwm) => {
 const main = () => {
     
 }
+
 var str = ''
 str.replace(/\[.*?\]/g, '').replace(/\{.*?\}/g, '')
