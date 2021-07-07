@@ -1,15 +1,18 @@
-import classNames from "classnames"
+import React from 'react'
+import classNames from 'classnames'
 
-const Button = (props) => {
+const Button = props => {
     const { type = 'primary', ...other } = props
-    const cls =  classNames({
-        'btn': true,
-        [`btn-${type}`]: true
+    const cls = classNames({
+        btn: true,
+        [`btn-${type}`]: true,
     })
 
-    return <button type="button" className={cls}  {...other} >
-        {props.children}
-    </button>
+    return (
+        <button type='button' className={cls} {...other}>
+            {props.children}
+        </button>
+    )
 }
 
 export default Button
