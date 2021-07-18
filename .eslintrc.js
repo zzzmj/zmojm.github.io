@@ -1,7 +1,7 @@
 module.exports = {
     "extends": [
-        "react-app",
-        "react-app/jest",
+        // "react-app",
+        // "react-app/jest",
         "eslint:recommended",
         "plugin:prettier/recommended",
         "plugin:react/recommended"
@@ -23,7 +23,8 @@ module.exports = {
         // "react/display-name": ["enable", { "ignoreTranspilerName": false }]
         "react/display-name": "off",
         "react/no-deprecated": "warn",
-        "react/no-string-refs": "warn"
+        "react/no-string-refs": "warn",
+        // "no-unused-vars": "off",
     },
     "env": {
         "es6": true,
@@ -42,5 +43,8 @@ module.exports = {
     "plugins": [
         "react",
         "react-hooks"
-    ]
+    ],
+    "globals": {
+        "log": true
+    }
 }

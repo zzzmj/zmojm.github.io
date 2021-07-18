@@ -2,6 +2,91 @@
     flex: 1;
     padding: 20px;
     .content {
-        line-height: 3;
+        // line-height: 3;
+        p {
+            margin-bottom: 30px;
+            // line-height: 4;
+        }
+        span {
+            position: relative;
+            // display: inline-block;
+            padding: 3px;
+            // border-radius: 5px;
+            line-height: 1;
+            &::after {
+                font-size: 12px;
+                display: block;
+                position: absolute;
+                padding: 1px 3px;
+                top: 30px;
+                left: 0;
+                white-space: nowrap;
+            }
+        }
+        .color-blue {
+            background-color:  #0d6efd;
+            color: #fff;
+            &::after {
+                content: "名词回指";
+                padding: 1px 3px;
+                color: #0d6efd;
+                border: 2px solid #0d6efd;
+            }
+        }
+        span[data-highlight-id-extra*="-"] {
+            &::after {
+                display: none;
+            }
+        }
+        
+        .color-indigo {
+            background-color:  #6610f2;
+            color: #fff;
+            &::after {
+                content: "代词回指";
+                color: #6610f2;
+                border: 2px solid #6610f2;
+            }
+        }
+        .color-purple {
+            background-color:  #6f42c1;
+            color: #fff;
+        }
+        .color-pink {
+            background-color:  #d63384;
+            color: #fff;
+        }
+        .color-red {
+            background-color:  #dc3545;
+            color: #fff;
+        }
+        .color-orange {
+            background-color:  #fd7e14;
+            color: #fff;
+            &::after {
+                content: "零形回指";
+                color: #fd7e14;
+                border: 2px solid #fd7e14;
+            }
+        }
+        .color-yellow {
+            background-color:  #ffc107;
+            color: #fff;
+        }
+        .color-green {
+            background-color:  #198754;
+            color: #fff;
+        }
+        .color-teal {
+            background-color:  #20c997;
+            color: #fff;
+        }
+        .color-cyan {
+            background-color:  #0dcaf0;
+            color: #fff;
+        }
+        .highlight-wrap-hover {
+            background-color: rgba($color: black, $alpha: 0.8);
+        }
     }
 }

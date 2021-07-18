@@ -61,13 +61,13 @@ const SideBar = props => {
                 </div>
             </div>
             <ul className={`${prefix}-list list-group`}>
-                {articleList.map(item => {
-                    const { id, name } = item
+                {articleList.map((item, index) => {
+                    const { name } = item
                     const btnCls = classNames({
                         'list-group-item': true,
                     })
                     return (
-                        <Button key={id} className={btnCls}>
+                        <Button key={index} className={btnCls}>
                             {name}
                         </Button>
                     )
