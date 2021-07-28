@@ -12,23 +12,14 @@ import { useEffect } from 'react'
 import { useRef } from 'react'
 import Highlighter from 'web-highlighter'
 import './Annotation.scss'
-import { Button } from 'react-bootstrap'
+import { Button } from 'antd'
+import { presetColor } from '../../utils'
+// import { useState } from 'react'
 
 const log = console.log.bind(console, '[annota]')
 // 自定义颜色。
 
-const annotationColor = {
-    blue: '#0d6efd',
-    indigo: '#6610f2',
-    purple: '#6f42c1',
-    pink: '#d63384',
-    red: '#dc3545',
-    orange: '#fd7e14',
-    yellow: '#ffc107',
-    green: '#198754',
-    teal: '#20c997',
-    cyan: '#0dcaf0',
-}
+const annotationColor = presetColor
 
 const processText = str => {
     // 已经处理过的不再处理
@@ -44,44 +35,10 @@ const processText = str => {
     // .replaceAll('<br/>', '</p><p>')
 }
 
-/**
- * 例如这句话：从不同的角度看【这个问题】会有不同的见解和结论。
- * 通过：sEl.splitText(sOffset) 打断成：【从不同的角度看，这个问题会有不同的见解和结论】
- * 再通过 newNode.splitText(eOffset - sOffset)打断成[从不同的角度看【这个问题】会有不同的见解和结论。]
- * @param {*} startNode
- * @param {*} endNode
- */
-const getSelectedNodes = (startNode, endNode) => {
-    const sEl = startNode.node
-    const eEl = endNode.node
-    const sOffset = startNode.offset
-    const eOffset = endNode.offset
-    console.log('sOffset', sOffset, eOffset)
-    // 利用sOffset打断成两个节点。 ...s....
-    const newNode = sEl.splitText(sOffset)
-
-    try {
-        if (sEl.parentNode === eEl.parentNode) {
-            newNode.splitText(eOffset - sOffset)
-        }
-    } catch (error) {
-        console.log(error)
-    }
-
-    return newNode
-}
-
-const addHighLight = node => {
-    const wrap = document.createElement('span')
-    wrap.setAttribute('class', 'highlight')
-    wrap.appendChild(node.cloneNode(false))
-    console.log('wrap', wrap, node.parentNode)
-    node.parentNode.replaceChild(wrap, node)
-}
-
 // 侧边栏
 const Annotation = props => {
     const { className } = props
+    // const [markList, setMarkList] = useState([])
     const highlighter = useRef(null)
     const contentRef = useRef(null)
     const prefix = 'zz-annotation'
@@ -104,8 +61,8 @@ const Annotation = props => {
     useEffect(() => {
         highlighter.current = new Highlighter()
         const h = highlighter.current
-        h.on(Highlighter.event.CREATE, function (data, inst, e) {
-            log('data', data, inst, e)
+        h.on(Highlighter.event.CREATE, function ({ sources }) {
+            log('这是被创建成功之后data', sources)
         })
         h.hooks.Render.WrapNode.tap((id, node) => {
             log('我想添加一些东西', id, node)
@@ -126,49 +83,6 @@ const Annotation = props => {
     }, [])
 
     useEffect(() => {
-        const handleMouseUp = () => {
-            const range = window.getSelection().getRangeAt(0)
-            const start = {
-                node: range.startContainer,
-                offset: range.startOffset,
-            }
-            const end = {
-                node: range.endContainer,
-                offset: range.endOffset,
-            }
-            const result = getSelectedNodes(start, end)
-            console.log('result', result)
-            addHighLight(result)
-        }
-        contentRef.current.addEventListener('mouseup', () => {
-            // add some listeners to handle interaction, such as hover
-            // highlighter
-            //     .on('selection:hover', ({ id }) => {
-            //         // display different bg color when hover
-            //         highlighter.addClass('highlight-wrap-hover', id)
-            //     })
-            //     .on('selection:hover-out', ({ id }) => {
-            //         // remove the hover effect when leaving
-            //         highlighter.removeClass('highlight-wrap-hover', id)
-            //     })
-            //     .on('selection:create', ({ sources }) => {
-            //         sources = sources.map(hs => ({ hs }))
-            //         console.log('sources', sources)
-            //     })
-            // retrieve data from store, and display highlights on the website
-            // store.getAll().forEach(
-            //     // hs is the same data saved by 'store.save(sources)'
-            //     ({ hs }) =>
-            //         highlighter.fromStore(
-            //             hs.startMeta,
-            //             hs.endMeta,
-            //             hs.text,
-            //             hs.id
-            //         )
-            // )
-            // auto-highlight selections
-            // highlighter.run()
-        })
         contentRef.current.addEventListener('click', e => {
             const target = e.target
             if (e.target.tagName === 'span') {
@@ -176,9 +90,7 @@ const Annotation = props => {
                 // 这里做一些操作。
             }
         })
-        return () => {
-            document.removeEventListener('mouseup', handleMouseUp)
-        }
+        return () => {}
     }, [])
 
     const handleClickBtn = key => {
@@ -204,7 +116,8 @@ const Annotation = props => {
     return (
         <div className={cls}>
             <button onClick={handleTest}>测试</button>
-            {Object.keys(annotationColor).map(key => {
+            {presetColor.map(item => {
+                const key = item.key
                 return (
                     <Button key={key} onClick={() => handleClickBtn(key)}>
                         {key}

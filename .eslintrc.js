@@ -25,6 +25,7 @@ module.exports = {
         "react/no-deprecated": "warn",
         "react/no-string-refs": "warn",
         // "no-unused-vars": "off",
+        "no-unused-vars": "warn"
     },
     "env": {
         "es6": true,

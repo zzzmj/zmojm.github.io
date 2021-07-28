@@ -1,7 +1,9 @@
-import React from 'react'
-import Button from '../../components/Button/Button'
+import React, { useState } from 'react'
 import classNames from 'classnames'
+import { Modal, Button, Input, List } from 'antd'
 import './SideBar.scss'
+
+const { Search } = Input
 
 const articleList = [
     {
@@ -25,6 +27,7 @@ const articleList = [
 // 侧边栏
 const SideBar = props => {
     const { className } = props
+    const [isModalVisible, setIsModalVisible] = useState(false)
 
     const prefix = 'zz-sidebar'
     const cls = classNames({
@@ -33,8 +36,13 @@ const SideBar = props => {
     })
 
     const handleUpload = () => {
-        console.log('123')
+        setIsModalVisible(true)
     }
+    const handleCancel = () => {
+        setIsModalVisible(false)
+    }
+
+    const handleSearch = () => {}
 
     return (
         <div className={cls}>
@@ -48,31 +56,33 @@ const SideBar = props => {
             </div>
             <div className={`${prefix}-input`}>
                 <div className='input-group mb-3'>
-                    <input
-                        type='text'
-                        className='form-control'
-                        placeholder="Recipient's username"
-                        aria-label="Recipient's username"
-                        aria-describedby='button-addon2'
+                    <Search
+                        placeholder='input search text'
+                        onSearch={handleSearch}
                     />
-                    <div className='input-group-append'>
-                        <Button type='secondary'>筛选</Button>
-                    </div>
                 </div>
             </div>
-            <ul className={`${prefix}-list list-group`}>
-                {articleList.map((item, index) => {
-                    const { name } = item
-                    const btnCls = classNames({
-                        'list-group-item': true,
-                    })
-                    return (
-                        <Button key={index} className={btnCls}>
-                            {name}
-                        </Button>
-                    )
-                })}
-            </ul>
+            <List
+                className={`${prefix}-list`}
+                bordered
+                dataSource={articleList}
+                renderItem={item => (
+                    <List.Item className={`${prefix}-list-item`}>
+                        {item.name}
+                    </List.Item>
+                )}
+            />
+
+            <Modal
+                title='Basic Modal'
+                visible={isModalVisible}
+                onOk={handleUpload}
+                onCancel={handleCancel}
+            >
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+                <p>Some contents...</p>
+            </Modal>
         </div>
     )
 }

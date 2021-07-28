@@ -1,14 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './app/App'
+import { Provider } from 'react-redux'
+import 'antd/dist/antd.css'
 import './index.css'
-import './custom.scss'
+import { store } from './store'
 
-window.log = console.log.bind(console)
-console.log('执行')
 ReactDOM.render(
-    <React.StrictMode>
+    <Provider store={store}>
         <App />
-    </React.StrictMode>,
+    </Provider>,
     document.getElementById('root')
 )
