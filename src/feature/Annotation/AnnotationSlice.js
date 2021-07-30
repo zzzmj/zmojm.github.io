@@ -1,25 +1,26 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    markList: [], // {id, text, }
+    annotationList: [], // {id, text, }
 }
 
 export const Annotation = createSlice({
-    name: 'annotaion',
+    name: 'annotation',
     initialState,
     reducers: {
         createAnnotaion: (state, action) => {
-            // const component = action.payload
-            // const { type } = component
-            // if (type === 'rc-global') {
-            //     state.componentList.unshift(component)
-            // } else {
-            //     state.componentList.push(component)
-            // }
+            const mark = action.payload
+            state.annotationList.push(mark)
+        },
+        deleteAnnotation: (state, action) => {
+            const id = action.payload
+            state.annotationList = state.annotationList.filter(
+                item => item.id !== id
+            )
         },
     },
 })
 
-export const { createAnnotaion } = Annotation.actions
+export const { createAnnotaion, deleteAnnotation } = Annotation.actions
 
 export default Annotation.reducer

@@ -1,8 +1,20 @@
 .zz-annotation {
     flex: 1;
-    padding: 20px;
+    .action {
+        padding: 20px;
+        background-color: #f7f7f7;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        padding-bottom: 8px;
+        > button {
+            margin-right: 16px;
+            margin-bottom: 12px;
+        }
+    }
     // overflow: scroll;
     .content {
+        padding: 20px;
         // line-height: 3;
         p {
             // white-space: nowrap;
@@ -17,6 +29,17 @@
             // border-radius: 5px;
             line-height: 1;
             &::after {
+                font-size: 12px;
+                display: none;
+                position: absolute;
+                padding: 1px 3px;
+                top: 30px;
+                left: 0;
+                white-space: nowrap;
+            }
+            i {
+                // background-color: #fff;
+                font-style: normal;
                 font-size: 12px;
                 display: block;
                 position: absolute;

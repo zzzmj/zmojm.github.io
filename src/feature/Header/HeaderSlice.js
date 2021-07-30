@@ -19,7 +19,8 @@ export const Header = createSlice({
     reducers: {
         createCategory: (state, action) => {
             const len = state.categoryList.length
-            const index = len < presetColor.length ? len : presetColor.length
+            const index =
+                len < presetColor.length ? len : presetColor.length - 1
             console.log(
                 'presetColor[index].key',
                 presetColor[index],
@@ -47,9 +48,18 @@ export const Header = createSlice({
                 }
             })
         },
+        deleteCategory: (state, action) => {
+            const id = action.payload
+            state.categoryList = state.categoryList.filter(
+                item => item.id !== id
+            )
+        },
+        updateCategory: (state, action) => {
+            state.categoryList = action.payload
+        },
     },
 })
 
-export const { createCategory, changeCategory } = Header.actions
+export const { createCategory, changeCategory, updateCategory } = Header.actions
 
 export default Header.reducer

@@ -4,7 +4,7 @@ import headerReducer from '../feature/Header/HeaderSlice'
 
 export const store = configureStore({
     reducer: {
-        annotaion: annotationReducer,
+        annotation: annotationReducer,
         header: headerReducer,
     },
 })

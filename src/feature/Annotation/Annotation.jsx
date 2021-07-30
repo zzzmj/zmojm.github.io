@@ -13,13 +13,17 @@ import { useRef } from 'react'
 import Highlighter from 'web-highlighter'
 import './Annotation.scss'
 import { Button } from 'antd'
-import { presetColor } from '../../utils'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+    setHightlightSpanEl,
+    getDomByDataId,
+    clearHightLight,
+} from '../../utils/index'
+import { createAnnotaion } from './AnnotationSlice'
 // import { useState } from 'react'
 
 const log = console.log.bind(console, '[annota]')
 // 自定义颜色。
-
-const annotationColor = presetColor
 
 const processText = str => {
     // 已经处理过的不再处理
@@ -37,10 +41,14 @@ const processText = str => {
 
 // 侧边栏
 const Annotation = props => {
-    const { className } = props
+    const { className, highlighter } = props
     // const [markList, setMarkList] = useState([])
-    const highlighter = useRef(null)
     const contentRef = useRef(null)
+    const disptach = useDispatch()
+
+    const categoryList = useSelector(state => state.header.categoryList)
+    const annotationList = useSelector(state => state.annotation.annotationList)
+
     const prefix = 'zz-annotation'
     const cls = classNames({
         [prefix]: true,
@@ -59,26 +67,64 @@ const Annotation = props => {
     )
 
     useEffect(() => {
-        highlighter.current = new Highlighter()
-        const h = highlighter.current
-        h.on(Highlighter.event.CREATE, function ({ sources }) {
-            log('这是被创建成功之后data', sources)
-        })
-        h.hooks.Render.WrapNode.tap((id, node) => {
-            log('我想添加一些东西', id, node)
-        })
+        // highlighter.fromStore(start, end, id, annotationList[i].text)
+    }, [])
 
-        h.on(Highlighter.event.CLICK, ({ id }) => {
-            log('click -', id)
+    useEffect(() => {
+        // 往里面添加
+        if (annotationList.length < 0) return
+
+        // 清空画布
+        clearHightLight(contentRef.current)
+        // 通过配置项id去找配置项
+        const getCategoryConfigById = categoryId => {
+            return categoryList.find(item => item.id === categoryId)
+        }
+
+        for (let i = 0; i < annotationList.length; i++) {
+            const { id, categoryId } = annotationList[i]
+            const el = getDomByDataId(id)
+            // 拿出config的配置
+            const config = getCategoryConfigById(categoryId)
+            if (config) {
+                const { text, color } = config
+                setHightlightSpanEl(el, {
+                    text,
+                    color,
+                })
+            }
+        }
+    }, [annotationList, categoryList])
+
+    useEffect(() => {
+        if (!highlighter) return
+        const h = highlighter
+
+        h.on(Highlighter.event.CREATE, function (option) {
+            const { sources } = option
+            // log('这是被创建成功之后data', sources, sources.id)
+            sources.map(hs => {
+                console.log('widno', window.config)
+                disptach(
+                    createAnnotaion({
+                        start: hs.startMeta,
+                        end: hs.endMeta,
+                        text: hs.text,
+                        id: hs.id,
+                        categoryId: window.categoryId,
+                        config: Object.assign({}, window.config),
+                    })
+                )
+            })
         })
+            // .on(Highlighter.event.CLICK, ({ id }) => {})
             .on(Highlighter.event.HOVER, ({ id }) => {
-                log('hover -', id)
                 h.addClass('highlight-wrap-hover', id)
             })
             .on(Highlighter.event.HOVER_OUT, ({ id }) => {
-                log('hover out -', id)
                 h.removeClass('highlight-wrap-hover', id)
             })
+
         // highlighter.current.run()
     }, [])
 
@@ -86,17 +132,19 @@ const Annotation = props => {
         contentRef.current.addEventListener('click', e => {
             const target = e.target
             if (e.target.tagName === 'span') {
-                console.log('target', target)
                 // 这里做一些操作。
             }
         })
         return () => {}
     }, [])
 
-    const handleClickBtn = key => {
-        const h = highlighter.current
-        const className = `color-${key}`
-        console.log('clssName', className)
+    const handleClickBtn = config => {
+        // highlighter.removeAll()
+
+        // 将配置id存在window对象中
+        window.categoryId = config.id
+        const h = highlighter
+        const className = `hightlight`
         const selection = window.getSelection()
         h.setOption({
             style: {
@@ -106,26 +154,25 @@ const Annotation = props => {
         h.fromRange(selection.getRangeAt(0))
     }
 
-    const handleTest = () => {
-        const h = highlighter.current
-
-        log(h.getDoms())
-    }
-
-    console.log('')
     return (
         <div className={cls}>
-            <button onClick={handleTest}>测试</button>
-            {presetColor.map(item => {
-                const key = item.key
-                return (
-                    <Button key={key} onClick={() => handleClickBtn(key)}>
-                        {key}
-                    </Button>
-                )
-            })}
+            <div className='action'>
+                {categoryList.map(item => {
+                    const { color, text } = item
+                    return (
+                        <Button
+                            key={color}
+                            onClick={() => handleClickBtn(item)}
+                        >
+                            {text}
+                        </Button>
+                    )
+                })}
+            </div>
             <div
+                id='iloveyryr'
                 ref={contentRef}
+                // key={Date.now()}
                 className='content'
                 dangerouslySetInnerHTML={{ __html: content }}
             />

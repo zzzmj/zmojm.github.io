@@ -8,14 +8,15 @@ import EditCategoryModal from './EditCategoryModal'
 
 const Header = props => {
     const { className } = props
+    const [loading, setLoading] = useState(false)
     const [isModalVisible, setIsModalVisible] = useState(false)
     const prefix = 'zz-header'
     const cls = classNames({
         [prefix]: true,
         [className]: className,
     })
-    const handleEdit = () => {
-        setIsModalVisible(true)
+    const handleOk = () => {
+        setIsModalVisible(false)
     }
     const handleCancel = () => {
         setIsModalVisible(false)
@@ -29,15 +30,22 @@ const Header = props => {
                 </div>
             </div>
             <div className='right'>
-                <Button type='outline-secondary'>上传配置</Button>
-                <Button onClick={handleEdit} type='outline-secondary'>
+                <Button loading={loading} type='outline-secondary'>
+                    保存记录
+                </Button>
+
+                <Button
+                    style={{ marginLeft: 30 }}
+                    onClick={() => setIsModalVisible(true)}
+                    type='outline-secondary'
+                >
                     编辑配置
                 </Button>
             </div>
 
             <EditCategoryModal
                 visible={isModalVisible}
-                onOk={handleEdit}
+                onOk={handleOk}
                 onCancel={handleCancel}
             />
         </div>

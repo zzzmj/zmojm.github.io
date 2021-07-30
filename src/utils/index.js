@@ -67,18 +67,18 @@
 //     另外，我[C]们还可以提出，根据“安乐死”事件，修正或更改我们[F們]的法律条例[C]，为以后发生的类似事件提供既{CC又}符合法律又{CC及}符合人情的解[C]决方法。
 // `
 
-// export const presetColor = {
-//     blue: '#0d6efd',
-//     indigo: '#6610f2',
-//     purple: '#6f42c1',
-//     pink: '#d63384',
-//     red: '#dc3545',
-//     orange: '#fd7e14',
-//     yellow: '#ffc107',
-//     green: '#198754',
-//     teal: '#20c997',
-//     cyan: '#0dcaf0',
-// }
+export const mapColorToHex = {
+    blue: '#0d6efd',
+    indigo: '#6610f2',
+    purple: '#6f42c1',
+    pink: '#d63384',
+    red: '#dc3545',
+    orange: '#fd7e14',
+    yellow: '#ffc107',
+    green: '#198754',
+    teal: '#20c997',
+    cyan: '#0dcaf0',
+}
 
 export const presetColor = [
     {
@@ -132,3 +132,44 @@ export const presetColor = [
         value: '#0dcaf0',
     },
 ]
+
+// 通过属性选择器，获取对应的
+export const getDomByDataId = highlightId => {
+    const span = document.querySelector(
+        `span[data-highlight-id="${highlightId}"]`
+    )
+    return span
+}
+
+// 清除高亮区域下所有的i标签
+export const clearHightLight = el => {
+    const list = el.querySelectorAll('i')
+    console.log('list', list)
+    for (let i = 0; i < list.length; i++) {
+        const parentElement = list[i].parentElement
+        parentElement.removeChild(list[i])
+    }
+}
+
+// 对高亮的span元素进行设置
+export const setHightlightSpanEl = (el, option) => {
+    console.log('el', el)
+    if (!el) el = document.querySelector('#iloveyryr')
+    // 先删除掉原有的
+    const list = el.querySelectorAll('i')
+    for (let i = 0; i < list.length; i++) {
+        el.removeChild(list[i])
+    }
+
+    // 再添加新的
+    const { color, text } = option
+    const i = document.createElement('i')
+    const hex = mapColorToHex[color]
+    i.innerText = text
+    i.style.border = `2px solid ${hex}`
+    i.style.color = hex
+
+    el.style.color = '#fff'
+    el.style.backgroundColor = hex
+    el.appendChild(i)
+}

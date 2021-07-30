@@ -1,4 +1,5 @@
 // 服务提供.
+import { createAsyncThunk } from '@reduxjs/toolkit'
 import LC from 'leancloud-storage'
 
 // leanCloud 初始化
@@ -7,6 +8,11 @@ LC.init({
     appKey: 'QhcOlKH32P32CCaEUbzJJWbo',
     serverURL: 'https://syolnpzm.lc-cn-n1-shared.com',
 })
+
+// 登录接口
+export const Login = (username, password) => {
+    return LC.User.logIn(username, password)
+}
 
 // 新增配置到leanCloud
 export const addConfigToLeanCloud = data => {
@@ -55,3 +61,10 @@ export const queryListFromLeanCloud = data => {
     })
     return query.find()
 }
+
+// export const updateConfig = createAsyncThunk(
+//     'category/updateConfig',
+//     async (option, { getState}) => {
+
+//     }
+// )
