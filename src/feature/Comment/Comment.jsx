@@ -51,6 +51,14 @@ const Comment = props => {
         })
     }
 
+    const addClass = id => {
+        highlighter.addClass('highlight-wrap-hover', id)
+    }
+
+    const removeClass = id => {
+        highlighter.removeClass('highlight-wrap-hover', id)
+    }
+
     return (
         <div className={cls}>
             <header>我的标注列表</header>
@@ -69,6 +77,8 @@ const Comment = props => {
                             <div className='action'>
                                 <a
                                     onClick={() => handleDelete(item.id)}
+                                    onMouseEnter={() => addClass(item.id)}
+                                    onMouseLeave={() => removeClass(item.id)}
                                     key='list-loadmore-edit'
                                 >
                                     delete

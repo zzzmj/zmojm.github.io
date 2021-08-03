@@ -30,7 +30,7 @@
             line-height: 1;
             &::after {
                 font-size: 12px;
-                display: none;
+                display: block;
                 position: absolute;
                 padding: 1px 3px;
                 top: 30px;
@@ -39,6 +39,7 @@
             }
             i {
                 // background-color: #fff;
+                user-select: none;
                 font-style: normal;
                 font-size: 12px;
                 display: block;
@@ -50,66 +51,110 @@
             }
         }
         .color-blue {
-            background-color:  #0d6efd;
+            background-color: #0d6efd;
             color: #fff;
             &::after {
-                content: "名词回指";
-                padding: 1px 3px;
+                content: attr(data-text);
                 color: #0d6efd;
                 border: 2px solid #0d6efd;
             }
         }
-        span[data-highlight-id-extra*="-"] {
+        // span[data-highlight-id-extra*='-'] {
+        //     &::after {
+        //         display: none;
+        //     }
+        // }
+        span[data-highlight-split-type='tail'] {
             &::after {
                 display: none;
             }
         }
-        
+        span[data-text='null'] {
+            &::after {
+                display: none;
+            }
+        }
+
         .color-indigo {
-            background-color:  #6610f2;
+            background-color: #6610f2;
             color: #fff;
             &::after {
-                content: "代词回指";
+                content: attr(data-text);
                 color: #6610f2;
                 border: 2px solid #6610f2;
             }
         }
         .color-purple {
-            background-color:  #6f42c1;
-            color: #fff;
-        }
-        .color-pink {
-            background-color:  #d63384;
-            color: #fff;
-        }
-        .color-red {
-            background-color:  #dc3545;
-            color: #fff;
-        }
-        .color-orange {
-            background-color:  #fd7e14;
+            background-color: #6f42c1;
             color: #fff;
             &::after {
-                content: "零形回指";
+                content: attr(data-text);
+                color: #6f42c1;
+                border: 2px solid #6f42c1;
+            }
+        }
+        .color-pink {
+            background-color: #d63384;
+            color: #fff;
+            &::after {
+                content: attr(data-text);
+                color: #d63384;
+                border: 2px solid #d63384;
+            }
+        }
+        .color-red {
+            background-color: #dc3545;
+            color: #fff;
+            &::after {
+                content: attr(data-text);
+                color: #dc3545;
+                border: 2px solid #dc3545;
+            }
+        }
+        .color-orange {
+            background-color: #fd7e14;
+            color: #fff;
+            &::after {
+                content: attr(data-text);
                 color: #fd7e14;
                 border: 2px solid #fd7e14;
             }
         }
         .color-yellow {
-            background-color:  #ffc107;
+            background-color: #ffc107;
             color: #fff;
+            &::after {
+                content: attr(data-text);
+                color: #ffc107;
+                border: 2px solid #ffc107;
+            }
         }
         .color-green {
-            background-color:  #198754;
+            background-color: #198754;
             color: #fff;
+            &::after {
+                content: attr(data-text);
+                color: #198754;
+                border: 2px solid #198754;
+            }
         }
         .color-teal {
-            background-color:  #20c997;
+            background-color: #20c997;
             color: #fff;
+            &::after {
+                content: attr(data-text);
+                color: #20c997;
+                border: 2px solid #20c997;
+            }
         }
         .color-cyan {
-            background-color:  #0dcaf0;
+            background-color: #0dcaf0;
             color: #fff;
+            &::after {
+                content: attr(data-text);
+                color: #0dcaf0;
+                border: 2px solid #0dcaf0;
+            }
         }
         .highlight-wrap-hover {
             cursor: pointer;

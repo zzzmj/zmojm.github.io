@@ -60,6 +60,11 @@ export const Header = createSlice({
     },
 })
 
-export const { createCategory, changeCategory, updateCategory } = Header.actions
+export const {
+    createCategory,
+    changeCategory,
+    updateCategory,
+    deleteCategory,
+} = Header.actions
 
 export default Header.reducer

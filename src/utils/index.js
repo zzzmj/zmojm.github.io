@@ -17,6 +17,9 @@
  *   formatContent: {
  *     info: '',
  *     txt: ''
+ *   },
+ *   annotation: {
+ *     123:''
  *   }
  * }]
  */
@@ -135,9 +138,13 @@ export const presetColor = [
 
 // 通过属性选择器，获取对应的
 export const getDomByDataId = highlightId => {
-    const span = document.querySelector(
+    let span = document.querySelectorAll(
         `span[data-highlight-id="${highlightId}"]`
     )
+    if (span.length <= 0)
+        span = document.querySelectorAll(
+            `span[data-highlight-id-extra="${highlightId}"]`
+        )
     return span
 }
 
@@ -152,24 +159,26 @@ export const clearHightLight = el => {
 }
 
 // 对高亮的span元素进行设置
-export const setHightlightSpanEl = (el, option) => {
-    console.log('el', el)
-    if (!el) el = document.querySelector('#iloveyryr')
-    // 先删除掉原有的
-    const list = el.querySelectorAll('i')
-    for (let i = 0; i < list.length; i++) {
-        el.removeChild(list[i])
+export const setHightlightSpanEl = (els, option) => {
+    const { text } = option
+    for (let i = 0; i < els.length; i++) {
+        let el = els[i]
+        let highlightId = el.dataset.highlightIdExtra || el.dataset.highlightId
+        const spans = getDomByDataId(highlightId)
+        if (el === spans[0]) {
+            if (!el.dataset.text || el.dataset.text === 'null') {
+                console.log('el被设置为', text, highlightId)
+                el.dataset.text = text
+            }
+        } else {
+            console.log('el被设置为', null, highlightId)
+            el.dataset.text = 'null'
+            if (el.dataset.highlightSplitType === 'tail') {
+                if (spans[0].dataset.text === 'null') {
+                    spans[0].dataset.text = text
+                }
+            }
+        }
+        // 再添加新的
     }
-
-    // 再添加新的
-    const { color, text } = option
-    const i = document.createElement('i')
-    const hex = mapColorToHex[color]
-    i.innerText = text
-    i.style.border = `2px solid ${hex}`
-    i.style.color = hex
-
-    el.style.color = '#fff'
-    el.style.backgroundColor = hex
-    el.appendChild(i)
 }

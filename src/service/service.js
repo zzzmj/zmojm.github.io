@@ -1,5 +1,4 @@
 // 服务提供.
-import { createAsyncThunk } from '@reduxjs/toolkit'
 import LC from 'leancloud-storage'
 
 // leanCloud 初始化

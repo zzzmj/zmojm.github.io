@@ -83,12 +83,13 @@ const Annotation = props => {
 
         for (let i = 0; i < annotationList.length; i++) {
             const { id, categoryId } = annotationList[i]
-            const el = getDomByDataId(id)
+            const els = getDomByDataId(id)
             // 拿出config的配置
             const config = getCategoryConfigById(categoryId)
+            console.log('进行一次循环', id, els, config)
             if (config) {
                 const { text, color } = config
-                setHightlightSpanEl(el, {
+                setHightlightSpanEl(els, {
                     text,
                     color,
                 })
@@ -104,7 +105,6 @@ const Annotation = props => {
             const { sources } = option
             // log('这是被创建成功之后data', sources, sources.id)
             sources.map(hs => {
-                console.log('widno', window.config)
                 disptach(
                     createAnnotaion({
                         start: hs.startMeta,
@@ -135,16 +135,16 @@ const Annotation = props => {
                 // 这里做一些操作。
             }
         })
-        return () => {}
+        return () => { }
     }, [])
 
     const handleClickBtn = config => {
-        // highlighter.removeAll()
+        const { id, color } = config
 
         // 将配置id存在window对象中
-        window.categoryId = config.id
+        window.categoryId = id
         const h = highlighter
-        const className = `hightlight`
+        const className = `color-${color}`
         const selection = window.getSelection()
         h.setOption({
             style: {

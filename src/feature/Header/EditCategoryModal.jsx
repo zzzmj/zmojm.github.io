@@ -6,8 +6,13 @@ import {
     ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
-import { changeCategory, createCategory, updateCategory } from './HeaderSlice'
-import { presetColor } from '../../utils'
+import {
+    changeCategory,
+    createCategory,
+    updateCategory,
+    deleteCategory,
+} from './HeaderSlice'
+import { mapColorToHex, presetColor } from '../../utils'
 import { useEffect } from 'react'
 import {
     getConfigFromLeanCloud,
@@ -68,18 +73,19 @@ const EditCategoryModal = props => {
         )
     }
 
-    const handleDelete = () => {
+    const handleDelete = id => {
         Modal.confirm({
             title: '删除',
             icon: <ExclamationCircleOutlined />,
-            content: '删除该标注后，曾经使用过该标注的数据将无法找回',
+            content: '删除该标注后，曾经使用过该标注的数据无法正确显示',
             okText: '确认',
             cancelText: '取消',
             onCancel: () => {
                 console.log('取消')
             },
             onOk: () => {
-                console.log('删除')
+                disptach(deleteCategory(id))
+                console.log('删除', id)
             },
         })
     }
@@ -88,6 +94,7 @@ const EditCategoryModal = props => {
         <Modal
             title='编辑配置'
             okText='上传'
+            cancelText='取消'
             confirmLoading={loading}
             visible={visible}
             onOk={handleEdit}
@@ -121,6 +128,15 @@ const EditCategoryModal = props => {
                                             )
                                         })}
                                     </Select>
+                                    <div
+                                        style={{
+                                            marginTop: 5,
+                                            borderRadius: 3,
+                                            height: 20,
+                                            backgroundColor:
+                                                mapColorToHex[color],
+                                        }}
+                                    />
                                 </Form.Item>
                             </Col>
                             <Col>
@@ -163,7 +179,9 @@ const EditCategoryModal = props => {
                                 }}
                                 className='delete'
                             >
-                                <MinusCircleOutlined onClick={handleDelete} />
+                                <MinusCircleOutlined
+                                    onClick={() => handleDelete(item.id)}
+                                />
                             </div>
                         </Row>
                     )
