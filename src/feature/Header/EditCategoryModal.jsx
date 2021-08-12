@@ -29,10 +29,8 @@ const EditCategoryModal = props => {
     //
     const categoryList = useSelector(state => state.header.categoryList)
     const header = useSelector(state => state.header)
-    console.log('**categoryList', categoryList, header)
     const handleEdit = () => {
         setLoading(true)
-        console.log('更新的对象', categoryList)
         updateConfigToLeanCloud(objectId, {
             categoryList: categoryList,
         })
