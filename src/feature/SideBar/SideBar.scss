@@ -1,0 +1,14 @@
+.zz-sidebar {
+    width: 228px;
+    border-right: 1px solid #eef2f8;
+    padding: 24px;
+    &-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    .zz-sidebar-list {
+        margin-top: 30px;
+    }
+}
