@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
-import { Modal, Button, Input, List } from 'antd'
+import { Modal, Button, Input, List, message } from 'antd'
 import './SideBar.scss'
+import AddModal from './AddModal'
+import { getArticleFromLeanCloud } from '../../service/article'
 
 const { Search } = Input
 
@@ -27,6 +29,7 @@ const articleList = [
 // 侧边栏
 const SideBar = props => {
     const { className } = props
+    const [dataList, setDataList] = useState([])
     const [isModalVisible, setIsModalVisible] = useState(false)
 
     const prefix = 'zz-sidebar'
@@ -35,6 +38,31 @@ const SideBar = props => {
         [className]: className,
     })
 
+    const getArticle = () => {
+        getArticleFromLeanCloud().then(
+            res => {
+                const data = res.map(item => {
+                    return {
+                        // objectId: item.id,
+                        article: item.get('article'),
+                        nationality: item.get('nationality'),
+                        score: item.get('score'),
+                        title: item.get('title'),
+                    }
+                })
+                console.log('dataList', data)
+                setDataList(data)
+            },
+            err => {
+                message.error('获取文章失败')
+            }
+        )
+    }
+
+    useEffect(() => {
+        getArticle()
+    }, [])
+
     const handleUpload = () => {
         setIsModalVisible(true)
     }
@@ -42,7 +70,7 @@ const SideBar = props => {
         setIsModalVisible(false)
     }
 
-    const handleSearch = () => {}
+    const handleSearch = () => { }
 
     return (
         <div className={cls}>
@@ -65,15 +93,20 @@ const SideBar = props => {
             <List
                 className={`${prefix}-list`}
                 bordered
-                dataSource={articleList}
+                dataSource={dataList}
                 renderItem={item => (
                     <List.Item className={`${prefix}-list-item`}>
-                        {item.name}
+                        {item.title}
                     </List.Item>
                 )}
             />
+            <AddModal
+                visible={isModalVisible}
+                onOk={handleUpload}
+                onCancel={handleCancel}
+            />
 
-            <Modal
+            {/* <Modal
                 title='Basic Modal'
                 visible={isModalVisible}
                 onOk={handleUpload}
@@ -82,7 +115,7 @@ const SideBar = props => {
                 <p>Some contents...</p>
                 <p>Some contents...</p>
                 <p>Some contents...</p>
-            </Modal>
+            </Modal> */}
         </div>
     )
 }

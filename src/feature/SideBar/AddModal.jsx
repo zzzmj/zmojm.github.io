@@ -1,73 +1,107 @@
 import React from 'react'
-import { Form } from 'react-bootstrap'
-import Modal from '../../components/Modal/Modal'
+import { Form, Modal, Input, Select, Tooltip, message } from 'antd'
+import { createArticle } from '../../service/article'
+
+const { Option } = Select
+const { TextArea } = Input
+
+const formItemLayout = {
+    labelCol: { span: 4 },
+    wrapperCol: { span: 20 },
+}
 
 const AddModal = props => {
-    const { show } = props
+    const { visible } = props
+    const [form] = Form.useForm()
 
-    const handleChange = e => {
-        console.log('e', e)
+    const handleSelectChange = (type, value) => {
+        form.setFieldsValue({
+            [type]: value,
+        })
     }
 
     const handleConfirm = () => {
-        props.onConfirm && props.onConfirm()
+        form.submit()
+        props.onOk && props.onOk()
     }
 
     const handleClose = () => {
-        props.onClose && props.onClose()
+        props.onCancel && props.onCancel()
     }
 
+    const onFinish = values => {
+        createArticle(values).then(
+            res => {
+                handleClose()
+                message.success('添加成功')
+            },
+            err => {
+                message.error('添加失败')
+            }
+        )
+        console.log('values', values)
+    }
+    console.log('form', form)
     return (
         <Modal
             title='添加文章'
-            show={show}
-            onClose={handleClose}
-            onConfirm={handleConfirm}
+            visible={visible}
+            onOk={handleConfirm}
+            onCancel={handleClose}
+            okText='添加'
+            cancelText='取消'
         >
-            <Form>
-                <Form.Group controlId='exampleForm.ControlInput1'>
-                    <Form.Label>文章标题</Form.Label>
-                    <Form.Control
-                        type='text'
-                        placeholder='请输入文章标题'
-                        onChange={handleChange}
-                    />
-                </Form.Group>
-                <Form.Group required controlId='exampleForm.ControlSelect1'>
-                    <Form.Label>请选择语料库来源</Form.Label>
-                    <Form.Control as='select'>
-                        <option>A语料库</option>
-                        <option>B语料库</option>
-                    </Form.Control>
-                </Form.Group>
-                <Form.Group controlId='exampleForm.ControlSelect2'>
-                    <Form.Label>请选择汉语等级</Form.Label>
-                    <Form.Control onChange={handleChange} as='select'>
-                        <option>A</option>
-                        <option>B</option>
-                    </Form.Control>
-                </Form.Group>
-                <Form.Group controlId='exampleForm.ControlSelect2'>
-                    <Form.Label>请选择汉语等级</Form.Label>
-                    <Form.Control onChange={handleChange} as='select'>
-                        <Form.Check
-                            inline
-                            label='first radio'
-                            name='formHorizontalRadios'
-                            id='formHorizontalRadios1'
-                        />
-                        <Form.Check
-                            inline
-                            label='second radio'
-                            name='formHorizontalRadios'
-                            id='formHorizontalRadios2'
-                        />
-                    </Form.Control>
-                </Form.Group>
-                <Form.Group controlId='exampleForm.ControlTextarea1'>
-                    <Form.Label>Example textarea</Form.Label>
-                    <Form.Control as='textarea' rows={3} />
-                </Form.Group>
+            <Form
+                {...formItemLayout}
+                labelAlign={'right'}
+                form={form}
+                name='dynamic_form_nest_item'
+                onFinish={onFinish}
+                autoComplete='off'
+            >
+                <Form.Item
+                    name='title'
+                    label='文章标题'
+                    rules={[{ required: true }]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    name='score'
+                    label='汉语水平'
+                    rules={[{ required: true }]}
+                >
+                    <Select onChange={handleSelectChange} allowClear>
+                        <Option value='A'>A</Option>
+                        <Option value='B'>B</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                    name='nationality'
+                    label='国籍'
+                    rules={[{ required: true }]}
+                >
+                    <Select onChange={handleSelectChange} allowClear>
+                        <Option value='korea'>韩国</Option>
+                        <Option value='britain'>英国</Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                    name='article'
+                    label={
+                        <Tooltip title='可以填入已标注的内容'>
+                            <span>文章内容</span>
+                        </Tooltip>
+                    }
+                    rules={[{ required: true }]}
+                >
+                    <TextArea rows={5} />
+                </Form.Item>
+                {/* <Form.Item>
+                    <Button type='primary' htmlType='submit'>
+                        Submit
+                    </Button>
+                </Form.Item> */}
             </Form>
         </Modal>
     )
