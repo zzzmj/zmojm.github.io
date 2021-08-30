@@ -1,5 +1,5 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit'
-import { presetColor } from '../../utils'
+import { presetColor } from '../../../utils'
 // 预设的颜色
 
 const initialState = {

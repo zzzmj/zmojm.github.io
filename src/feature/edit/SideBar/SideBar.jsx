@@ -1,30 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
-import { Modal, Button, Input, List, message } from 'antd'
+import { Button, Input, List, message } from 'antd'
 import './SideBar.scss'
 import AddModal from './AddModal'
-import { getArticleFromLeanCloud } from '../../service/article'
+import { getArticleFromLeanCloud } from '../../../service/article'
 
 const { Search } = Input
-
-const articleList = [
-    {
-        id: 'xx',
-        name: '文章的标题哦',
-    },
-    {
-        id: 'xx',
-        name: '文章的标题哦',
-    },
-    {
-        id: 'xx',
-        name: '文章的标题哦',
-    },
-    {
-        id: 'xx',
-        name: '文章的标题哦',
-    },
-]
 
 // 侧边栏
 const SideBar = props => {
@@ -43,7 +24,7 @@ const SideBar = props => {
             res => {
                 const data = res.map(item => {
                     return {
-                        // objectId: item.id,
+                        objectId: item.id,
                         article: item.get('article'),
                         nationality: item.get('nationality'),
                         score: item.get('score'),
@@ -53,7 +34,7 @@ const SideBar = props => {
                 console.log('dataList', data)
                 setDataList(data)
             },
-            err => {
+            () => {
                 message.error('获取文章失败')
             }
         )
@@ -70,7 +51,9 @@ const SideBar = props => {
         setIsModalVisible(false)
     }
 
-    const handleSearch = () => { }
+    const handleSearch = () => {
+        console.log('搜索')
+    }
 
     return (
         <div className={cls}>
@@ -105,17 +88,6 @@ const SideBar = props => {
                 onOk={handleUpload}
                 onCancel={handleCancel}
             />
-
-            {/* <Modal
-                title='Basic Modal'
-                visible={isModalVisible}
-                onOk={handleUpload}
-                onCancel={handleCancel}
-            >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-            </Modal> */}
         </div>
     )
 }

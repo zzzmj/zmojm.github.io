@@ -1,6 +1,6 @@
 import React from 'react'
 import { Form, Modal, Input, Select, Tooltip, message } from 'antd'
-import { createArticle } from '../../service/article'
+import { createArticle } from '../../../service/article'
 
 const { Option } = Select
 const { TextArea } = Input

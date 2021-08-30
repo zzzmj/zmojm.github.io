@@ -12,12 +12,12 @@ import {
     updateCategory,
     deleteCategory,
 } from './HeaderSlice'
-import { mapColorToHex, presetColor } from '../../utils'
+import { mapColorToHex, presetColor } from '../../../utils'
 import { useEffect } from 'react'
 import {
     getConfigFromLeanCloud,
     updateConfigToLeanCloud,
-} from '../../service/service'
+} from '../../../service/service'
 import './Header.scss'
 
 const { Option } = Select

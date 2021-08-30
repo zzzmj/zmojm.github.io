@@ -18,11 +18,11 @@ import {
     setHightlightSpanEl,
     getDomByDataId,
     clearHightLight,
-} from '../../utils/index'
+} from '../../../utils/index'
 import { createAnnotaion } from './AnnotationSlice'
 // import { useState } from 'react'
 
-const log = console.log.bind(console, '[annota]')
+// const log = console.log.bind(console, '[annota]')
 // 自定义颜色。
 
 const processText = str => {
@@ -131,11 +131,13 @@ const Annotation = props => {
     useEffect(() => {
         contentRef.current.addEventListener('click', e => {
             const target = e.target
-            if (e.target.tagName === 'span') {
+            if (target.tagName === 'span') {
                 // 这里做一些操作。
             }
         })
-        return () => { }
+        // return () => {
+
+        // }
     }, [])
 
     const handleClickBtn = config => {
