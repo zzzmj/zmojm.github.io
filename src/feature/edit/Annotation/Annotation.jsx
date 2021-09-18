@@ -19,10 +19,11 @@ import {
     getDomByDataId,
     clearHightLight,
 } from '../../../utils/index'
-import { createAnnotaion } from './AnnotationSlice'
-// import { useState } from 'react'
+import { initAnnotation, createAnnotation } from './AnnotationSlice'
+import { useParams } from 'react-router'
+import { getArticleFromLeanCloud } from '../../../service/article'
 
-// const log = console.log.bind(console, '[annota]')
+const log = console.log.bind(console, '[annota]')
 // 自定义颜色。
 
 const processText = str => {
@@ -41,10 +42,10 @@ const processText = str => {
 
 // 侧边栏
 const Annotation = props => {
+    const params = useParams()
     const { className, highlighter } = props
-    // const [markList, setMarkList] = useState([])
     const contentRef = useRef(null)
-    const disptach = useDispatch()
+    const dispatch = useDispatch()
 
     const categoryList = useSelector(state => state.header.categoryList)
     const annotationList = useSelector(state => state.annotation.annotationList)
@@ -67,8 +68,26 @@ const Annotation = props => {
     )
 
     useEffect(() => {
-        // highlighter.fromStore(start, end, id, annotationList[i].text)
-    }, [])
+        const { objectId } = params
+        getArticleFromLeanCloud(objectId).then(article => {
+            const articleObj = article.toJSON()
+            const list = articleObj.annotation
+            if (list) {
+                // 初始化标注状态
+                dispatch(initAnnotation(list))
+                // 还原DOM
+
+                list.forEach(item => {
+                    highlighter.fromStore(
+                        item.start,
+                        item.end,
+                        item.text,
+                        item.id
+                    )
+                })
+            }
+        })
+    }, [params])
 
     useEffect(() => {
         // 往里面添加
@@ -86,7 +105,6 @@ const Annotation = props => {
             const els = getDomByDataId(id)
             // 拿出config的配置
             const config = getCategoryConfigById(categoryId)
-            console.log('进行一次循环', id, els, config)
             if (config) {
                 const { text, color } = config
                 setHightlightSpanEl(els, {
@@ -105,16 +123,15 @@ const Annotation = props => {
             const { sources } = option
             // log('这是被创建成功之后data', sources, sources.id)
             sources.map(hs => {
-                disptach(
-                    createAnnotaion({
-                        start: hs.startMeta,
-                        end: hs.endMeta,
-                        text: hs.text,
-                        id: hs.id,
-                        categoryId: window.categoryId,
-                        config: Object.assign({}, window.config),
-                    })
-                )
+                const obj = {
+                    start: hs.start || hs.startMeta,
+                    end: hs.end || hs.endMeta,
+                    text: hs.text,
+                    id: hs.id,
+                    categoryId: hs.categoryId || window.categoryId,
+                    config: Object.assign(hs.config || {}, window.config),
+                }
+                dispatch(createAnnotation(obj))
             })
         })
             // .on(Highlighter.event.CLICK, ({ id }) => {})

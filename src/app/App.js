@@ -40,7 +40,7 @@ const App = () => {
             <Switch>
                 <Route exact path='/' component={Admin} />
                 <Route exact path='/admin' component={Admin} />
-                <Route exact path='/edit' component={Edit} />
+                <Route exact path='/edit/:objectId' component={Edit} />
                 {/* <Route path='/result' component={Result} /> */}
             </Switch>
         </BrowserRouter>

@@ -41,7 +41,6 @@ const AddModal = props => {
         )
         console.log('values', values)
     }
-    console.log('form', form)
     return (
         <Modal
             title='添加文章'

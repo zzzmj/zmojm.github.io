@@ -15,7 +15,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { deleteAnnotation } from '../Annotation/AnnotationSlice'
 // import { Button } from 'react-bootstrap'
 
-// const log = console.log.bind(console, '[comment]')
+const log = console.log.bind(console, '[comment]')
 // 自定义颜色。
 
 // 侧边栏
@@ -73,7 +73,7 @@ const Comment = props => {
 
                     return (
                         <List.Item className={`${prefix}-list-item`}>
-                            {config.text}：{item.text}
+                            {config && item && `${config.text}: ${item.text}`}
                             <div className='action'>
                                 <a
                                     onClick={() => handleDelete(item.id)}

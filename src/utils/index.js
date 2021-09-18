@@ -151,27 +151,33 @@ export const getDomByDataId = highlightId => {
 // 清除高亮区域下所有的i标签
 export const clearHightLight = el => {
     const list = el.querySelectorAll('i')
-    console.log('list', list)
     for (let i = 0; i < list.length; i++) {
         const parentElement = list[i].parentElement
         parentElement.removeChild(list[i])
     }
 }
 
+export const addClass = (el, className) => {
+    if (!el.classList.contains(className)) {
+        el.classList.add(className)
+    }
+}
+
 // 对高亮的span元素进行设置
 export const setHightlightSpanEl = (els, option) => {
-    const { text } = option
+    const { text, color } = option
     for (let i = 0; i < els.length; i++) {
         let el = els[i]
+        addClass(el, `color-${color}`)
         let highlightId = el.dataset.highlightIdExtra || el.dataset.highlightId
         const spans = getDomByDataId(highlightId)
         if (el === spans[0]) {
             if (!el.dataset.text || el.dataset.text === 'null') {
-                console.log('el被设置为', text, highlightId)
+                // console.log('el被设置为', text, highlightId)
                 el.dataset.text = text
             }
         } else {
-            console.log('el被设置为', null, highlightId)
+            // console.log('el被设置为', null, highlightId)
             el.dataset.text = 'null'
             if (el.dataset.highlightSplitType === 'tail') {
                 if (spans[0].dataset.text === 'null') {

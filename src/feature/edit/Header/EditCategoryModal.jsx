@@ -25,7 +25,7 @@ const objectId = '610291721de21d3e072c5432'
 const EditCategoryModal = props => {
     const { visible, onOk, onCancel } = props
     const [loading, setLoading] = useState(false)
-    const disptach = useDispatch()
+    const dispatch = useDispatch()
     //
     const categoryList = useSelector(state => state.header.categoryList)
     const header = useSelector(state => state.header)
@@ -53,16 +53,16 @@ const EditCategoryModal = props => {
         getConfigFromLeanCloud(objectId).then(res => {
             const list = res.get('categoryList')
             // 更新到redux中
-            disptach(updateCategory(list))
+            dispatch(updateCategory(list))
         })
     }, [])
 
     const handleAdd = () => {
-        disptach(createCategory())
+        dispatch(createCategory())
     }
 
     const handleChange = ({ id, value, name }) => {
-        disptach(
+        dispatch(
             changeCategory({
                 id,
                 value,
@@ -82,7 +82,7 @@ const EditCategoryModal = props => {
                 console.log('取消')
             },
             onOk: () => {
-                disptach(deleteCategory(id))
+                dispatch(deleteCategory(id))
                 console.log('删除', id)
             },
         })

@@ -8,9 +8,19 @@ export const Annotation = createSlice({
     name: 'annotation',
     initialState,
     reducers: {
-        createAnnotaion: (state, action) => {
+        initAnnotation: (state, action) => {
+            const annotation = action.payload
+            state.annotationList = annotation
+        },
+        createAnnotation: (state, action) => {
             const mark = action.payload
-            state.annotationList.push(mark)
+            // 如果mark已经存在在annotationList中，则不被添加
+            const repeat = state.annotationList.some(
+                item => item.id === mark.id
+            )
+            if (!repeat) {
+                state.annotationList.push(mark)
+            }
         },
         deleteAnnotation: (state, action) => {
             const id = action.payload
@@ -21,6 +31,7 @@ export const Annotation = createSlice({
     },
 })
 
-export const { createAnnotaion, deleteAnnotation } = Annotation.actions
+export const { initAnnotation, createAnnotation, deleteAnnotation } =
+    Annotation.actions
 
 export default Annotation.reducer

@@ -1,22 +1,41 @@
 import React from 'react'
 import classNames from 'classnames'
 import { ReactComponent as Logo } from '../../../static/logo.svg'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import './Header.scss'
 import { useState } from 'react'
 import EditCategoryModal from './EditCategoryModal'
+import { useSelector } from 'react-redux'
+import { useParams } from 'react-router'
+import { updateArticleToLeanCloud } from '../../../service/article'
 
 const Header = props => {
     const { className, type = 'edit' } = props
+    const params = useParams()
     const [loading, setLoading] = useState(false)
     const [isModalVisible, setIsModalVisible] = useState(false)
+    const annotationList = useSelector(state => state.annotation.annotationList)
     const prefix = 'zz-header'
     const cls = classNames({
         [prefix]: true,
         [className]: className,
     })
-    const handleOk = () => {
-        setIsModalVisible(false)
+    const handleOk = async () => {
+        const { objectId } = params
+        console.log('annotationList', annotationList, objectId)
+        setLoading(true)
+        updateArticleToLeanCloud(objectId, {
+            annotation: annotationList,
+            annotationCount: annotationList.length || 0,
+        })
+            .then(res => {
+                message.success('保存成功！')
+                setLoading(false)
+            })
+            .catch(err => {
+                message.success('保存失败，请检查网络设置！')
+                setLoading(false)
+            })
     }
     const handleCancel = () => {
         setIsModalVisible(false)
@@ -31,7 +50,11 @@ const Header = props => {
             </div>
             {type === 'edit' && (
                 <div className='right'>
-                    <Button loading={loading} type='outline-secondary'>
+                    <Button
+                        loading={loading}
+                        type='outline-secondary'
+                        onClick={handleOk}
+                    >
                         保存记录
                     </Button>
 

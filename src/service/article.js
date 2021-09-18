@@ -4,7 +4,7 @@ import LC from 'leancloud-storage'
 LC.init({
     appId: 'zhG78X78KsJ4MuyLquDrtexj-gzGzoHsz',
     appKey: 'QhcOlKH32P32CCaEUbzJJWbo',
-    serverURL: 'https://syolnpzm.lc-cn-n1-shared.com',
+    serverURL: 'https://zhg78x78.lc-cn-n1-shared.com',
 })
 
 /**
