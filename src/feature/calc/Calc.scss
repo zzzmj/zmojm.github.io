@@ -1,0 +1,18 @@
+.calc-wrap {
+    padding: 10px;
+
+    &-content {
+        .list {
+            border: 1px solid #333;
+
+            &-item {
+                &-num {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                }
+            }
+        }
+    }
+}

@@ -7,6 +7,8 @@ import Comment from '../feature/edit/Comment/Comment'
 import Highlighter from 'web-highlighter'
 import './App.scss'
 import ArticleTable from '../feature/admin/ArticleTable/ArticleTable'
+import Algorithm from '../feature/algorithm/Algorithm'
+import Calc from '../feature/calc/Calc'
 
 const Edit = () => {
     const highlighter = new Highlighter()
@@ -41,6 +43,8 @@ const App = () => {
                 <Route exact path='/' component={Admin} />
                 <Route exact path='/admin' component={Admin} />
                 <Route exact path='/edit/:objectId' component={Edit} />
+                <Route exact path='/algorithm' component={Algorithm} />
+                <Route exact path='/calc' component={Calc} />
                 {/* <Route path='/result' component={Result} /> */}
             </Switch>
         </BrowserRouter>
