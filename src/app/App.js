@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Switch } from 'react-router-dom'
 import Header from '../feature/edit/Header/Header'
 import SideBar from '../feature/edit/SideBar/SideBar'
 import Annotation from '../feature/edit/Annotation/Annotation'
@@ -38,7 +38,7 @@ const Admin = () => {
 
 const App = () => {
     return (
-        <BrowserRouter>
+        <HashRouter>
             <Switch>
                 <Route exact path='/' component={Admin} />
                 <Route exact path='/admin' component={Admin} />
@@ -47,7 +47,7 @@ const App = () => {
                 <Route exact path='/calc' component={Calc} />
                 {/* <Route path='/result' component={Result} /> */}
             </Switch>
-        </BrowserRouter>
+        </HashRouter>
     )
 }
 

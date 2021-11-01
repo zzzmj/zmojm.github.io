@@ -5,6 +5,7 @@ class AdjacencyMatrixGraph {
         this.adjMatrix = [] // 邻接矩阵
         this.mapVertexToIndex = {} //
         this.isDirected = isDirected // 是否为有向图
+        this.SiblingVertex = -1
     }
 
     initMatrix(matrixLength = 10) {
@@ -33,7 +34,7 @@ class AdjacencyMatrixGraph {
             for (let j = 0; j < item.length; j++) {
                 for (let k = 0; k < item.length; k++) {
                     if (item[j] !== item[k]) {
-                        this.addEdge(item[j], item[k], -1)
+                        this.addEdge(item[j], item[k], this.SiblingVertex)
                     }
                 }
             }
@@ -86,10 +87,27 @@ class AdjacencyMatrixGraph {
         return s
     }
 
-    isRepeatElement(a, b) {
-        const size = a.size + b.size
-        const newSet = new Set([...a, ...b])
-        return !(size === newSet.size)
+    // set
+    containRepeatElement() {
+        const args = [...arguments]
+        const obj = {}
+        for (let i = 0; i < args.length; i++) {
+            const g = [...args[i]]
+            for (let j = 0; j < g.length; j++) {
+                const v = g[j]
+                // 存在重复的规格，则return true
+                if (!obj[v]) {
+                    obj[v] = 1
+                } else {
+                    return true
+                }
+                // 存在同级的规格，返回true
+                if (v === this.SiblingVertex) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     // 获取交集
@@ -108,21 +126,10 @@ class AdjacencyMatrixGraph {
             console.log('arr', arr)
             compareMatrix.push(arr)
         })
-        for (let i = 0; i < compareMatrix.length; i++) {
-            const m = compareMatrix[i]
-            for (let j = 0; j < m.length; j++) {
-                compareMatrix[i][j]
-            }
-        }
-        console.log('map', [...map])
-        const arr = []
-        map.forEach((value, key) => {
-            console.log('key, value', key, value)
-            if (map.get(key) > 1) {
-                arr.push(key)
-            }
-        })
-        return arr
+        // for (let i = 0; i < this.vertices.length; i++) {
+
+        // }
+        // return arr
     }
 }
 
