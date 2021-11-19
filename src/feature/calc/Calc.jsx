@@ -165,6 +165,7 @@ const Calc = () => {
                                     className='list-item-num list-item-b'
                                 >
                                     <Input
+                                        type='tel'
                                         onClick={() => handleClickInput(index)}
                                         onChange={e =>
                                             handleChangeInput(e, index)

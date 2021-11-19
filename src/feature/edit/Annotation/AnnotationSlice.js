@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
     annotationList: [], // {id, text, }
+    config: {}, // 文章的配置信息, 等级，来源，国籍
 }
 
 export const Annotation = createSlice({
@@ -9,8 +10,14 @@ export const Annotation = createSlice({
     initialState,
     reducers: {
         initAnnotation: (state, action) => {
-            const annotation = action.payload
-            state.annotationList = annotation
+            const obj = action.payload
+            const { annotation, score, nationality, source } = obj
+            state.annotationList = annotation || []
+            state.config = {
+                score,
+                nationality,
+                source,
+            }
         },
         createAnnotation: (state, action) => {
             const mark = action.payload

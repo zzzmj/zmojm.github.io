@@ -11,7 +11,7 @@ const formItemLayout = {
 }
 
 const AddModal = props => {
-    const { visible } = props
+    const { visible, onOk, onFail } = props
     const [form] = Form.useForm()
 
     const handleSelectChange = (type, value) => {
@@ -34,9 +34,11 @@ const AddModal = props => {
             res => {
                 handleClose()
                 message.success('添加成功')
+                onOk && onOk()
             },
             err => {
                 message.error('添加失败')
+                onFail && onFail()
             }
         )
         console.log('values', values)
@@ -65,14 +67,27 @@ const AddModal = props => {
                 >
                     <Input />
                 </Form.Item>
+
+                <Form.Item
+                    name='source'
+                    label='语料来源'
+                    rules={[{ required: true }]}
+                >
+                    <Select onChange={handleSelectChange} allowClear>
+                        <Option value='BLCU'>hsk动态作文语料库</Option>
+                        <Option value='SYSU'>
+                            中山大学汉字偏误中介语语料库
+                        </Option>
+                    </Select>
+                </Form.Item>
                 <Form.Item
                     name='score'
                     label='汉语水平'
                     rules={[{ required: true }]}
                 >
                     <Select onChange={handleSelectChange} allowClear>
-                        <Option value='A'>A</Option>
-                        <Option value='B'>B</Option>
+                        <Option value='mid'>中级</Option>
+                        <Option value='high'>高级</Option>
                     </Select>
                 </Form.Item>
                 <Form.Item

@@ -1,36 +1,25 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Route, Switch } from 'react-router-dom'
+import { HashRouter, Route, Switch } from 'react-router-dom'
 import Header from '../feature/edit/Header/Header'
 import SideBar from '../feature/edit/SideBar/SideBar'
 import Annotation from '../feature/edit/Annotation/Annotation'
 import Comment from '../feature/edit/Comment/Comment'
 import Highlighter from 'web-highlighter'
 import './App.scss'
-import ArticleTable from '../feature/admin/ArticleTable/ArticleTable'
+import Admin from '../feature/admin/Admin'
 import Algorithm from '../feature/algorithm/Algorithm'
 import Calc from '../feature/calc/Calc'
 
 const Edit = () => {
-    const highlighter = new Highlighter()
-
+    const highlighter = new Highlighter({
+        exceptSelectors: ['.ant-list-item'],
+    })
     return (
         <div className='yryr-home'>
             <Header />
             <div className='main'>
-                <SideBar />
                 <Annotation highlighter={highlighter} />
                 <Comment highlighter={highlighter} />
-            </div>
-        </div>
-    )
-}
-
-const Admin = () => {
-    return (
-        <div className='yryr-admin'>
-            <Header type='admin' />
-            <div className='main'>
-                <ArticleTable />
             </div>
         </div>
     )

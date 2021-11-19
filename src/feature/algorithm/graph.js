@@ -125,3 +125,21 @@ class Graph {
 }
 
 export default Graph
+
+/**
+ *
+ *
+ *
+const limitData = [
+    { skuId: 1, list: ['4L', '黑色', '128G'] },
+    { skuId: 2, list: ['4L', '红色', '256G'] },
+    { skuId: 3, list: ['1L', '黑色', '128G'] },
+    { skuId: 4, list: ['1L', '黑色', '256G'] },
+]
+const commoditySpecs = [
+    { title: '尺寸', key: 'size', list: ['4L', '1L'] },
+    { title: '颜色', key: 'color', list: ['黑色', '红色'] },
+    { title: '体重', key: 'weight', list: ['128G', '256G'] },
+]
+
+ */
