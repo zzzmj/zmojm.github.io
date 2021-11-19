@@ -10,10 +10,12 @@ const Admin = () => {
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [isStaticVisible, setIsStaticVisible] = useState(false)
     const [updateArticle, setUpdateArticle] = useState(false)
+    const [articleId, setArticleId] = useState('')
     const [count, setCount] = useState(0)
 
     const handleUpload = () => {
         setIsModalVisible(true)
+        setArticleId('')
     }
 
     const handleCancel = () => {
@@ -21,6 +23,7 @@ const Admin = () => {
     }
 
     const handleOK = () => {
+        setIsModalVisible(false)
         setUpdateArticle(!updateArticle)
     }
 
@@ -28,6 +31,14 @@ const Admin = () => {
         console.log('cc', cc)
         setCount(cc)
     }
+
+    // 修改文章数据
+    const handleUpdate = id => {
+        //
+        setIsModalVisible(true)
+        setArticleId(id)
+    }
+
     return (
         <div className='yryr-admin'>
             <Header type='admin' />
@@ -44,11 +55,16 @@ const Admin = () => {
                         整体统计
                     </Button>
                 </div>
-                <ArticleTable update={updateArticle} onChange={handleChange} />
+                <ArticleTable
+                    update={updateArticle}
+                    onChange={handleChange}
+                    onUpdate={handleUpdate}
+                />
             </div>
 
             <AddModal
                 key={Date.now()}
+                articleId={articleId}
                 visible={isModalVisible}
                 onOk={handleOK}
                 onCancel={handleCancel}

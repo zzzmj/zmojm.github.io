@@ -21,6 +21,11 @@ const ArticleTable = props => {
     const history = useHistory()
     const columns = [
         {
+            title: 'No.',
+            dataIndex: 'No',
+            key: 'No',
+        },
+        {
             title: '标题',
             dataIndex: 'title',
             key: 'title',
@@ -57,6 +62,9 @@ const ArticleTable = props => {
                         onClick={() => handleEdit(record.objectId)}
                         type='primary'
                     >
+                        标注
+                    </Button>
+                    <Button onClick={() => handleUpdate(record.objectId)}>
                         编辑
                     </Button>
                     <Popconfirm
@@ -75,9 +83,10 @@ const ArticleTable = props => {
         let count = 0
         getArticleFromLeanCloud().then(
             res => {
-                const data = res.map(item => {
+                const data = res.map((item, index) => {
                     return {
                         objectId: item.id,
+                        No: index + 1,
                         ...item.toJSON(),
                     }
                 })
@@ -112,6 +121,10 @@ const ArticleTable = props => {
             .catch(() => {
                 message.success('删除失败')
             })
+    }
+
+    const handleUpdate = id => {
+        props.onUpdate && props.onUpdate(id)
     }
 
     return <Table bordered={true} columns={columns} dataSource={dataList} />

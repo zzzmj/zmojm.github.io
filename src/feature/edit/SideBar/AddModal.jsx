@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Form, Modal, Input, Select, Tooltip, message } from 'antd'
-import { createArticle } from '../../../service/article'
+import {
+    createArticle,
+    getArticleFromLeanCloud,
+    updateArticleToLeanCloud,
+} from '../../../service/article'
 
 const { Option } = Select
 const { TextArea } = Input
@@ -11,8 +15,20 @@ const formItemLayout = {
 }
 
 const AddModal = props => {
-    const { visible, onOk, onFail } = props
+    const { visible, articleId, onOk, onFail } = props
     const [form] = Form.useForm()
+
+    useEffect(() => {
+        if (visible && articleId) {
+            getArticleFromLeanCloud(articleId).then(article => {
+                const articleObj = article.toJSON()
+                console.log('articleObj', articleObj)
+                form.setFieldsValue({
+                    ...articleObj,
+                })
+            })
+        }
+    }, [visible, articleId])
 
     const handleSelectChange = (type, value) => {
         form.setFieldsValue({
@@ -30,26 +46,40 @@ const AddModal = props => {
     }
 
     const onFinish = values => {
-        createArticle(values).then(
-            res => {
-                handleClose()
-                message.success('添加成功')
-                onOk && onOk()
-            },
-            err => {
-                message.error('添加失败')
-                onFail && onFail()
-            }
-        )
+        if (articleId) {
+            updateArticleToLeanCloud(articleId, values).then(
+                res => {
+                    // handleClose()
+                    message.success('修改成功')
+                    onOk && onOk()
+                },
+                err => {
+                    message.error('修改失败')
+                    onFail && onFail()
+                }
+            )
+        } else {
+            createArticle(values).then(
+                res => {
+                    handleClose()
+                    message.success('添加成功')
+                    onOk && onOk()
+                },
+                err => {
+                    message.error('添加失败')
+                    onFail && onFail()
+                }
+            )
+        }
         console.log('values', values)
     }
     return (
         <Modal
-            title='添加文章'
+            title={articleId ? '编辑文章' : '添加文章'}
             visible={visible}
             onOk={handleConfirm}
             onCancel={handleClose}
-            okText='添加'
+            okText={articleId ? '确定' : '添加'}
             cancelText='取消'
         >
             <Form
