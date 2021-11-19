@@ -48,6 +48,7 @@ const Admin = () => {
             </div>
 
             <AddModal
+                key={Date.now()}
                 visible={isModalVisible}
                 onOk={handleOK}
                 onCancel={handleCancel}
