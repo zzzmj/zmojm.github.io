@@ -61,14 +61,14 @@ const Admin = () => {
     const handleUploadAll = async () => {
         const data = JSON.parse(text)
         const articles = data.articleLs
-
+        console.log('articles', articles)
         const result = articles.map(article => {
             return {
                 title: article.title,
-                nationality: 'britain',
-                article: processText(article.content),
+                nationality: 'korea',
+                article: article.content,
                 source: 'SYSU',
-                score: 'mid',
+                score: 'high',
             }
         })
         for (let i = 0; i < result.length; i++) {
@@ -83,8 +83,6 @@ const Admin = () => {
             )
             console.log('添加i', i, '成功')
         }
-
-        console.log('result', result)
     }
 
     const handleChangeAll = e => {
@@ -94,11 +92,13 @@ const Admin = () => {
     return (
         <div className='yryr-admin'>
             <Header type='admin' />
-            {/* <TextArea value={text} onChange={handleChangeAll} />
+            {/* <div style={{ margin: 50 }} className='test'>
+                <TextArea value={text} onChange={handleChangeAll} />
 
-            <Button type='secondary' onClick={handleUploadAll}>
-                批量上传
-            </Button> */}
+                <Button type='secondary' onClick={handleUploadAll}>
+                    批量上传
+                </Button>
+            </div> */}
             <div className='main'>
                 <div className='action'>
                     <Button type='secondary' onClick={handleUpload}>
