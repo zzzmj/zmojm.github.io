@@ -44,17 +44,20 @@ const processText = str => {
 const processText2 = str => {
     const el = document.createElement('div')
     el.innerHTML = str
-    return el.textContent
-        .replace(/\n/g, '')
-        .replace(/&/g, '')
-        .replace(/@/g, '')
-        .replace(/([a-zA-Z])\w+/g, '')
-        .replace(/<.>/g, '')
-        .replace(/<>/g, '')
-        .replace(/(\【(.*?)\】)/g, match => {
-            return match[1]
-        })
-        .replaceAll('。', '。</p><p>')
+    return (
+        el.textContent
+            .replace(/\n/g, '')
+            .replace(/&/g, '')
+            .replace(/@/g, '')
+            // .replace(/([a-zA-Z])\w+/g, '')
+            .replace(/<.>/g, '')
+            .replace(/CZ|BZ|SBZ|BGFZ/g, '')
+            .replace(/<>/g, '')
+            .replace(/(【(.*?)】)/g, match => {
+                return match[1]
+            })
+            .replaceAll('。', '。</p><p>')
+    )
 }
 
 // processText(
@@ -199,11 +202,11 @@ const Annotation = props => {
     return (
         <div className={cls}>
             <div className='action'>
-                {categoryList.map(item => {
+                {categoryList.map((item, index) => {
                     const { color, text } = item
                     return (
                         <Button
-                            key={color}
+                            key={index}
                             onClick={() => handleClickBtn(item)}
                         >
                             {text}
