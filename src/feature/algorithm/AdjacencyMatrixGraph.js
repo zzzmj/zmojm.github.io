@@ -1,10 +1,10 @@
 class AdjacencyMatrixGraph {
-    constructor(isDirected = false) {
+    constructor() {
         this.vertices = [] //顶点 vertex的复数
-        this.adjList = new Map() // 邻接表 Adjacency
         this.adjMatrix = [] // 邻接矩阵
         this.mapVertexToIndex = {} //
-        this.isDirected = isDirected // 是否为有向图
+        this.SiblingVertex = -1
+        this.existVertices = []
     }
 
     initMatrix(matrixLength = 10) {
@@ -21,7 +21,7 @@ class AdjacencyMatrixGraph {
         const vertex = commoditySpecs.reduce((acc, cur) => {
             return acc.concat(cur.list)
         }, [])
-        // 2.
+        // 2. init matrix
         this.adjMatrix = this.initMatrix(vertex.length)
         vertex.forEach(v => {
             this.addVertex(v)
@@ -33,17 +33,19 @@ class AdjacencyMatrixGraph {
             for (let j = 0; j < item.length; j++) {
                 for (let k = 0; k < item.length; k++) {
                     if (item[j] !== item[k]) {
-                        this.addEdge(item[j], item[k], -1)
+                        this.addEdge(item[j], item[k], this.SiblingVertex)
                     }
                 }
             }
         }
 
+        const set = new Set()
         // 限制条件
         for (let i = 0; i < limitData.length; i++) {
             const item = limitData[i].list
             const skuId = limitData[i].skuId
             for (let j = 0; j < item.length; j++) {
+                set.add(item[j])
                 for (let k = 0; k < item.length; k++) {
                     if (item[j] !== item[k]) {
                         this.addEdge(item[j], item[k], skuId)
@@ -51,6 +53,7 @@ class AdjacencyMatrixGraph {
                 }
             }
         }
+        this.existVertices = [...set]
     }
 
     // 添加顶点
@@ -86,43 +89,98 @@ class AdjacencyMatrixGraph {
         return s
     }
 
-    isRepeatElement(a, b) {
-        const size = a.size + b.size
-        const newSet = new Set([...a, ...b])
-        return !(size === newSet.size)
+    // set
+    containRepeatElement(arr) {
+        const args = arr
+        if (args <= 1) return false
+        const obj = {}
+        let isSibling = false
+        for (let i = 0; i < args.length; i++) {
+            const g = [...args[i]]
+            for (let j = 0; j < g.length; j++) {
+                const item = g[j]
+                // 存在同级的规格，返回true
+                if (item === this.SiblingVertex) {
+                    isSibling = true
+                } else {
+                    // 存在重复的规格，则return true
+                    if (!obj[item]) {
+                        obj[item] = 1
+                    } else {
+                        return true
+                    }
+                }
+            }
+        }
+        console.log('isSibling', isSibling, obj)
+        if (isSibling && Object.keys(obj).length > 0) return true
+        return false
+    }
+
+    getColumn(index, vertexList) {
+        const vis = vertexList.map(v => this.mapVertexToIndex[v])
+        const arr = []
+        const m = this.adjMatrix
+        for (let i = 0; i < this.vertices.length; i++) {
+            if (vis.includes(i)) {
+                for (let j = 0; j < this.vertices.length; j++) {
+                    if (j === index) {
+                        arr.push(m[i][j])
+                    }
+                }
+            }
+        }
+        return arr
     }
 
     // 获取交集
     getIntersection(vertexList) {
         if (vertexList.length <= 0) return this.getVertices()
-        if (vertexList.length === 1) return this.adjList.get(vertexList[0])
+        if (vertexList.length === 1) {
+            const index = this.mapVertexToIndex[vertexList[0]]
+            // uuzu
+            const arr = this.adjMatrix[index]
+            const result = []
+            for (let i = 0; i < this.vertices.length; i++) {
+                if (arr[i].size > 0) {
+                    result.push(this.vertices[i])
+                }
+            }
+            return result
+        }
 
         const compareMatrix = []
-        const map = new Map()
-
-        // 传入
+        // 取出需要比较的顶点对应的边
         vertexList.forEach(vertex => {
-            // 该商品所在的列
             const index = this.mapVertexToIndex[vertex]
             const arr = this.adjMatrix[index]
-            console.log('arr', arr)
             compareMatrix.push(arr)
         })
-        for (let i = 0; i < compareMatrix.length; i++) {
-            const m = compareMatrix[i]
-            for (let j = 0; j < m.length; j++) {
-                compareMatrix[i][j]
+
+        const intersection = []
+        console.log('graph\n', this.toString())
+        console.log('compareMatrix', compareMatrix)
+        // 遍历列
+        for (let i = 0; i < this.vertices.length; i++) {
+            //
+            const col = this.getColumn(i, vertexList)
+            console.log('col i', i, col)
+            const result = this.containRepeatElement(col)
+            console.log('result', result)
+            // console.log(`compare ${i}`, result)
+            if (result) {
+                intersection.push(this.vertices[i])
             }
         }
-        console.log('map', [...map])
-        const arr = []
-        map.forEach((value, key) => {
-            console.log('key, value', key, value)
-            if (map.get(key) > 1) {
-                arr.push(key)
-            }
-        })
-        return arr
+        return intersection
+    }
+
+    getVertices() {
+        return this.vertices
+    }
+
+    getExistVertices() {
+        return this.existVertices
     }
 }
 

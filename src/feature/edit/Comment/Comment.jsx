@@ -27,7 +27,7 @@ const Comment = props => {
         [className]: className,
     })
 
-    const disptach = useDispatch()
+    const dispatch = useDispatch()
 
     const annotationList = useSelector(state => state.annotation.annotationList)
     const categoryList = useSelector(state => state.header.categoryList)
@@ -44,7 +44,7 @@ const Comment = props => {
             },
             onOk: () => {
                 // 删除状态
-                disptach(deleteAnnotation(annotationId))
+                dispatch(deleteAnnotation(annotationId))
                 // 删除dom结构
                 highlighter.remove(annotationId)
             },

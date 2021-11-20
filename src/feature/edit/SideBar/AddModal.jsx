@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Form, Modal, Input, Select, Tooltip, message } from 'antd'
-import { createArticle } from '../../../service/article'
+import {
+    createArticle,
+    getArticleFromLeanCloud,
+    updateArticleToLeanCloud,
+} from '../../../service/article'
 
 const { Option } = Select
 const { TextArea } = Input
@@ -11,8 +15,20 @@ const formItemLayout = {
 }
 
 const AddModal = props => {
-    const { visible } = props
+    const { visible, articleId, onOk, onFail } = props
     const [form] = Form.useForm()
+
+    useEffect(() => {
+        if (visible && articleId) {
+            getArticleFromLeanCloud(articleId).then(article => {
+                const articleObj = article.toJSON()
+                console.log('articleObj', articleObj)
+                form.setFieldsValue({
+                    ...articleObj,
+                })
+            })
+        }
+    }, [visible, articleId])
 
     const handleSelectChange = (type, value) => {
         form.setFieldsValue({
@@ -30,24 +46,40 @@ const AddModal = props => {
     }
 
     const onFinish = values => {
-        createArticle(values).then(
-            res => {
-                handleClose()
-                message.success('添加成功')
-            },
-            err => {
-                message.error('添加失败')
-            }
-        )
+        if (articleId) {
+            updateArticleToLeanCloud(articleId, values).then(
+                res => {
+                    // handleClose()
+                    message.success('修改成功')
+                    onOk && onOk()
+                },
+                err => {
+                    message.error('修改失败')
+                    onFail && onFail()
+                }
+            )
+        } else {
+            createArticle(values).then(
+                res => {
+                    handleClose()
+                    message.success('添加成功')
+                    onOk && onOk()
+                },
+                err => {
+                    message.error('添加失败')
+                    onFail && onFail()
+                }
+            )
+        }
         console.log('values', values)
     }
     return (
         <Modal
-            title='添加文章'
+            title={articleId ? '编辑文章' : '添加文章'}
             visible={visible}
             onOk={handleConfirm}
             onCancel={handleClose}
-            okText='添加'
+            okText={articleId ? '确定' : '添加'}
             cancelText='取消'
         >
             <Form
@@ -65,14 +97,27 @@ const AddModal = props => {
                 >
                     <Input />
                 </Form.Item>
+
+                <Form.Item
+                    name='source'
+                    label='语料来源'
+                    rules={[{ required: true }]}
+                >
+                    <Select onChange={handleSelectChange} allowClear>
+                        <Option value='BLCU'>hsk动态作文语料库</Option>
+                        <Option value='SYSU'>
+                            中山大学汉字偏误中介语语料库
+                        </Option>
+                    </Select>
+                </Form.Item>
                 <Form.Item
                     name='score'
                     label='汉语水平'
                     rules={[{ required: true }]}
                 >
                     <Select onChange={handleSelectChange} allowClear>
-                        <Option value='A'>A</Option>
-                        <Option value='B'>B</Option>
+                        <Option value='mid'>中级</Option>
+                        <Option value='high'>高级</Option>
                     </Select>
                 </Form.Item>
                 <Form.Item

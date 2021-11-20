@@ -37,6 +37,7 @@ const EditCategoryModal = props => {
             .then(res => {
                 setLoading(false)
                 message.success('上传成功')
+                window.location.reload()
                 onOk && onOk()
             })
             .catch(() => {
@@ -91,7 +92,7 @@ const EditCategoryModal = props => {
     return (
         <Modal
             title='编辑配置'
-            okText='上传'
+            okText='确定'
             cancelText='取消'
             confirmLoading={loading}
             visible={visible}

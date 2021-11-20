@@ -8,5 +8,15 @@
     .left {
         display: flex;
         align-items: center;
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .title {
+            margin-left: 10px;
+            font-size: 22px;
+        }
     }
 }

@@ -6,14 +6,17 @@ import './Header.scss'
 import { useState } from 'react'
 import EditCategoryModal from './EditCategoryModal'
 import { useSelector } from 'react-redux'
-import { useParams } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import { updateArticleToLeanCloud } from '../../../service/article'
+import StatisticsModal from './StatisticsModal'
 
 const Header = props => {
     const { className, type = 'edit' } = props
+    const history = useHistory()
     const params = useParams()
     const [loading, setLoading] = useState(false)
     const [isModalVisible, setIsModalVisible] = useState(false)
+    const [isStatisticsVisible, setIsStatisticsVisible] = useState(false)
     const annotationList = useSelector(state => state.annotation.annotationList)
     const prefix = 'zz-header'
     const cls = classNames({
@@ -41,12 +44,19 @@ const Header = props => {
         setIsModalVisible(false)
     }
 
+    const handleNavigate = () => {
+        history.push({
+            pathname: `/admin`,
+        })
+    }
+
     return (
         <div className={cls}>
             <div className='left'>
-                <div className='logo'>
+                <div className='logo' onClick={handleNavigate}>
                     <Logo />
                 </div>
+                <div className='title'>语料标注与统计系统</div>
             </div>
             {type === 'edit' && (
                 <div className='right'>
@@ -65,13 +75,25 @@ const Header = props => {
                     >
                         编辑配置
                     </Button>
+                    <Button
+                        style={{ marginLeft: 30 }}
+                        type='outline-secondary'
+                        onClick={() => setIsStatisticsVisible(true)}
+                    >
+                        统计分析
+                    </Button>
                 </div>
             )}
-
+            {/* 配置编辑 */}
             <EditCategoryModal
                 visible={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
+            />
+            {/* 统计分析 */}
+            <StatisticsModal
+                visible={isStatisticsVisible}
+                onCancel={() => setIsStatisticsVisible(false)}
             />
         </div>
     )
