@@ -106,7 +106,7 @@ const Admin = () => {
                     </Button>
                     <Divider type='vertical' />
                     <Button
-                        type='secondary'
+                        type='primary'
                         onClick={() => setIsStaticVisible(true)}
                     >
                         整体统计

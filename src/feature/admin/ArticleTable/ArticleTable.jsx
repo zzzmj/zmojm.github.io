@@ -6,6 +6,7 @@ import {
     updateArticleToLeanCloud,
 } from '../../../service/article'
 import { useHistory } from 'react-router'
+import SearchForm from './SearchForm'
 
 const mapKeyToText = {
     BLCU: 'hsk动态作文语料库',
@@ -19,6 +20,7 @@ const mapKeyToText = {
 const ArticleTable = props => {
     const { update, onChange } = props
     const [dataList, setDataList] = useState([])
+    const [searchList, setSearchList] = useState([])
     const history = useHistory()
     const columns = [
         {
@@ -59,22 +61,20 @@ const ArticleTable = props => {
             key: 'action',
             render: (text, record) => (
                 <Space size='middle'>
-                    <Button
+                    <a
                         onClick={() => handleEdit(record.objectId)}
                         type='primary'
                     >
                         标注
-                    </Button>
-                    <Button onClick={() => handleUpdate(record.objectId)}>
-                        编辑
-                    </Button>
+                    </a>
+                    <a onClick={() => handleUpdate(record.objectId)}>编辑</a>
                     <Popconfirm
                         title='删除后无法恢复，请谨慎操作'
                         onConfirm={() => handleDelete(record.objectId)}
                     >
-                        <Button type='primary' danger>
+                        <a type='primary' danger>
                             删除
-                        </Button>
+                        </a>
                     </Popconfirm>
                 </Space>
             ),
@@ -97,6 +97,7 @@ const ArticleTable = props => {
                 onChange && onChange(count)
                 console.log('dataList', data)
                 setDataList(data)
+                setSearchList(data)
             },
             () => {
                 message.error('获取文章失败')
@@ -163,10 +164,33 @@ const ArticleTable = props => {
         }
     }
 
+    const handleSearch = formValues => {
+        console.log('调用', formValues)
+        const newData = dataList.filter(item => {
+            let flag = true
+            Object.keys(formValues).forEach(key => {
+                if (formValues[key] && formValues[key] !== item[key]) {
+                    flag = false
+                }
+            })
+            return flag
+        })
+        console.log('调用', newData)
+        setSearchList(newData)
+    }
+
     return (
         <div>
             {/* <Button onClick={handleUpp}> 批量更新</Button> */}
-            <Table bordered={true} columns={columns} dataSource={dataList} />
+            <SearchForm onChange={handleSearch} />
+            <Table
+                bordered={true}
+                columns={columns}
+                dataSource={searchList}
+                pagination={{
+                    showTotal: total => `当前共有${total}条数据`,
+                }}
+            />
         </div>
     )
 }
