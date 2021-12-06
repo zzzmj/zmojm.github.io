@@ -41,7 +41,10 @@ export const getArticleFromLeanCloud = objectId => {
     const query = new LC.Query('Article')
     query.descending('createdAt')
     if (objectId) return query.get(objectId)
-    else return query.find()
+    else {
+        query.limit(500)
+        return query.find()
+    }
 }
 
 // update

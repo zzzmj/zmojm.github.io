@@ -40,6 +40,26 @@ const processText = str => {
     // .replaceAll('<br/>', '</p><p>')
 }
 
+// 处理中山大学
+const processText2 = str => {
+    const el = document.createElement('div')
+    el.innerHTML = str
+    return (
+        el.textContent
+            .replace(/\n/g, '')
+            .replace(/&/g, '')
+            .replace(/@/g, '')
+            // .replace(/([a-zA-Z])\w+/g, '')
+            .replace(/<.>/g, '')
+            .replace(/CZ|BZ|SBZ|BGFZ/g, '')
+            .replace(/<>/g, '')
+            .replace(/(【(.*?)】)/g, match => {
+                return match[1]
+            })
+            .replaceAll('。', '。</p><p>')
+    )
+}
+
 // processText(
 //     `199508香港.0000705436341504
 // “安乐死”是一件[C]不平凡的事情。从不同的角度看这[F這]个问题会有不[C]同的见解和结论。争论的主要焦点在于如何处理好法律与[C]人之常情{CC人事常情}{CQ的}关系。
@@ -71,7 +91,13 @@ const Annotation = props => {
         getArticleFromLeanCloud(objectId).then(article => {
             const articleObj = article.toJSON()
             const list = articleObj.annotation
-            const con = processText(articleObj.article)
+            console.log('articleoBJ', articleObj)
+            let con = ''
+            if (articleObj.source === 'SYSU') {
+                con = processText2(articleObj.article)
+            } else {
+                con = processText(articleObj.article)
+            }
             setContent(con)
             // 初始化标注状态
             dispatch(initAnnotation(articleObj))
@@ -176,11 +202,11 @@ const Annotation = props => {
     return (
         <div className={cls}>
             <div className='action'>
-                {categoryList.map(item => {
+                {categoryList.map((item, index) => {
                     const { color, text } = item
                     return (
                         <Button
-                            key={color}
+                            key={index}
                             onClick={() => handleClickBtn(item)}
                         >
                             {text}

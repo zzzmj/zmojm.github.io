@@ -3,8 +3,10 @@ import { Table, Space, message, Button, Popconfirm } from 'antd'
 import {
     deleteArticleToLeanCloud,
     getArticleFromLeanCloud,
+    updateArticleToLeanCloud,
 } from '../../../service/article'
 import { useHistory } from 'react-router'
+import SearchForm from './SearchForm'
 
 const mapKeyToText = {
     BLCU: 'hsk动态作文语料库',
@@ -18,6 +20,7 @@ const mapKeyToText = {
 const ArticleTable = props => {
     const { update, onChange } = props
     const [dataList, setDataList] = useState([])
+    const [searchList, setSearchList] = useState([])
     const history = useHistory()
     const columns = [
         {
@@ -58,22 +61,20 @@ const ArticleTable = props => {
             key: 'action',
             render: (text, record) => (
                 <Space size='middle'>
-                    <Button
+                    <a
                         onClick={() => handleEdit(record.objectId)}
                         type='primary'
                     >
                         标注
-                    </Button>
-                    <Button onClick={() => handleUpdate(record.objectId)}>
-                        编辑
-                    </Button>
+                    </a>
+                    <a onClick={() => handleUpdate(record.objectId)}>编辑</a>
                     <Popconfirm
                         title='删除后无法恢复，请谨慎操作'
                         onConfirm={() => handleDelete(record.objectId)}
                     >
-                        <Button type='primary' danger>
+                        <a type='primary' danger>
                             删除
-                        </Button>
+                        </a>
                     </Popconfirm>
                 </Space>
             ),
@@ -96,6 +97,7 @@ const ArticleTable = props => {
                 onChange && onChange(count)
                 console.log('dataList', data)
                 setDataList(data)
+                setSearchList(data)
             },
             () => {
                 message.error('获取文章失败')
@@ -123,11 +125,74 @@ const ArticleTable = props => {
             })
     }
 
+    const processText = str => {
+        const el = document.createElement('div')
+        el.innerHTML = str
+        return el.textContent
+            .replace(/\n/g, '')
+            .replace(/&/g, '')
+            .replace(/@/g, '')
+            .replace(/([a-zA-Z])\w+/g, '')
+            .replace(/<.>/g, '')
+            .replace(/<>/g, '')
+            .replace(/(\【(.*?)\】)/g, match => {
+                return match[1]
+            })
+    }
+
     const handleUpdate = id => {
         props.onUpdate && props.onUpdate(id)
     }
 
-    return <Table bordered={true} columns={columns} dataSource={dataList} />
+    const handleUpp = async () => {
+        console.log('data', dataList)
+        for (let i = 1; i < dataList.length; i++) {
+            const article = dataList[i]
+            console.log('article', article)
+            const dd = {
+                article: processText(article.article),
+            }
+            console.log('dd', dd)
+
+            await updateArticleToLeanCloud(article.objectId, dd)
+                .then(() => {
+                    console.log('处理i', i, '成功')
+                })
+                .catch(() => {
+                    console.log('处理i', i, '失败')
+                })
+        }
+    }
+
+    const handleSearch = formValues => {
+        console.log('调用', formValues)
+        const newData = dataList.filter(item => {
+            let flag = true
+            Object.keys(formValues).forEach(key => {
+                if (formValues[key] && formValues[key] !== item[key]) {
+                    flag = false
+                }
+            })
+            return flag
+        })
+        console.log('调用', newData)
+        setSearchList(newData)
+    }
+
+    return (
+        <div>
+            {/* <Button onClick={handleUpp}> 批量更新</Button> */}
+            <SearchForm onChange={handleSearch} />
+            <Table
+                bordered={true}
+                columns={columns}
+                dataSource={searchList}
+                pagination={{
+                    showTotal: total => `当前共有${total}条数据`,
+                }}
+            />
+        </div>
+    )
 }
 
 export default ArticleTable

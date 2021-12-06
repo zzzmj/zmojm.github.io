@@ -1,10 +1,12 @@
 import Header from '../edit/Header/Header'
 import React, { useState } from 'react'
 import ArticleTable from './ArticleTable/ArticleTable'
-import { Button, Divider } from 'antd'
+import { Button, Divider, message } from 'antd'
 import AddModal from '../edit/SideBar/AddModal'
 import './Admin.scss'
 import StatisticsModal from './StatisticsModal'
+import TextArea from 'rc-textarea'
+import { createArticle } from '../../service/article'
 
 const Admin = () => {
     const [isModalVisible, setIsModalVisible] = useState(false)
@@ -12,6 +14,8 @@ const Admin = () => {
     const [updateArticle, setUpdateArticle] = useState(false)
     const [articleId, setArticleId] = useState('')
     const [count, setCount] = useState(0)
+
+    const [text, setText] = useState('')
 
     const handleUpload = () => {
         setIsModalVisible(true)
@@ -39,9 +43,62 @@ const Admin = () => {
         setArticleId(id)
     }
 
+    const processText = str => {
+        const el = document.createElement('div')
+        el.innerHTML = str
+        return el.textContent
+            .replace(/\n/g, '')
+            .replace(/&/g, '')
+            .replace(/@/g, '')
+            .replace(/([a-zA-Z])\w+/g, '')
+            .replace(/<.>/g, '')
+            .replace(/<>/g, '')
+            .replace(/(\【(.*?)\】)/g, match => {
+                return match[1]
+            })
+    }
+
+    const handleUploadAll = async () => {
+        const data = JSON.parse(text)
+        const articles = data.articleLs
+        console.log('articles', articles)
+        const result = articles.map(article => {
+            return {
+                title: article.title,
+                nationality: 'korea',
+                article: article.content,
+                source: 'SYSU',
+                score: 'high',
+            }
+        })
+        for (let i = 0; i < result.length; i++) {
+            const el = result[i]
+            await createArticle(el).then(
+                res => {
+                    message.success('添加成功')
+                },
+                err => {
+                    message.error('添加失败')
+                }
+            )
+            console.log('添加i', i, '成功')
+        }
+    }
+
+    const handleChangeAll = e => {
+        setText(e.target.value)
+    }
+
     return (
         <div className='yryr-admin'>
             <Header type='admin' />
+            {/* <div style={{ margin: 50 }} className='test'>
+                <TextArea value={text} onChange={handleChangeAll} />
+
+                <Button type='secondary' onClick={handleUploadAll}>
+                    批量上传
+                </Button>
+            </div> */}
             <div className='main'>
                 <div className='action'>
                     <Button type='secondary' onClick={handleUpload}>
@@ -49,7 +106,7 @@ const Admin = () => {
                     </Button>
                     <Divider type='vertical' />
                     <Button
-                        type='secondary'
+                        type='primary'
                         onClick={() => setIsStaticVisible(true)}
                     >
                         整体统计
