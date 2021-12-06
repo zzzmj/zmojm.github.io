@@ -1,27 +1,33 @@
-const INF = Number.MAX_SAFE_INTEGER
-const prim = graph => {
-    const parent = []
-    const key = []
-    const visited = []
-    const { length } = graph
-    for (let i = 0; i < length; i++) {
-        // {1}
-        key[i] = INF
-        visited[i] = false
-    }
-    key[0] = 0 // {2}
-    parent[0] = -1
-    for (let i = 0; i < length - 1; i++) {
-        // {3}
-        const u = minKey(graph, key, visited) // {4}
-        visited[u] = true // {5}
-        for (let v = 0; v < length; v++) {
-            if (graph[u][v] && !visited[v] && graph[u][v] < key[v]) {
-                // {6}
-                parent[v] = u // {7}
-                key[v] = graph[u][v] // {8}
-            }
+import React, { useEffect } from 'react'
+import './test.scss'
+
+const Test = () => {
+    useEffect(() => {
+        function remLayoutFn() {
+            var oHtml = document.getElementsByTagName('html')[0]
+            var iWidth = document.documentElement.clientWidth
+            var defaultPercent = 100
+            iWidth = iWidth > 1080 ? 1080 : iWidth
+            var rootFontSize = iWidth / defaultPercent
+            oHtml.style.fontSize = rootFontSize + 'px'
         }
-    }
-    return parent // {9}
+        remLayoutFn()
+        window.addEventListener('resize', remLayoutFn, false)
+
+        const box = document.querySelector('.box')
+        const wEl = document.querySelector('.width')
+        const hEl = document.querySelector('.height')
+        const { width, height } = box.getBoundingClientRect()
+        wEl.innerHTML = `宽：${width}`
+        hEl.innerHTML = `高：${height}`
+    }, [])
+    return (
+        <div className='wrap'>
+            <div className='box'></div>
+            <div className='width'>宽：</div>
+            <div className='height'>高：</div>
+        </div>
+    )
 }
+
+export default Test

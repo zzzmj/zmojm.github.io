@@ -1,0 +1,11 @@
+$s: 3.75;
+
+html {
+    font-size: 20px; // iphone 6
+}
+.box {
+    width: (75 / $s) * 1rem;
+    height: (75 / $s) * 1rem;
+    background-color: aqua;
+    box-sizing: content-box;
+}

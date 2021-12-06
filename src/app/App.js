@@ -1,7 +1,6 @@
 import React from 'react'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import Header from '../feature/edit/Header/Header'
-import SideBar from '../feature/edit/SideBar/SideBar'
 import Annotation from '../feature/edit/Annotation/Annotation'
 import Comment from '../feature/edit/Comment/Comment'
 import Highlighter from 'web-highlighter'
@@ -9,6 +8,7 @@ import './App.scss'
 import Admin from '../feature/admin/Admin'
 import Algorithm from '../feature/algorithm/Algorithm'
 import Calc from '../feature/calc/Calc'
+import Test from './test'
 
 const Edit = () => {
     const highlighter = new Highlighter({
@@ -34,6 +34,7 @@ const App = () => {
                 <Route exact path='/edit/:objectId' component={Edit} />
                 <Route exact path='/algorithm' component={Algorithm} />
                 <Route exact path='/calc' component={Calc} />
+                <Route exact path='/test' component={Test} />
                 {/* <Route path='/result' component={Result} /> */}
             </Switch>
         </HashRouter>

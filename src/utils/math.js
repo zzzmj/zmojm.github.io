@@ -17,5 +17,5 @@ export const formatAnswerNumber = (number, len) => {
     while (n < Math.pow(10, len - 1)) {
         n *= 10
     }
-    return parseInt(n)
+    return Math.round(n)
 }
