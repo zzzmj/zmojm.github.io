@@ -12,7 +12,7 @@ import { useEffect } from 'react'
 import { useRef } from 'react'
 import Highlighter from 'web-highlighter'
 import './Annotation.scss'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     setHightlightSpanEl,
@@ -20,7 +20,7 @@ import {
     clearHightLight,
 } from '../../../utils/index'
 import { initAnnotation, createAnnotation } from './AnnotationSlice'
-import { useParams } from 'react-router'
+import { useHistory, useParams } from 'react-router'
 import { getArticleFromLeanCloud } from '../../../service/article'
 
 const log = console.log.bind(console, '[annota]')
@@ -73,10 +73,13 @@ const processText2 = str => {
 // 侧边栏
 const Annotation = props => {
     const params = useParams()
+    const history = useHistory()
     const { className, highlighter } = props
     const contentRef = useRef(null)
     const dispatch = useDispatch()
     const [content, setContent] = useState('')
+    const [articleList, setArticleList] = useState([])
+    const [pager, setPager] = useState({})
     const categoryList = useSelector(state => state.header.categoryList)
     const annotationList = useSelector(state => state.annotation.annotationList)
 
@@ -91,7 +94,6 @@ const Annotation = props => {
         getArticleFromLeanCloud(objectId).then(article => {
             const articleObj = article.toJSON()
             const list = articleObj.annotation
-            console.log('articleoBJ', articleObj)
             let con = ''
             if (articleObj.source === 'SYSU') {
                 con = processText2(articleObj.article)
@@ -113,6 +115,30 @@ const Annotation = props => {
                 })
             }
         })
+    }, [params])
+
+    useEffect(() => {
+        const { objectId } = params
+        getArticleFromLeanCloud().then(
+            res => {
+                const data = res.map((item, index) => {
+                    return {
+                        objectId: item.id,
+                        No: index + 1,
+                        ...item.toJSON(),
+                    }
+                })
+                setArticleList(data)
+                const index = data.findIndex(item => item.objectId === objectId)
+                setPager({
+                    index: index + 1,
+                    length: data.length,
+                })
+            },
+            () => {
+                message.error('获取文章失败')
+            }
+        )
     }, [params])
 
     useEffect(() => {
@@ -199,6 +225,24 @@ const Annotation = props => {
         h.fromRange(selection.getRangeAt(0))
     }
 
+    const handleNavigate = type => {
+        const { objectId } = params
+        let index = articleList.findIndex(item => item.objectId === objectId)
+        if (type === 'pre') {
+            index -= 1
+        } else if (type === 'next') {
+            index += 1
+        }
+        if (index >= 0 && index < articleList.length) {
+            const data = articleList[index]
+            history.push({
+                pathname: `/edit/${data.objectId}`,
+            })
+        } else {
+            message.error('已经是第一篇文章或最后一篇文章了，不能再跳转了')
+        }
+    }
+
     return (
         <div className={cls}>
             <div className='action'>
@@ -221,6 +265,13 @@ const Annotation = props => {
                 className='content'
                 dangerouslySetInnerHTML={{ __html: content }}
             />
+
+            <div className='action'>
+                <Button onClick={() => handleNavigate('pre')}>上一篇</Button>
+                <Button onClick={() => handleNavigate('next')}>下一篇</Button>
+
+                <span>{`${pager.index} / ${pager.length}`}</span>
+            </div>
         </div>
     )
 }
