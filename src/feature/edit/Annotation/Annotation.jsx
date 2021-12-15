@@ -220,6 +220,21 @@ const Annotation = props => {
         // }
     }, [])
 
+    useEffect(() => {
+        const listener = e => {
+            e.preventDefault()
+            if (isSave) {
+                e.returnValue = '您的数据尚未保存，离开后会丢失'
+            } else {
+                e.returnValue = ''
+            }
+        }
+        isSave && window.addEventListener('beforeunload', listener)
+        return () => {
+            window.removeEventListener('beforeunload', listener)
+        }
+    }, [isSave])
+
     const handleClickBtn = config => {
         const { id, color } = config
 
