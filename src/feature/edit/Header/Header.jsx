@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import classNames from 'classnames'
 import { ReactComponent as Logo } from '../../../static/logo.svg'
 import { Button, message } from 'antd'
@@ -23,7 +23,7 @@ const Header = props => {
         [prefix]: true,
         [className]: className,
     })
-    const handleOk = async () => {
+    const handleOk = useCallback(async () => {
         const { objectId } = params
         console.log('annotationList', annotationList, objectId)
         setLoading(true)
@@ -39,7 +39,24 @@ const Header = props => {
                 message.success('保存失败，请检查网络设置！')
                 setLoading(false)
             })
-    }
+    }, [annotationList])
+
+    useEffect(() => {
+        const keyDownFn = event => {
+            const keyCode = event.keyCode
+
+            if (keyCode == 83 && window.event.ctrlKey) {
+                window.event.preventDefault()
+                handleOk()
+            }
+        }
+        window.addEventListener('keydown', keyDownFn)
+
+        return () => {
+            window.removeEventListener('keydown', keyDownFn)
+        }
+    }, [handleOk])
+
     const handleCancel = () => {
         setIsModalVisible(false)
     }

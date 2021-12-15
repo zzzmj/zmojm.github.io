@@ -32,7 +32,6 @@ const Admin = () => {
     }
 
     const handleChange = cc => {
-        console.log('cc', cc)
         setCount(cc)
     }
 
@@ -61,7 +60,6 @@ const Admin = () => {
     const handleUploadAll = async () => {
         const data = JSON.parse(text)
         const articles = data.articleLs
-        console.log('articles', articles)
         const result = articles.map(article => {
             return {
                 title: article.title,

@@ -25,7 +25,7 @@ import { getArticleFromLeanCloud } from '../../../service/article'
 
 const log = console.log.bind(console, '[annota]')
 // 自定义颜色。
-
+const keyCodeList = '123456789ABCDEFGHIJKLMNOPQRSTVWXYZ'
 const processText = str => {
     // 已经处理过的不再处理
     // if (str.includes('<br/>')) return str
@@ -142,6 +142,25 @@ const Annotation = props => {
     }, [params])
 
     useEffect(() => {
+        const keyDownFn = event => {
+            const keyCode = event.keyCode
+            if (keyCode && !window.event.ctrlKey) {
+                const char = String.fromCharCode(keyCode)
+                const index = keyCodeList.indexOf(char)
+                if (index != -1 && index < categoryList.length) {
+                    const category = categoryList[index]
+                    handleClickBtn(category)
+                }
+            }
+        }
+        window.addEventListener('keydown', keyDownFn)
+
+        return () => {
+            window.removeEventListener('keydown', keyDownFn)
+        }
+    }, [categoryList])
+
+    useEffect(() => {
         // 往里面添加
         if (annotationList.length < 0) return
 
@@ -253,7 +272,7 @@ const Annotation = props => {
                             key={index}
                             onClick={() => handleClickBtn(item)}
                         >
-                            {text}
+                            {keyCodeList[index]}：{text}
                         </Button>
                     )
                 })}
