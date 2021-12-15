@@ -9,11 +9,14 @@ import { useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router'
 import { updateArticleToLeanCloud } from '../../../service/article'
 import StatisticsModal from './StatisticsModal'
+import { useDispatch } from 'react-redux'
+import { updateSavaStatus } from '../Annotation/AnnotationSlice'
 
 const Header = props => {
     const { className, type = 'edit' } = props
     const history = useHistory()
     const params = useParams()
+    const dispatch = useDispatch()
     const [loading, setLoading] = useState(false)
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [isStatisticsVisible, setIsStatisticsVisible] = useState(false)
@@ -33,6 +36,7 @@ const Header = props => {
         })
             .then(res => {
                 message.success('保存成功！')
+                dispatch(updateSavaStatus(false))
                 setLoading(false)
             })
             .catch(err => {

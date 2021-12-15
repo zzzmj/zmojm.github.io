@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const initialState = {
     annotationList: [], // {id, text, }
     config: {}, // 文章的配置信息, 等级，来源，国籍
+    isSave: false, // 是否保存
 }
 
 export const Annotation = createSlice({
@@ -35,10 +36,18 @@ export const Annotation = createSlice({
                 item => item.id !== id
             )
         },
+        updateSavaStatus: (state, action) => {
+            const status = action.payload
+            state.isSave = status
+        },
     },
 })
 
-export const { initAnnotation, createAnnotation, deleteAnnotation } =
-    Annotation.actions
+export const {
+    initAnnotation,
+    createAnnotation,
+    deleteAnnotation,
+    updateSavaStatus,
+} = Annotation.actions
 
 export default Annotation.reducer

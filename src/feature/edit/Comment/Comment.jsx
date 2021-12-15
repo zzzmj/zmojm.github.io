@@ -12,7 +12,10 @@ import './Comment.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { List, Modal } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { deleteAnnotation } from '../Annotation/AnnotationSlice'
+import {
+    deleteAnnotation,
+    updateSavaStatus,
+} from '../Annotation/AnnotationSlice'
 // import { Button } from 'react-bootstrap'
 
 const log = console.log.bind(console, '[comment]')
@@ -45,6 +48,7 @@ const Comment = props => {
             onOk: () => {
                 // 删除状态
                 dispatch(deleteAnnotation(annotationId))
+                dispatch(updateSavaStatus(true))
                 // 删除dom结构
                 highlighter.remove(annotationId)
             },

@@ -1,5 +1,5 @@
-import React from 'react'
-import { HashRouter, Route, Switch } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { HashRouter, Route, Switch, useParams } from 'react-router-dom'
 import Header from '../feature/edit/Header/Header'
 import Annotation from '../feature/edit/Annotation/Annotation'
 import Comment from '../feature/edit/Comment/Comment'
@@ -11,15 +11,29 @@ import Calc from '../feature/calc/Calc'
 import Test from './test'
 
 const Edit = () => {
-    const highlighter = new Highlighter({
-        exceptSelectors: ['.ant-list-item'],
-    })
+    const params = useParams()
+    const [highlighter, setHighlighter] = useState(
+        new Highlighter({
+            exceptSelectors: ['.ant-list-item'],
+        })
+    )
+    useEffect(() => {
+        const h = new Highlighter({
+            exceptSelectors: ['.ant-list-item'],
+        })
+        setHighlighter(h)
+
+        return () => {
+            h.dispose()
+        }
+    }, [params])
+
     return (
         <div className='yryr-home'>
             <Header />
             <div className='main'>
-                <Annotation highlighter={highlighter} />
-                <Comment highlighter={highlighter} />
+                <Annotation key={highlighter} highlighter={highlighter} />
+                <Comment key={highlighter} highlighter={highlighter} />
             </div>
         </div>
     )
