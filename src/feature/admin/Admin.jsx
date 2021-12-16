@@ -37,7 +37,6 @@ const Admin = () => {
                 data.forEach(item => {
                     count += item.article.length
                 })
-                console.log('data', data)
                 setCount(count)
                 setArticleList(data)
                 setLoading(false)
@@ -52,7 +51,6 @@ const Admin = () => {
     const getCategory = useCallback(() => {
         getConfigFromLeanCloud('610291721de21d3e072c5432').then(res => {
             const list = res.get('categoryList')
-            console.log('categoryList', list)
             // 更新到redux中
             setCategoryList(list)
         })
@@ -132,8 +130,6 @@ const Admin = () => {
         if (categoryList.length > 0 && articleList.length > 0) {
             const csv = createCsvData()
             const csvText = createCsvDataText()
-            console.log('呵呵呵', categoryList, articleList)
-            console.log('csvText', csv, csvText)
             setCSVData(csv)
             setCSVDataText(csvText)
         }

@@ -87,7 +87,6 @@ const StatisticsModal = props => {
         }
     }, [annotationList, visible, categoryList])
 
-    console.log('annotationList', config)
     return (
         <Modal
             title='统计分析'
