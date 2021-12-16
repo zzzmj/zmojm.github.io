@@ -10447,6 +10447,11 @@ react-app-polyfill@^2.0.0:
     regenerator-runtime "^0.13.7"
     whatwg-fetch "^3.4.1"
 
+react-csv@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.nlark.com/react-csv/download/react-csv-2.0.3.tgz#f5d17a3c71107d9bcbe580049350200debdc042a"
+  integrity sha1-9dF6PHEQfZvL5YAEk1AgDevcBCo=
+
 react-dev-utils@^11.0.3:
   version "11.0.4"
   resolved "https://registry.npmmirror.com/react-dev-utils/download/react-dev-utils-11.0.4.tgz?cache=0&sync_timestamp=1633372689551&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Freact-dev-utils%2Fdownload%2Freact-dev-utils-11.0.4.tgz#a7ccb60257a1ca2e0efe7a83e38e6700d17aa37a"

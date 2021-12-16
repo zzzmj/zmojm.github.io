@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Form, Modal, Table, Select, message } from 'antd'
-import { useDispatch, useSelector } from 'react-redux'
+import React from 'react'
+import { Modal } from 'antd'
+import { useSelector } from 'react-redux'
 
 const StatisticsModal = props => {
     const { visible, count, onOk, onCancel } = props
@@ -15,7 +15,6 @@ const StatisticsModal = props => {
         console.log('？？？调用一下啊')
         onCancel && onCancel()
     }
-    console.log('annotationList', config)
     return (
         <Modal
             title='统计分析'

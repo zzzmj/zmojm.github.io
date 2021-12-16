@@ -18,9 +18,8 @@ const mapKeyToText = {
 }
 
 const ArticleTable = props => {
-    const { update, onChange } = props
-    const [dataList, setDataList] = useState([])
-    const [searchList, setSearchList] = useState([])
+    const { loading, dataSource, onUpdate } = props
+    const [searchList, setSearchList] = useState(dataSource || [])
     const history = useHistory()
     const columns = [
         {
@@ -80,33 +79,37 @@ const ArticleTable = props => {
             ),
         },
     ]
-    const getArticle = () => {
-        let count = 0
-        getArticleFromLeanCloud().then(
-            res => {
-                const data = res.map((item, index) => {
-                    return {
-                        objectId: item.id,
-                        No: index + 1,
-                        ...item.toJSON(),
-                    }
-                })
-                data.forEach(item => {
-                    count += item.article.length
-                })
-                onChange && onChange(count)
-                console.log('dataList', data)
-                setDataList(data)
-                setSearchList(data)
-            },
-            () => {
-                message.error('获取文章失败')
-            }
-        )
-    }
+
     useEffect(() => {
-        getArticle()
-    }, [update])
+        setSearchList(dataSource)
+    }, [dataSource])
+    // const getArticle = () => {
+    //     let count = 0
+    //     getArticleFromLeanCloud().then(
+    //         res => {
+    //             const data = res.map((item, index) => {
+    //                 return {
+    //                     objectId: item.id,
+    //                     No: index + 1,
+    //                     ...item.toJSON(),
+    //                 }
+    //             })
+    //             data.forEach(item => {
+    //                 count += item.article.length
+    //             })
+    //             onChange && onChange(count)
+    //             console.log('dataList', data)
+    //             setDataList(data)
+    //             setSearchList(data)
+    //         },
+    //         () => {
+    //             message.error('获取文章失败')
+    //         }
+    //     )
+    // }
+    // useEffect(() => {
+    //     getArticle()
+    // }, [update])
 
     const handleEdit = id => {
         history.push({
@@ -118,7 +121,7 @@ const ArticleTable = props => {
         deleteArticleToLeanCloud(id)
             .then(() => {
                 message.success('删除成功')
-                getArticle()
+                onUpdate && onUpdate()
             })
             .catch(() => {
                 message.success('删除失败')
@@ -145,7 +148,7 @@ const ArticleTable = props => {
     }
 
     const handleUpp = async () => {
-        console.log('data', dataList)
+        const dataList = dataSource
         for (let i = 1; i < dataList.length; i++) {
             const article = dataList[i]
             console.log('article', article)
@@ -166,6 +169,7 @@ const ArticleTable = props => {
 
     const handleSearch = formValues => {
         console.log('调用', formValues)
+        const dataList = dataSource
         const newData = dataList.filter(item => {
             let flag = true
             Object.keys(formValues).forEach(key => {
@@ -184,6 +188,7 @@ const ArticleTable = props => {
             {/* <Button onClick={handleUpp}> 批量更新</Button> */}
             <SearchForm onChange={handleSearch} />
             <Table
+                loading={loading}
                 bordered={true}
                 columns={columns}
                 dataSource={searchList}
