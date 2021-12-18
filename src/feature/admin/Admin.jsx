@@ -10,6 +10,26 @@ import { getArticleFromLeanCloud } from '../../service/article'
 import { getConfigFromLeanCloud } from '../../service/service'
 // import { createArticle } from '../../service/article'
 
+// 处理中山大学
+const processText2 = str => {
+    const el = document.createElement('div')
+    el.innerHTML = str
+    return (
+        el.textContent
+            .replace(/\n/g, '')
+            .replace(/&/g, '')
+            .replace(/@/g, '')
+            // .replace(/([a-zA-Z])\w+/g, '')
+            .replace(/<.>/g, '')
+            .replace(/CZ|BZ|SBZ|BGFZ/g, '')
+            .replace(/<>/g, '')
+            .replace(/(【(.*?)】)/g, match => {
+                return match[1]
+            })
+        // .replaceAll('。', '。</p><p>')
+    )
+}
+
 const Admin = () => {
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [isStaticVisible, setIsStaticVisible] = useState(false)
@@ -80,6 +100,7 @@ const Admin = () => {
                     })
                     count = article.annotation.length
                 }
+                const words = processText2(article.article)
                 return {
                     No: article.No,
                     title: article.title,
@@ -87,6 +108,7 @@ const Admin = () => {
                     score: article.score,
                     source: article.source,
                     count: count,
+                    words: words.length,
                     ...anaphora,
                 }
             })
