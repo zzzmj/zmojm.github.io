@@ -1,11 +1,4 @@
-import LC from 'leancloud-storage'
-
-// leanCloud 初始化
-LC.init({
-    appId: 'zhG78X78KsJ4MuyLquDrtexj-gzGzoHsz',
-    appKey: 'QhcOlKH32P32CCaEUbzJJWbo',
-    serverURL: 'https://zhg78x78.lc-cn-n1-shared.com',
-})
+import LC from './index'
 
 /**
  * 添加文章

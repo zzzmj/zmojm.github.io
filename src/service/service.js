@@ -1,12 +1,5 @@
 // 服务提供.
-import LC from 'leancloud-storage'
-
-// leanCloud 初始化
-LC.init({
-    appId: 'zhG78X78KsJ4MuyLquDrtexj-gzGzoHsz',
-    appKey: 'QhcOlKH32P32CCaEUbzJJWbo',
-    serverURL: 'https://syolnpzm.lc-cn-n1-shared.com',
-})
+import LC from './index'
 
 // 登录接口
 export const Login = (username, password) => {

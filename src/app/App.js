@@ -4,12 +4,14 @@ import Header from '../feature/edit/Header/Header'
 import Annotation from '../feature/edit/Annotation/Annotation'
 import Comment from '../feature/edit/Comment/Comment'
 import Highlighter from 'web-highlighter'
-import './App.scss'
 import Admin from '../feature/admin/Admin'
 import Algorithm from '../feature/algorithm/Algorithm'
 import Calc from '../feature/calc/Calc'
 import Test from './test'
 import WrongQuestion from '../feature/wrongQuestion/WrongQuestion'
+import './App.scss'
+import XingCe from '../feature/xingce/XingCe'
+import XingCeList from '../feature/xingce/XingCeList'
 
 const Edit = () => {
     const params = useParams()
@@ -51,6 +53,8 @@ const App = () => {
                 <Route exact path='/calc' component={Calc} />
                 <Route exact path='/test' component={Test} />
                 <Route exact path='/question' component={WrongQuestion} />
+                <Route exact path='/XingCe' component={XingCe} />
+                <Route exact path='/XingCe/:objectId' component={XingCeList} />
                 {/* <Route path='/result' component={Result} /> */}
             </Switch>
         </HashRouter>

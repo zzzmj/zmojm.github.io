@@ -1,0 +1,106 @@
+.xing-ce {
+    background-color: #f5f7fa;
+    min-height: 100vh;
+    .category {
+        background-color: #fff;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 36px;
+        .category-item {
+            display: flex;
+            .name {
+                font-size: 16px;
+                font-weight: bold;
+                width: 250px;
+            }
+            .num {
+                position: absolute;
+                left: 400px;
+                font-size: 13px;
+                color: #8a9095;
+            }
+            .practice {
+                position: absolute;
+                right: 10px;
+            }
+        }
+        .ant-tree .ant-tree-treenode {
+            padding: 0 0 18px 0;
+            width: 100%;
+        }
+    }
+    .ant-tree .ant-tree-node-content-wrapper {
+        position: static;
+        flex: 1;
+        line-height: 36px;
+    }
+    .ant-tree-switcher {
+        line-height: 36px;
+    }
+}
+
+.wrap {
+    h2 {
+        text-align: center;
+    }
+    .wrap-print {
+        width: 794px;
+        margin: 0 auto;
+
+        .item {
+            margin-bottom: 6px;
+            .question {
+                display: flex;
+            }
+            .question.correct {
+                background: rgba(43, 200, 160, 0.05);
+            }
+            .question.wrong {
+                background: rgba(255, 90, 90, 0.05);
+            }
+            .content {
+                flex: 1;
+            }
+            .title {
+                display: flex;
+                margin-bottom: 6px;
+            }
+            p {
+                margin-bottom: 0;
+            }
+            .one {
+                .option {
+                    display: flex;
+                }
+            }
+            .two {
+                .option {
+                    display: inline-block;
+                    box-sizing: border-box;
+                    width: 50%;
+                }
+            }
+            .four {
+                .option {
+                    display: inline-block;
+                    box-sizing: border-box;
+                    width: 25%;
+                }
+            }
+            .option:hover {
+                background-color: rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+                transition: 200ms all;
+            }
+            .option.correct {
+                background: rgba(43, 200, 160, 0.2);
+            }
+            .option.wrong {
+                background: rgba(255, 90, 90, 0.2);
+            }
+            .option:active {
+                background-color: #bae7ff;
+            }
+        }
+    }
+}
