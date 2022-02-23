@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Input, Radio, Row } from 'antd'
+import { Alert, Button, Col, Input, Radio, Row, Form } from 'antd'
 import React, { useState } from 'react'
 import { formatAnswerNumber, getNumberFromLen } from '../../utils/math'
 import './Calc.scss'
@@ -24,7 +24,7 @@ import './Calc.scss'
 // type: 3减法
 const getData = (type = 1) => {
     const arr = []
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
         const a = getNumberFromLen(3)
         const b = getNumberFromLen(3)
         let answerObj = {}
@@ -201,74 +201,79 @@ const Calc = () => {
                             )
                         })}
                     </Row>
-                    {data.map((item, index) => {
-                        const { a, b, input, formatAnswer } = item
+                    <Form>
+                        {data.map((item, index) => {
+                            const { a, b, input, formatAnswer } = item
 
-                        let consumeTime = item.time - time.start
-                        if (index > 1) {
-                            const preItem = data[index - 1]
-                            consumeTime = item.time - preItem.time
-                        }
-                        return (
-                            <Row className='list-item' key={index}>
-                                <Col
-                                    span={5}
-                                    className='list-item-num list-item-a'
-                                >
-                                    {a}
-                                </Col>
-                                <Col
-                                    span={5}
-                                    className='list-item-num list-item-b'
-                                >
-                                    {b}
-                                </Col>
-                                <Col
-                                    span={6}
-                                    className='list-item-num list-item-b'
-                                >
-                                    <Input
-                                        type='tel'
-                                        onClick={() => handleClickInput(index)}
-                                        onChange={e =>
-                                            handleChangeInput(e, index)
-                                        }
-                                        onBlur={() => handleBlur(index)}
-                                        value={input}
-                                    />
-                                </Col>
-                                {answerVisible && (
+                            let consumeTime = item.time - time.start
+                            if (index > 1) {
+                                const preItem = data[index - 1]
+                                consumeTime = item.time - preItem.time
+                            }
+                            return (
+                                <Row className='list-item' key={index}>
                                     <Col
-                                        span={4}
-                                        className='list-item-num list-item-c'
+                                        span={5}
+                                        className='list-item-num list-item-a'
                                     >
-                                        <Alert
-                                            message={formatAnswer}
-                                            type={
-                                                Math.abs(
-                                                    input - formatAnswer
-                                                ) <= 1
-                                                    ? 'success'
-                                                    : 'error'
+                                        {a}
+                                    </Col>
+                                    <Col
+                                        span={5}
+                                        className='list-item-num list-item-b'
+                                    >
+                                        {b}
+                                    </Col>
+                                    <Col
+                                        span={6}
+                                        className='list-item-num list-item-b'
+                                    >
+                                        <Input
+                                            type='tel'
+                                            onClick={() =>
+                                                handleClickInput(index)
                                             }
-                                            showIcon
+                                            onChange={e =>
+                                                handleChangeInput(e, index)
+                                            }
+                                            onBlur={() => handleBlur(index)}
+                                            value={input}
                                         />
                                     </Col>
-                                )}
-                                {answerVisible && (
-                                    <Col
-                                        span={4}
-                                        className='list-item-num list-item-c'
-                                    >
-                                        {parseInt(consumeTime / 1000)}
-                                    </Col>
-                                )}
-                            </Row>
-                        )
-                    })}
-
+                                    {answerVisible && (
+                                        <Col
+                                            span={4}
+                                            className='list-item-num list-item-c'
+                                        >
+                                            <Alert
+                                                message={formatAnswer}
+                                                type={
+                                                    Math.abs(
+                                                        input - formatAnswer
+                                                    ) <= 1
+                                                        ? 'success'
+                                                        : 'error'
+                                                }
+                                                showIcon
+                                            />
+                                        </Col>
+                                    )}
+                                    {answerVisible && (
+                                        <Col
+                                            span={4}
+                                            className='list-item-num list-item-c'
+                                        >
+                                            {parseInt(consumeTime / 1000)}
+                                        </Col>
+                                    )}
+                                </Row>
+                            )
+                        })}
+                    </Form>
                     <Button onClick={handleClickResult}>验证结果</Button>
-                    <div>通过: {acceptRate}/10</div>
+                    <div>
+                        通过: {acceptRate}/{data.length}
+                    </div>
                     <div>用时: {time.end}s</div>
                 </div>
             </div>
