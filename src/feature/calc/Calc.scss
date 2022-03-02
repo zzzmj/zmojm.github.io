@@ -13,6 +13,15 @@
                     padding: 20px;
                 }
             }
+            &-item-a {
+                display: block;
+                text-align: center;
+            }
         }
+    }
+    .divider {
+        width: 100%;
+        height: 1px;
+        background-color: #333;
     }
 }

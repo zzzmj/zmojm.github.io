@@ -58,7 +58,7 @@ const Answer = props => {
                             易错项：
                             {
                                 mapIndexToLetter[
-                                questionMeta.mostWrongAnswer.choice
+                                    questionMeta.mostWrongAnswer.choice
                                 ]
                             }
                         </Tag>

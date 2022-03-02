@@ -7,6 +7,7 @@ import Highlighter from 'web-highlighter'
 import Admin from '../feature/admin/Admin'
 import Algorithm from '../feature/algorithm/Algorithm'
 import Calc from '../feature/calc/Calc'
+import Calc2 from '../feature/calc/Calc2'
 import Test from './test'
 import WrongQuestion from '../feature/wrongQuestion/WrongQuestion'
 import './App.scss'
@@ -51,6 +52,7 @@ const App = () => {
                 <Route exact path='/edit/:objectId' component={Edit} />
                 <Route exact path='/algorithm' component={Algorithm} />
                 <Route exact path='/calc' component={Calc} />
+                <Route exact path='/calc2' component={Calc2} />
                 <Route exact path='/test' component={Test} />
                 <Route exact path='/question' component={WrongQuestion} />
                 <Route exact path='/XingCe' component={XingCe} />
