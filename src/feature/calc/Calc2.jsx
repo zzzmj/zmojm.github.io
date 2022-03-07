@@ -3,50 +3,67 @@ import React, { useState } from 'react'
 import { formatAnswerNumber, getNumberFromLen } from '../../utils/math'
 import './Calc.scss'
 
-// const getNumberFromLen = numberLength => {
-//     return parseInt(Math.random() * Math.pow(10, numberLength))
-// }
-
-// // number是数字，len是保留的位数，并且放大到的位数
-// // 例如
-// // formatAnswerNumber(0.03813, 2) => 38
-// // formatAnswerNumber(0.03813, 3) => 381
-// const formatAnswerNumber = (number, len) => {
-//     let n = number
-//     while (n < Math.pow(10, len - 1)) {
-//         n *= 10
-//     }
-//     return parseInt(n)
-// }
-
+/**
+ * {
+ *    formula：'', // 算式
+ *    formatAnswer: '', // 真实答案
+ *    time: '', //耗时
+ *    input: '', // inputValue用户输入的答案
+ *    errorAnalysis:
+ * }
+ */
 // type: 1除法
 // type: 2加法
 // type: 3减法
 const getData = (type = 1) => {
-    const arr = []
-    for (let i = 0; i < 20; i++) {
+    // 除法
+    const divisionFn = () => {
         const a = getNumberFromLen(3)
         const b = getNumberFromLen(3)
-        let answerObj = {}
-        if (type === 1) {
-            answerObj = {
-                answer: a / b,
-                formatAnswer: formatAnswerNumber(a / b, 2),
-            }
-        } else if (type === 2) {
-            answerObj = {
-                answer: a + b,
-                formatAnswer: a + b,
-            }
-        } else if (type === 3) {
-            answerObj = {
-                answer: a + b,
-                formatAnswer: a + b,
-            }
+        return {
+            formula: (
+                <div>
+                    {a}
+                    <div className='divider'></div>
+                    {b}
+                </div>
+            ),
+            formatAnswer: formatAnswerNumber(a / b, 2),
+            // 误差小于1
+            errorAnalysis: (input, answer) => Math.abs(input - answer) <= 1,
         }
+    }
+
+    const growthFn = () => {
+        // 现期量
+        const a = getNumberFromLen(3)
+        // 增长率
+        const b = getNumberFromLen(3) / 10
+        return {
+            formula: (
+                <div>
+                    <span>
+                        {a} * {b}%
+                    </span>
+                    <div className='divider'></div>
+                    <span>1 + {b}%</span>
+                </div>
+            ),
+            formatAnswer: Math.round((a * (b / 100)) / (1 + b / 100)),
+            // 误差5%以内
+            errorAnalysis: (input, answer) =>
+                Math.abs(input - answer) / 100 <= 0.05,
+        }
+    }
+
+    const mapTypeToFn = {
+        1: divisionFn,
+        2: growthFn,
+    }
+    const arr = []
+    for (let i = 0; i < 10; i++) {
+        let answerObj = mapTypeToFn[type]()
         const obj = {
-            a,
-            b,
             input: '',
             time: '',
             ...answerObj,
@@ -59,12 +76,12 @@ const getData = (type = 1) => {
 const defaultColumn = [
     {
         type: 'span',
-        label: 'a',
-        span: 5,
+        label: '算式',
+        span: 8,
     },
     {
         type: 'input',
-        label: 'a/b',
+        label: '答案',
         span: 8,
     },
     {
@@ -93,25 +110,6 @@ const Calc = () => {
     const prefix = 'calc-wrap'
     const onChange = e => {
         const value = e.target.value
-        let label = ''
-        if (value == '1') {
-            label = 'a/b'
-        } else if (value == '2') {
-            label = 'a+b'
-        } else if (value == '3') {
-            label = 'a-b'
-        }
-        const newColumn = column.map(item => {
-            if (item.type === 'input') {
-                return {
-                    ...item,
-                    label,
-                }
-            } else {
-                return item
-            }
-        })
-        setColumn(newColumn)
         const newData = getData(value)
         console.log('newData', newData)
         setData(newData)
@@ -177,7 +175,7 @@ const Calc = () => {
             <div className={`${prefix}-method`}>
                 <Radio.Group onChange={onChange} value={calcMethod}>
                     <Radio value={1}>除法</Radio>
-                    <Radio value={2}>加法</Radio>
+                    <Radio value={2}>增长量</Radio>
                     <Radio value={3}>减法</Radio>
                 </Radio.Group>
             </div>
@@ -198,8 +196,7 @@ const Calc = () => {
                     </Row>
                     <Form>
                         {data.map((item, index) => {
-                            const { a, b, input, formatAnswer } = item
-
+                            const { formula, input, formatAnswer } = item
                             let consumeTime = item.time - time.start
                             if (index > 1) {
                                 const preItem = data[index - 1]
@@ -208,19 +205,11 @@ const Calc = () => {
                             return (
                                 <Row className='list-item' key={index}>
                                     <Col
-                                        span={5}
+                                        span={8}
                                         className='list-item-num list-item-a'
                                     >
-                                        {a}
-                                        <div className='divider'></div>
-                                        {b}
+                                        {formula}
                                     </Col>
-                                    {/* <Col
-                                        span={5}
-                                        className='list-item-num list-item-b'
-                                    >
-                                        {b}
-                                    </Col> */}
                                     <Col
                                         span={8}
                                         className='list-item-num list-item-b'
