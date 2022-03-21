@@ -7,10 +7,11 @@
 
             &-item {
                 &-num {
-                    display: flex;
+                    font-size: 16px;
+                    display: flex !important;
                     align-items: center;
                     justify-content: center;
-                    padding: 20px;
+                    padding: 12px;
                 }
             }
             &-item-a {

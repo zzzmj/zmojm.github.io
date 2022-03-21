@@ -1,10 +1,9 @@
 export const getNumberFromLen = numberLength => {
-    const n = parseInt(Math.random() * Math.pow(10, numberLength))
-    if (n !== 0) {
-        return n
-    } else {
-        return getNumberFromLen(numberLength)
+    var num = Math.random()
+    while (num < Math.pow(10, numberLength - 1)) {
+        num *= 10
     }
+    return parseInt(num)
 }
 
 // number是数字，len是保留的位数，并且放大到的位数

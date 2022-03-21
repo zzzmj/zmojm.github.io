@@ -33,7 +33,7 @@ const getData = (type = 1) => {
             errorAnalysis: (input, answer) => Math.abs(input - answer) <= 1,
         }
     }
-
+    // 增长率
     const growthFn = () => {
         // 现期量
         const a = getNumberFromLen(3)
@@ -56,9 +56,119 @@ const getData = (type = 1) => {
         }
     }
 
+    // 加法
+    const addFn = () => {
+        const a = getNumberFromLen(3)
+        const b = getNumberFromLen(3)
+        return {
+            formula: (
+                <div>
+                    {a}+{b}
+                </div>
+            ),
+            formatAnswer: a + b,
+            // 不能有误差
+            errorAnalysis: (input, answer) => input - answer === 0,
+        }
+    }
+    // 减法
+    const subFn = () => {
+        const a = getNumberFromLen(3)
+        const b = getNumberFromLen(3)
+        return {
+            formula: (
+                <div>
+                    {a}-{b}
+                </div>
+            ),
+            formatAnswer: a - b,
+            // 不能有误差
+            errorAnalysis: (input, answer) => input - answer === 0,
+        }
+    }
+    // 两位数乘法误差允许3%以内
+    const mulFn = () => {
+        const a = getNumberFromLen(2)
+        const b = getNumberFromLen(2)
+        return {
+            formula: (
+                <div>
+                    {a} * {b}
+                </div>
+            ),
+            formatAnswer: a * b,
+            // 误差控制在3%
+            errorAnalysis: (input, answer) =>
+                Math.abs(input - answer) / answer <= 0.03,
+        }
+    }
+    // 三位数乘法误差允许3%以内
+    const threeMulFn = () => {
+        const a = getNumberFromLen(3)
+        const b = getNumberFromLen(3)
+        return {
+            formula: (
+                <div>
+                    {a} * {b}
+                </div>
+            ),
+            formatAnswer: formatAnswerNumber(a * b, 3),
+            // 误差控制在3%
+            errorAnalysis: (input, answer) =>
+                Math.abs(input - answer) / answer <= 0.03,
+        }
+    }
+    // 特殊分数
+    const fractionFn = () => {
+        const map = {
+            '33.3%': 3,
+            '25%': 4,
+            '20%': 5,
+            '16.7%': 6,
+            '14.3%': 7,
+            '12.5%': 8,
+            '11.1%': 9,
+            '10%': 10,
+            '9.1%': 11,
+            '8.3%': 12,
+            '7.7%': 13,
+            '7.1%': 14,
+            '6.7%': 15,
+            '6.25%': 16,
+            '5.9%': 17,
+            '5.6%': 18,
+            '5.3%': 19,
+            '11%': 9.1,
+            '12%': 8.3,
+            '13%': 7.7,
+            '14%': 7.1,
+            '15%': 6.7,
+            '16%': 6.25,
+            '17%': 5.9,
+            '18%': 5.6,
+            '19%': 5.3,
+        }
+        const arr = Object.keys(map).sort(() => Math.random() - 0.5)
+        let index = -1
+        return () => {
+            index += 1
+            return {
+                formula: <div>{arr[index]}</div>,
+                formatAnswer: map[arr[index]],
+                errorAnalysis: (input, answer) => input - answer === 0,
+            }
+        }
+    }
+
+    // 加法
     const mapTypeToFn = {
         1: divisionFn,
         2: growthFn,
+        3: addFn,
+        4: subFn,
+        5: mulFn,
+        6: threeMulFn,
+        7: fractionFn(),
     }
     const arr = []
     for (let i = 0; i < 10; i++) {
@@ -81,13 +191,13 @@ const defaultColumn = [
     },
     {
         type: 'input',
-        label: '答案',
-        span: 8,
+        label: '输入',
+        span: 6,
     },
     {
         type: 'alert',
         label: 'answer',
-        span: 4,
+        span: 6,
     },
     {
         type: 'span',
@@ -124,7 +234,6 @@ const Calc = () => {
     const onChange = e => {
         const value = e.target.value
         const newData = getData(value)
-        console.log('newData', newData)
         setData(newData)
         setCalcMethod(value)
         setAnswerVisible(false)
@@ -147,15 +256,15 @@ const Calc = () => {
         setAnswerVisible(true)
         let count = 0
         data.forEach(item => {
-            const { input, formatAnswer } = item
-            if (Math.abs(input - formatAnswer) <= 1) {
+            const { input, formatAnswer, errorAnalysis } = item
+            if (errorAnalysis(input, formatAnswer)) {
                 count++
             }
         })
         setAcceptRate(count)
         setTime({
             ...time,
-            end: parseInt((Date.now() - time.start) / 1000),
+            end: time.start ? parseInt((Date.now() - time.start) / 1000) : 0,
         })
     }
 
@@ -189,7 +298,11 @@ const Calc = () => {
                 <Radio.Group onChange={onChange} value={calcMethod}>
                     <Radio value={1}>除法</Radio>
                     <Radio value={2}>增长量</Radio>
-                    <Radio value={3}>减法</Radio>
+                    <Radio value={3}>加法</Radio>
+                    <Radio value={4}>减法</Radio>
+                    <Radio value={5}>两位数乘法</Radio>
+                    <Radio value={6}>三位数乘法</Radio>
+                    <Radio value={7}>特殊分数</Radio>
                 </Radio.Group>
             </div>
             <div className={`${prefix}-content`}>
@@ -209,7 +322,12 @@ const Calc = () => {
                     </Row>
                     <Form>
                         {data.map((item, index) => {
-                            const { formula, input, formatAnswer } = item
+                            const {
+                                formula,
+                                input,
+                                formatAnswer,
+                                errorAnalysis,
+                            } = item
                             let consumeTime = item.time - time.start
                             if (index > 1) {
                                 const preItem = data[index - 1]
@@ -224,7 +342,7 @@ const Calc = () => {
                                         {formula}
                                     </Col>
                                     <Col
-                                        span={8}
+                                        span={6}
                                         className='list-item-num list-item-b'
                                     >
                                         <Input
@@ -241,15 +359,16 @@ const Calc = () => {
                                     </Col>
                                     {answerVisible && (
                                         <Col
-                                            span={4}
+                                            span={6}
                                             className='list-item-num list-item-c'
                                         >
                                             <Alert
                                                 message={formatAnswer}
                                                 type={
-                                                    Math.abs(
-                                                        input - formatAnswer
-                                                    ) <= 1
+                                                    errorAnalysis(
+                                                        input,
+                                                        formatAnswer
+                                                    )
                                                         ? 'success'
                                                         : 'error'
                                                 }
