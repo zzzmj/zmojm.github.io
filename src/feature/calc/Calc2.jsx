@@ -33,6 +33,29 @@ const getData = (type = 1) => {
             errorAnalysis: (input, answer) => Math.abs(input - answer) <= 1,
         }
     }
+    // 高难度除法，不好算的数字
+    const divisionFn2 = () => {
+        let a = getNumberFromLen(3)
+        let b = getNumberFromLen(3)
+        let formatAnswer = formatAnswerNumber(a / b, 2)
+        while (formatAnswer / 10 < 5 || formatAnswer % 10 < 5) {
+            a = getNumberFromLen(3)
+            b = getNumberFromLen(3)
+            formatAnswer = formatAnswerNumber(a / b, 2)
+        }
+        return {
+            formula: (
+                <div>
+                    {a}
+                    <div className='divider'></div>
+                    {b}
+                </div>
+            ),
+            formatAnswer: formatAnswerNumber(a / b, 2),
+            // 误差小于1
+            errorAnalysis: (input, answer) => Math.abs(input - answer) <= 1,
+        }
+    }
     // 增长率
     const growthFn = () => {
         // 现期量
@@ -169,6 +192,7 @@ const getData = (type = 1) => {
         5: mulFn,
         6: threeMulFn,
         7: fractionFn(),
+        8: divisionFn2,
     }
     const arr = []
     for (let i = 0; i < 10; i++) {
@@ -206,18 +230,19 @@ const defaultColumn = [
     },
 ]
 /**
- * 1. 1/28 + 1/21 = 1/4*7 + 1/3*7 =  3+4/3*4*7 = 1/12. 12天
- * 2. 1/30 + 1/x = 1/12 => 1/12 - 1/30 = 10/3*4*10 - 4/3*10*4 = 1/20。所以20天完成
- * 3. 甲1分钟打 1/120, 乙1分钟打1/140，所以B更多
- * +4. 甲+乙效率1/8, 甲效率1/12, （1/8)*2.4 = 3/10, 还剩7/10 = 420未完成, 则1/10就是60， 乙效率是1/24，干了2.4小时，则干了总工程量的1/10，所以一共加工了420+60 = 480个
- * 5. 干了15天加工了195个，1天加工13*4 = 52个，455-195 = 260，所以还要260/52 = 5天
- * 6. 1/12, 1/9. 1/12 * x + 1/9 * y = 1 => 3x + 4y = 36. y是6，x是4天，因此甲做了4天
- * +7. 甲1/6, 乙1/7，丙1/14。看成三个人一起完成“2”的工作量，三个人的工作效率是：7+6+3/42 = 16/42 = 8 / 21。8/21*x = 2. x=21/4=5.25小时 = 21/4。因此丙帮了甲完成了1/8的工作量即是14/8 = 7/4，所以帮乙21/4 - 7/4 = 7/2
- * 8. 48天完成，说明甲做了15天等于乙做20天，即3天等于乙4天。 甲先做42天，少做6天，因此乙需要做48+8天 = 56天
- * 9. 乙做了30天，甲做20天完成，相当于乙30天做了甲20天的工作量，则完成需要60天。
- * 10. 乙10天等于甲20天，效率比则是2:1，则甲效率是1/60，乙丙效率一致都是1/30，三人合作效率是5/60，因此需要12天完成
- * 11. 总量设为48，甲+乙 = 6 乙+丙= 8 丙+丁=4 甲-丙 = -2 甲 +丁 = 2，所以需要24天
- * +12. 160x不会
+ * 各清理了200米，
+ * 前半段设甲效率是4，乙是3（设是x分钟）。 中间十分钟是4:0，提高效率后半段是4:6（50-x分钟）
+ * 总效率是4:4
+ * 则：4x+40 + 4（50-x） = 3x + 6*（50-x） => x+40 = 2*(50-x) => 2x = 60, x = 30
+ * 甲60分钟清理了4*60 = 240，乙则是4*60 = 240
+ * 所以乙后面工作了20分钟
+ * 【例2】
+ * 乙：7.5小时完成1/2+40个，甲：300个 =》 说明总量 = 640个
+ * 1/2差40 = 280个， 所以360/7.5 = 720/15 = 48个
+ * 【例7】设工作总量分别是120,150，晴天：甲效率是10 乙效率是10。 雨天：甲6，乙9。设晴天为x，雨天为y
+ * 10x + 6y = 120
+ * 10x + 9y = 150，y = 10。
+ * 【例8】
  */
 const Calc = () => {
     const [column, setColumn] = useState(defaultColumn)
@@ -291,10 +316,21 @@ const Calc = () => {
         })
         setData(newData)
     }
+
+    const handleReset = () => {
+        setData(getData(calcMethod))
+        setAnswerVisible(false)
+        setAcceptRate(0)
+        setTime({
+            start: '',
+            end: '',
+        })
+    }
     // 24133 44424 22443 43434
     return (
         <div className={prefix}>
             <div className={`${prefix}-method`}>
+                <Button onClick={handleReset}>刷新数据</Button>
                 <Radio.Group onChange={onChange} value={calcMethod}>
                     <Radio value={1}>除法</Radio>
                     <Radio value={2}>增长量</Radio>
@@ -303,6 +339,7 @@ const Calc = () => {
                     <Radio value={5}>两位数乘法</Radio>
                     <Radio value={6}>三位数乘法</Radio>
                     <Radio value={7}>特殊分数</Radio>
+                    <Radio value={8}>高难度除法</Radio>
                 </Radio.Group>
             </div>
             <div className={`${prefix}-content`}>
