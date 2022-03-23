@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import { getCategoryQuestion, getQuestionList } from '../../service/question'
 import './XingCe.scss'
 import { useParams } from 'react-router'
-import Answer from './Answer'
+import Answer from './components/Answer'
 
 const XingCeList = () => {
     const params = useParams()

@@ -13,6 +13,7 @@ import WrongQuestion from '../feature/wrongQuestion/WrongQuestion'
 import './App.scss'
 import XingCe from '../feature/xingce/XingCe'
 import XingCeList from '../feature/xingce/XingCeList'
+import Exam from '../feature/xingce/Exam'
 
 const Edit = () => {
     const params = useParams()
@@ -55,9 +56,11 @@ const App = () => {
                 <Route exact path='/calc2' component={Calc2} />
                 <Route exact path='/test' component={Test} />
                 <Route exact path='/question' component={WrongQuestion} />
+                {/* 这两个是打印模式 */}
                 <Route exact path='/XingCe' component={XingCe} />
                 <Route exact path='/XingCe/:objectId' component={XingCeList} />
-                {/* <Route path='/result' component={Result} /> */}
+                {/* 考试模式，提高能力 */}
+                <Route exact path='/exam' component={Exam} />
             </Switch>
         </HashRouter>
     )

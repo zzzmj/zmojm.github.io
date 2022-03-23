@@ -6,6 +6,7 @@
         max-width: 1080px;
         margin: 0 auto;
         padding: 36px;
+        box-sizing: border-box;
         .category-item {
             display: flex;
             .name {
@@ -44,7 +45,7 @@
         text-align: center;
     }
     .wrap-print {
-        width: 794px;
+        max-width: 794px;
         margin: 0 auto;
 
         .item {
