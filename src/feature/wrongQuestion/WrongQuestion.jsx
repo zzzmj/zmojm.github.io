@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { Upload, message, Button } from 'antd'
+import { Upload, message, Button, Divider } from 'antd'
 import { InboxOutlined } from '@ant-design/icons'
 import {
     addCategoryQuestion,
     addQuestion,
     getQuestionList,
 } from '../../service/question'
+import { addExam, getExamList } from '../../service/exam'
 const { Dragger } = Upload
 
 const WrongQuestion = () => {
@@ -46,12 +47,6 @@ const WrongQuestion = () => {
 
     const handleUpload = async () => {
         const { category, question } = dataSource
-        console.log(
-            'category',
-            dataSource.category,
-            dataSource.question,
-            Object.keys(dataSource)
-        )
         // const test = [question[0], question[1]]
         const result = await getQuestionList()
         const set = new Set()
@@ -91,6 +86,38 @@ const WrongQuestion = () => {
         }
     }
 
+    // 上传训练题
+    const handleUploadTrain = async () => {
+        console.log('dataSource', dataSource)
+        const question = dataSource
+        const result = await getExamList()
+        const set = new Set()
+        result.forEach(item => {
+            set.add(item.toJSON().id)
+        })
+        // 去重，上传不重复的
+        const questionData = question
+            .filter(item => !set.has(item.id))
+            .map(item => {
+                return {
+                    ...item,
+                    shortSource: null,
+                }
+            })
+        if (questionData.length > 0) {
+            addExam(questionData).then(
+                res => {
+                    message.success('上传题目成功')
+                },
+                err => {
+                    message.error('上传题目失败')
+                }
+            )
+        } else {
+            message.error('没有新的数据')
+        }
+    }
+
     return (
         <div className='wrong'>
             <div className='upload'>
@@ -110,11 +137,19 @@ const WrongQuestion = () => {
                     <Button
                         type='primary'
                         onClick={handleUpload}
-                        // disabled={fileList.length === 0}
                         loading={uploading}
                         style={{ marginTop: 16 }}
                     >
-                        {uploading ? '上传成功' : '开始上传'}
+                        上传错题
+                    </Button>
+                    <Divider />
+                    <Button
+                        type='primary'
+                        onClick={handleUploadTrain}
+                        loading={uploading}
+                        style={{ marginTop: 16 }}
+                    >
+                        上传训练题
                     </Button>
                 </div>
             </div>

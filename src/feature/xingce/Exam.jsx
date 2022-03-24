@@ -1,152 +1,116 @@
 // 考试模式
 import React, { useEffect, useState } from 'react'
-import { Button, Radio, Tree } from 'antd'
+import { Button, Divider, message, Select } from 'antd'
 import { getCategoryQuestion } from '../../service/question'
 import './XingCe.scss'
 import './Exam.scss'
 import { useHistory } from 'react-router'
-
-const treeStruct = ['']
-function handleResponse(url, response) {
-    let res = response
-    if (res.status === 200) {
-        return res.json()
-    } else {
-        console.error(`Request fail. url:${url}`)
-        Promise.reject({
-            error: {
-                message: 'Request failed due to server error',
-            },
-        })
-    }
-}
-
-var headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-}
-
-function post(url, data) {
-    return fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: data,
-    })
-        .then(response => {
-            return handleResponse(url, response)
-        })
-        .catch(err => {
-            console.error(`Request failed. Url = ${url} . Message = ${err}`)
-            return { error: { message: 'Request failed.' } }
-        })
-}
-/**
- * 
- type=3&keypointId=22339&limit=15&exerciseTimeMode=2
- */
-
-post(
-    'https://tiku.fenbi.com/api/xingce/exercises?app=web&kav=12&version=3.0.0.0',
-    'type=3&keypointId=22339&limit=15&exerciseTimeMode=2'
-)
-
-// 通过题目id查询题目内容以及解析
-// const getSolutionByIds = async questionIds => {
-//     const sliceQuestionIds = []
-//     for (let i = 0; i < questionIds.length; i += 500) {
-//         sliceQuestionIds.push(questionIds.slice(i, i+500))
-//     }
-//     let solution = []
-//     for (let i = 0; i < sliceQuestionIds.length; i++) {
-//         const s = await get(`https://tiku.fenbi.com/api/xingce/solutions?ids=${sliceQuestionIds[i].toString()}&app=web&kav=12&version=3.0.0.0`)
-//         console.log('插入一次', sliceQuestionIds[i], s)
-//         solution = solution.concat(s)
-//     }
-//     return solution
-// }
-
-var sleep = (timeout = 1000) => {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve()
-        }, timeout)
-    })
-}
-
-// 导出阅读题
-var exportRead = async () => {
-    const set = new Set()
-    for (let i = 0; i < 15; i++) {
-        const data = await post(
-            'https://tiku.fenbi.com/api/xingce/exercises?app=web&kav=12&version=3.0.0.0',
-            'type=3&keypointId=22339&limit=100&exerciseTimeMode=2'
-        )
-        await sleep(500)
-        data.sheet.questionIds.forEach(item => set.add(item))
-        console.log(`第${i + 1}次加载100题`)
-    }
-    console.log('set', [...set])
-    return [...set]
-}
+import { getExamList } from '../../service/exam'
+const { Option } = Select
 
 const Exam = () => {
-    const [categoryList, setCategoryList] = useState([])
+    const [dataSource, setDataSource] = useState([])
+    const [selectIndex, setSelectIndex] = useState(0)
+    const [pageList, setPageList] = useState([])
     const history = useHistory()
     useEffect(() => {
-        getCategoryQuestion().then(res => {
-            const data = res.toJSON().content
-            processCategoryList(data)
-            console.log('res', data)
-            setCategoryList(data)
+        getExamList().then(res => {
+            const data = res.map(item => item.toJSON())
+            setDataSource(data)
+
+            const newPageList = []
+            for (let i = 0; i < data.length; i += 10) {
+                const item = data.slice(i, i + 10)
+                newPageList.push(item)
+            }
+            setPageList(newPageList)
         })
     }, [])
 
     // 开始练习
-    const handleClickPractice = (questionIds, id) => {
-        history.push(`/xingce/${id}`)
+    const handleClickPractice = () => {
+        const ids = pageList[selectIndex].map(item => item.id)
+        console.log('ids', ids.toString())
+        history.push(`/xingce/${ids.toString()}`)
     }
 
-    const processCategoryList = data => {
-        // 处理数据
+    const copyText = text => {
+        var textarea = document.createElement('textarea')
+        document.body.appendChild(textarea)
+        // 隐藏此输入框
+        textarea.style.position = 'fixed'
+        textarea.style.clip = 'rect(0 0 0 0)'
+        textarea.style.top = '10px'
+        // 赋值
+        textarea.value = text
+        // 选中
+        textarea.select()
+        // 复制
+        document.execCommand('copy', true)
+        // 移除输入框
+        document.body.removeChild(textarea)
+    }
+
+    const handleCopy = () => {
+        const data = pageList[selectIndex]
+        let html = ''
         data.forEach(item => {
-            item.title = (
-                <div className='category-item'>
-                    <div className='name'>{item.name}</div>
-                    <div className='num'>{item.questionIds.length}题</div>
-                    <div className='practice'>
-                        <Button
-                            onClick={() =>
-                                handleClickPractice(item.questionIds, item.id)
-                            }
-                            shape='round'
-                        >
-                            开始练习
-                        </Button>
-                    </div>
+            // item.content是内容
+            // item.accessories[0].options是选项
+            // item.correctAnswer.choice是答案
+            const choice = item.correctAnswer.choice
+            const option = item.accessories[0].options.map((item, index) => {
+                if (index == choice) {
+                    return `<strong>「${item}」</strong>`
+                } else {
+                    return `<span>「${item}」</span>`
+                }
+            })
+            const qaItem = `
+                <div class="qa-item">
+                    ${item.content}<input style="border: none; width: 300px; height: 35px; font-weight: bold;" />
+                    <details>
+                        <summary>查看</summary>
+                        <p>${option}</p>
+                    </details>
                 </div>
-            )
-            item.key = item.id
-            if (item.children) {
-                processCategoryList(item.children)
-            }
+                `
+            html += qaItem
         })
+        const result = `<div style="height: 300px; overflow-y: scroll;">${html}</div>`
+        // 复制成功
+        copyText(result)
+        message.success('已复制!')
+    }
+
+    const handleChange = index => {
+        setSelectIndex(index)
     }
 
     return (
         <div className='xing-ce'>
             能力训练
             <div className='category'>
-                <div className='options'>
-                    <Radio.Group defaultValue={10} buttonStyle='solid'>
-                        <Radio.Button value={5}>5题</Radio.Button>
-                        <Radio.Button value={10}>10题</Radio.Button>
-                        <Radio.Button value={20}>20题</Radio.Button>
-                    </Radio.Group>
-                </div>
-                <Tree className='xing-ce-tree' treeData={categoryList} />
+                <h3>阅读概括能力</h3>
+                {/* <Tree className='xing-ce-tree' treeData={categoryList} /> */}
+                <Select
+                    defaultValue={1}
+                    style={{ width: 120 }}
+                    onChange={handleChange}
+                >
+                    {pageList.map((item, index) => {
+                        return (
+                            <Option
+                                key={index}
+                                value={index}
+                            >{`套卷 ${index}`}</Option>
+                        )
+                    })}
+                </Select>
+                <Divider />
+                <Button onClick={handleClickPractice}>开始练习</Button>
+                <Divider />
+                <Button onClick={handleCopy}>复制套题</Button>
             </div>
         </div>
     )

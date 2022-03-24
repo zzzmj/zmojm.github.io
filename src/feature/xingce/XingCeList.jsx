@@ -5,6 +5,7 @@ import { getCategoryQuestion, getQuestionList } from '../../service/question'
 import './XingCe.scss'
 import { useParams } from 'react-router'
 import Answer from './components/Answer'
+import { getExamList } from '../../service/exam'
 
 const XingCeList = () => {
     const params = useParams()
@@ -30,20 +31,27 @@ const XingCeList = () => {
                 }
             }
         }
-
-        if (categoryList.length > 0) {
-            const id = params.objectId
-            let questionIds = ''
-            getQuestionIds(categoryList, id, res => {
-                questionIds = res
+        const id = params.objectId
+        if (id.includes(',')) {
+            const questionIds = id.split(',').map(item => parseInt(item))
+            getExamList(questionIds).then(res => {
+                const data = res.map(item => item.toJSON())
+                setDataSource(data)
             })
-            if (questionIds) {
-                getQuestionList(questionIds).then(res => {
-                    const data = res.map(item => item.toJSON())
-                    setDataSource(data)
+        } else {
+            if (categoryList.length > 0) {
+                let questionIds = ''
+                getQuestionIds(categoryList, id, res => {
+                    questionIds = res
                 })
-            } else {
-                message.error('题目不存在')
+                if (questionIds) {
+                    getQuestionList(questionIds).then(res => {
+                        const data = res.map(item => item.toJSON())
+                        setDataSource(data)
+                    })
+                } else {
+                    message.error('题目不存在')
+                }
             }
         }
     }, [categoryList, params])
