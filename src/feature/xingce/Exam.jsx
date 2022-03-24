@@ -59,19 +59,23 @@ const Exam = () => {
             // item.accessories[0].options是选项
             // item.correctAnswer.choice是答案
             const choice = item.correctAnswer.choice
+            let rightAnswer = ''
             const option = item.accessories[0].options.map((item, index) => {
                 if (index == choice) {
-                    return `<strong>「${item}」</strong>`
-                } else {
-                    return `<span>「${item}」</span>`
+                    rightAnswer = `<strong>「${item}」</strong>`
                 }
+                return `<span>「${item}」</span>`
             })
             const qaItem = `
                 <div class="qa-item">
                     ${item.content}<input style="border: none; width: 300px; height: 35px; font-weight: bold;" />
                     <details>
                         <summary>查看</summary>
-                        <p>${option}</p>
+                        <div>${option}</div>
+                    </details>
+                    <details>
+                        <summary>正确</summary>
+                        ${rightAnswer}
                     </details>
                 </div>
                 `

@@ -104,6 +104,7 @@ const WrongQuestion = () => {
                     shortSource: null,
                 }
             })
+        message.success(`重复题目：${question.length - questionData.length}`)
         if (questionData.length > 0) {
             addExam(questionData).then(
                 res => {
