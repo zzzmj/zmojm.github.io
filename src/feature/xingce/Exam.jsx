@@ -6,12 +6,14 @@ import './XingCe.scss'
 import './Exam.scss'
 import { useHistory } from 'react-router'
 import { getExamList } from '../../service/exam'
+import { getCollectList } from '../../service/collect'
 const { Option } = Select
 
 const Exam = () => {
     const [dataSource, setDataSource] = useState([])
     const [selectIndex, setSelectIndex] = useState(0)
     const [pageList, setPageList] = useState([])
+    const [collectList, setCollectList] = useState([])
     const history = useHistory()
     useEffect(() => {
         getExamList().then(res => {
@@ -25,6 +27,18 @@ const Exam = () => {
             }
             setPageList(newPageList)
         })
+    }, [])
+
+    useEffect(() => {
+        getCollectList()
+            .then(res => {
+                const data = res.map(item => item.toJSON())
+                const ids = data.map(item => item.id)
+                setCollectList(ids)
+            })
+            .catch(err => {
+                message.error('获取数据失败')
+            })
     }, [])
 
     // 开始练习
@@ -51,8 +65,8 @@ const Exam = () => {
         document.body.removeChild(textarea)
     }
 
-    const handleCopy = () => {
-        const data = pageList[selectIndex]
+    const handleCopy = dataSource => {
+        const data = dataSource || pageList[selectIndex]
         let html = ''
         data.forEach(item => {
             // item.content是内容
@@ -91,17 +105,24 @@ const Exam = () => {
         setSelectIndex(index)
     }
 
+    const handleCollect = () => {
+        history.push(`/xingce/${collectList.toString()}`)
+    }
+
+    const handleCollectCopy = () => {
+        getExamList(collectList).then(res => {
+            const data = res.map(item => item.toJSON())
+            handleCopy(data)
+        })
+    }
+
     return (
         <div className='xing-ce'>
             能力训练
             <div className='category'>
                 <h3>阅读概括能力</h3>
                 {/* <Tree className='xing-ce-tree' treeData={categoryList} /> */}
-                <Select
-                    defaultValue={1}
-                    style={{ width: 120 }}
-                    onChange={handleChange}
-                >
+                <Select style={{ width: 120 }} onChange={handleChange}>
                     {pageList.map((item, index) => {
                         return (
                             <Option
@@ -114,7 +135,11 @@ const Exam = () => {
                 <Divider />
                 <Button onClick={handleClickPractice}>开始练习</Button>
                 <Divider />
-                <Button onClick={handleCopy}>复制套题</Button>
+                <Button onClick={() => handleCopy()}>复制套题</Button>
+                <Divider />
+                <Button onClick={handleCollect}>收藏题练习</Button>
+                <Divider />
+                <Button onClick={handleCollectCopy}>收藏题复制</Button>
             </div>
         </div>
     )

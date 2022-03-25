@@ -6,16 +6,25 @@ import './XingCe.scss'
 import { useParams } from 'react-router'
 import Answer from './components/Answer'
 import { getExamList } from '../../service/exam'
+import CollectIcon from './components/CollectIcon'
+import {
+    addCollect,
+    deleteCollect,
+    getCollectList,
+} from '../../service/collect'
 
 const XingCeList = () => {
     const params = useParams()
     const [categoryList, setCategoryList] = useState([])
+    const [collectMap, setCollectMap] = useState({})
     const [dataSource, setDataSource] = useState([])
     useEffect(() => {
         getCategoryQuestion().then(res => {
             const data = res.toJSON().content
             setCategoryList(data)
         })
+
+        getCollect()
     }, [])
 
     useEffect(() => {
@@ -55,6 +64,17 @@ const XingCeList = () => {
             }
         }
     }, [categoryList, params])
+
+    const getCollect = () => {
+        getCollectList().then(res => {
+            const data = res.map(item => item.toJSON())
+            const newMap = {}
+            data.forEach(item => {
+                newMap[item.id] = item.objectId
+            })
+            setCollectMap(newMap)
+        })
+    }
 
     const handleSelectOption = (item, index) => {
         const choice = item.correctAnswer.choice
@@ -97,6 +117,34 @@ const XingCeList = () => {
         setDataSource(newDataSource)
     }
 
+    const handleCollect = (item, checked) => {
+        if (checked) {
+            // 取消收藏
+            const objectId = collectMap[item.id]
+            console.log('objectId', objectId)
+            deleteCollect(objectId)
+                .then(() => {
+                    message.success('取消收藏')
+                    getCollect()
+                })
+                .catch(err => {
+                    message.error('取消失败')
+                })
+        } else {
+            // 点击收藏
+            addCollect([{ id: item.id }])
+                .then(() => {
+                    //
+                    message.success('收藏成功')
+                    getCollect()
+                })
+                .catch(err => {
+                    message.error('收藏失败')
+                })
+        }
+    }
+
+    console.log('collectMap', collectMap)
     return (
         <div className='wrap'>
             <h2>错题整理</h2>
@@ -132,6 +180,15 @@ const XingCeList = () => {
                                                     __html: item.content,
                                                 }}
                                             ></span>
+                                            <CollectIcon
+                                                checked={collectMap[item.id]}
+                                                onClick={() =>
+                                                    handleCollect(
+                                                        item,
+                                                        collectMap[item.id]
+                                                    )
+                                                }
+                                            />
                                         </div>
 
                                         <div className={`options ${layout}`}>
