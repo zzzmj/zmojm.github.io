@@ -15,7 +15,7 @@ import './Calc.scss'
 // type: 1除法
 // type: 2加法
 // type: 3减法
-const getData = (type = 1) => {
+const getData = (type = 1, count = 10) => {
     // 除法
     const divisionFn = () => {
         const a = getNumberFromLen(3)
@@ -125,6 +125,25 @@ const getData = (type = 1) => {
                 Math.abs(input - answer) / answer <= 0.03,
         }
     }
+    // 3*1乘法
+    const threeMulToOneFn = () => {
+        let a = getNumberFromLen(3)
+        let b = getNumberFromLen(1)
+        while (a % 10 < 3 || b < 3) {
+            a = getNumberFromLen(3)
+            b = getNumberFromLen(1)
+        }
+        return {
+            formula: (
+                <div>
+                    {a} * {b}
+                </div>
+            ),
+            formatAnswer: a * b,
+            // 误差控制在3%
+            errorAnalysis: (input, answer) => input - answer === 0,
+        }
+    }
     // 三位数乘法误差允许3%以内
     const threeMulFn = () => {
         const a = getNumberFromLen(3)
@@ -193,9 +212,10 @@ const getData = (type = 1) => {
         6: threeMulFn,
         7: fractionFn(),
         8: divisionFn2,
+        9: threeMulToOneFn,
     }
     const arr = []
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < count; i++) {
         let answerObj = mapTypeToFn[type]()
         const obj = {
             input: '',
@@ -340,6 +360,7 @@ const Calc = () => {
                     <Radio value={6}>三位数乘法</Radio>
                     <Radio value={7}>特殊分数</Radio>
                     <Radio value={8}>高难度除法</Radio>
+                    <Radio value={9}>3*1乘法</Radio>
                 </Radio.Group>
             </div>
             <div className={`${prefix}-content`}>
