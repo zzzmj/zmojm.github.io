@@ -1,15 +1,17 @@
 // 考试模式
 import React, { useEffect, useState } from 'react'
-import { Button, Divider, message, Select } from 'antd'
+import { Button, Divider, message, Modal, Select } from 'antd'
 import { getCategoryQuestion } from '../../service/question'
 import './XingCe.scss'
 import './Exam.scss'
 import { useHistory } from 'react-router'
 import { getExamList } from '../../service/exam'
 import { getCollectList } from '../../service/collect'
+import CategoryTree from './components/CategoryTree'
 const { Option } = Select
 
 const Exam = () => {
+    const [isModalVisible, setIsModalVisible] = useState(false)
     const [dataSource, setDataSource] = useState([])
     const [selectIndex, setSelectIndex] = useState(0)
     const [pageList, setPageList] = useState([])
@@ -117,29 +119,36 @@ const Exam = () => {
     }
 
     return (
-        <div className='xing-ce'>
+        <div className='exam'>
             能力训练
             <div className='category'>
-                <h3>阅读概括能力</h3>
-                {/* <Tree className='xing-ce-tree' treeData={categoryList} /> */}
-                <Select style={{ width: 120 }} onChange={handleChange}>
-                    {pageList.map((item, index) => {
-                        return (
-                            <Option
-                                key={index}
-                                value={index}
-                            >{`套卷 ${index}`}</Option>
-                        )
-                    })}
-                </Select>
+                <div className='read'>
+                    <h3>阅读概括能力</h3>
+                    {/* <Tree className='xing-ce-tree' treeData={categoryList} /> */}
+                    <Select style={{ width: 120 }} onChange={handleChange}>
+                        {pageList.map((item, index) => {
+                            return (
+                                <Option
+                                    key={index}
+                                    value={index}
+                                >{`套卷 ${index}`}</Option>
+                            )
+                        })}
+                    </Select>
+                    <Divider type='vertical' />
+                    <Button onClick={handleClickPractice}>开始练习</Button>
+                    <Divider type='vertical' />
+                    <Button onClick={() => handleCopy()}>复制套题</Button>
+                    <Divider type='vertical' />
+                    <Button onClick={handleCollect}>收藏题练习</Button>
+                    <Divider type='vertical' />
+                    <Button onClick={handleCollectCopy}>收藏题复制</Button>
+                </div>
                 <Divider />
-                <Button onClick={handleClickPractice}>开始练习</Button>
-                <Divider />
-                <Button onClick={() => handleCopy()}>复制套题</Button>
-                <Divider />
-                <Button onClick={handleCollect}>收藏题练习</Button>
-                <Divider />
-                <Button onClick={handleCollectCopy}>收藏题复制</Button>
+                <div className='wrong-question'>
+                    <h3>错题训练</h3>
+                    <CategoryTree />
+                </div>
             </div>
         </div>
     )

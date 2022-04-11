@@ -84,6 +84,15 @@ const defaultColumn = [
     },
 ]
 
+var test = () => {
+    for (let i = 0.1; i <= 1; i += 0.01) {
+        console.log(
+            `${parseInt(i * 100)} / ${parseInt((1 + i) * 100)}`,
+            `${Math.round((i * 100) / (1 + i) / 10)}`
+        )
+    }
+}
+
 const Calc = () => {
     const [column, setColumn] = useState(defaultColumn)
     const [calcMethod, setCalcMethod] = useState(1)

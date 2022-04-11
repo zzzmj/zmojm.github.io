@@ -2,3 +2,32 @@
 .options {
     margin-bottom: 12px;
 }
+.exam {
+    background-color: #f5f7fa;
+    min-height: 100vh;
+    .category {
+        background-color: #fff;
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 36px;
+        box-sizing: border-box;
+        .category-item {
+            display: flex;
+            .name {
+                font-size: 16px;
+                font-weight: bold;
+                width: 250px;
+            }
+            .num {
+                position: absolute;
+                left: 400px;
+                font-size: 13px;
+                color: #8a9095;
+            }
+            .practice {
+                position: absolute;
+                right: 10px;
+            }
+        }
+    }
+}

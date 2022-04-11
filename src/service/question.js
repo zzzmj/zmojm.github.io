@@ -30,6 +30,7 @@ export const deleteQuestion = objectId => {
     return question.destroy()
 }
 
+// 这是粉笔错题分类表
 // 种类表添加种类
 export const addCategoryQuestion = data => {
     let question = LC.Object.createWithoutData(
@@ -45,4 +46,21 @@ export const addCategoryQuestion = data => {
 export const getCategoryQuestion = () => {
     const query = new LC.Query('Category')
     return query.get('62031ff0a10bf856ff93cf99')
+}
+
+// 自定义错题分类表
+export const addCustomWrongQuestionCategory = data => {
+    let question = LC.Object.createWithoutData(
+        'Category',
+        '6253f0461122b910ec5dfd1e'
+    )
+    Object.keys(data).forEach(key => {
+        question.set(key, data[key])
+    })
+    return question.save()
+}
+
+export const getCustomWrongQuestionCategory = () => {
+    const query = new LC.Query('Category')
+    return query.get('6253f0461122b910ec5dfd1e')
 }
