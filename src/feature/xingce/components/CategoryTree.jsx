@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 import {
     Button,
     Cascader,
@@ -13,24 +14,42 @@ import {
     addCustomWrongQuestionCategory,
     getCustomWrongQuestionCategory,
 } from '../../../service/question'
+import lodash from 'lodash'
+import { useHistory } from 'react-router'
 
 const { TextArea } = Input
+const { confirm } = Modal
 
 // 分类树
 const CategoryTree = props => {
+    const history = useHistory()
     const [form] = Form.useForm()
     const [treeData, setTreeData] = useState([])
     const [cascaderOptions, setCascaderOptions] = useState([])
     const [inputValue, setInputValue] = useState()
+    const [deleteInputValue, setDeleteInputValue] = useState()
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [addModalVisible, setAddModalVisible] = useState(false)
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false)
+    const [checkedQuestionIds, setCheckedQuestionIds] = useState([])
     const onSelect = (selectedKeys, info) => {
-        console.log('selected', selectedKeys, info)
+        const selectedKey = selectedKeys[selectedKeys.length - 1]
+        console.log('selected', selectedKey, info)
+        const qIds = []
+        info.checkedNodes.forEach(item => {
+            qIds.push(...item.questionIds)
+        })
+        setCheckedQuestionIds(qIds)
+        console.log('qIDs', qIds)
     }
 
     useEffect(() => {
         getCustomCategory()
     }, [])
+
+    useEffect(() => {
+        setInputValue(JSON.stringify(treeData, null, 4))
+    }, [treeData])
 
     const getCustomCategory = () => {
         const getCascaderData = data => {
@@ -50,15 +69,19 @@ const CategoryTree = props => {
         getCustomWrongQuestionCategory().then(res => {
             const data = res.toJSON().content
             setTreeData(data)
-            setInputValue(JSON.stringify(data, null, 4))
             const result = getCascaderData(data)
             console.log('caD', result)
             setCascaderOptions(result)
         })
     }
 
-    const onCheck = (checkedKeys, info) => {
-        console.log('onCheck', checkedKeys, info)
+    const onCheck = (selectedKeys, info) => {
+        const qIds = []
+        info.checkedNodes.forEach(item => {
+            qIds.push(...item.questionIds)
+        })
+        setCheckedQuestionIds(qIds)
+        console.log('qIDs', qIds)
     }
 
     const handleOk = type => {
@@ -77,8 +100,10 @@ const CategoryTree = props => {
             } catch (error) {
                 message.error('格式有误！')
             }
-        } else {
+        } else if (type === 'question') {
             submitQuestion()
+        } else if (type === 'delete') {
+            deleteQuestion()
         }
     }
 
@@ -86,6 +111,7 @@ const CategoryTree = props => {
         if (type === 'category') {
             setIsModalVisible(false)
         } else {
+            form.resetFields()
             setAddModalVisible(false)
         }
     }
@@ -95,6 +121,10 @@ const CategoryTree = props => {
     }
 
     const handleClickPractice = () => {
+        history.push(`/xingce/${checkedQuestionIds.toString()},`)
+    }
+
+    const handleClickCategory = () => {
         setIsModalVisible(true)
     }
 
@@ -102,13 +132,89 @@ const CategoryTree = props => {
         setAddModalVisible(true)
     }
 
+    const handleDeleteQuestion = () => {
+        setDeleteModalVisible(true)
+    }
+
     const submitQuestion = () => {
         console.log('form', form.getFieldsValue())
-        const { question, category } = form.getFieldsValue()
-        const qIds = question.split(',')
-        // 取最后一位ID找
-        const id = category[category.length - 1]
-        const dfs = (data, objectId) => {
+        form.validateFields()
+            .then(res => {
+                const { question, category } = form.getFieldsValue()
+                const qIds = question.split(',')
+                // 取最后一位ID找
+                const id = category[category.length - 1]
+                const dfs = (data, objectId) => {
+                    const result = []
+                    for (let i = 0; i < data.length; i++) {
+                        let obj = {}
+                        const item = data[i]
+                        obj.title = item.title
+                        obj.key = item.key
+                        if (item.questionIds) {
+                            obj.questionIds = item.questionIds
+                        }
+                        if (item.children) {
+                            obj.children = dfs(item.children, objectId)
+                        }
+                        if (item.key == objectId) {
+                            // 取交集
+                            const interArr = lodash.intersection(
+                                obj.questionIds,
+                                qIds
+                            )
+                            console.log(
+                                'obj.questionIds,',
+                                obj.questionIds,
+                                qIds
+                            )
+                            if (interArr.length > 0) {
+                                message.error(
+                                    `您添加的部分题目已存在， ${interArr.toString()}`
+                                )
+                            } else {
+                                // 将题目添加进去
+                                const newQuestionIds =
+                                    obj.questionIds.concat(qIds)
+                                obj.questionIds = newQuestionIds
+                            }
+                            console.log('添加题目所在的ITEM', item)
+                        }
+                        result.push(obj)
+                    }
+                    return result
+                }
+
+                const newData = dfs(treeData, id)
+                // 前后有变化才更新
+                if (!lodash.isEqual(newData, treeData)) {
+                    addCustomWrongQuestionCategory({ content: newData })
+                        .then(() => {
+                            setIsModalVisible(false)
+                            getCustomCategory()
+                            message.success(
+                                `添加成功！共添加${
+                                    qIds.length
+                                }道题，${qIds.toString()}`
+                            )
+                        })
+                        .catch(() => {
+                            message.error('添加失败！')
+                        })
+                }
+            })
+            .catch(err => {
+                console.log('err', err)
+            })
+    }
+
+    const deleteQuestion = () => {
+        const deleteIds = deleteInputValue.split(',')
+        if (deleteIds.length <= 0) {
+            message.error('请输入正确格式')
+            return
+        }
+        const dfs = (data, deleteIds, arr) => {
             const result = []
             for (let i = 0; i < data.length; i++) {
                 let obj = {}
@@ -116,18 +222,66 @@ const CategoryTree = props => {
                 obj.title = item.title
                 obj.key = item.key
                 if (item.questionIds) {
-                    obj.questionIds = item.questionIds
+                    // 过滤掉数组中包含deleteIds的元素
+                    const newIds = lodash.without(
+                        item.questionIds,
+                        ...deleteIds
+                    )
+                    if (newIds.length !== item.questionIds.length) {
+                        // 求交集，看哪个元素被删除了
+                        const xorIds = lodash.xor(item.questionIds, newIds)
+                        // 求并集
+                        arr.push({
+                            title: obj.title,
+                            ids: xorIds,
+                        })
+                    }
+                    obj.questionIds = newIds
                 }
                 if (item.children) {
-                    obj.children = dfs(item.children)
-                }
-                if (item.key === objectId) {
-                    // 将题目添加进去
-                    obj.questionIds = obj.questionIds.concat(qIds)
+                    obj.children = dfs(item.children, deleteIds, arr)
                 }
                 result.push(obj)
             }
             return result
+        }
+        // 删除信息
+        let arr = []
+        const newData = dfs(treeData, deleteIds, arr)
+        console.log('newData', newData)
+        console.log('treeData', treeData)
+        if (arr.length > 0) {
+            confirm({
+                title: '您确定要删除这些题目吗?',
+                icon: <ExclamationCircleOutlined />,
+                content: (
+                    <div>
+                        {arr.map((item, index) => {
+                            return (
+                                <div key={index}>
+                                    {item.title}: {item.ids.toString()}
+                                </div>
+                            )
+                        })}
+                    </div>
+                ),
+                onOk() {
+                    addCustomWrongQuestionCategory({ content: newData })
+                        .then(() => {
+                            setDeleteModalVisible(false)
+                            getCustomCategory()
+                            message.success(`删除成功！`)
+                        })
+                        .catch(() => {
+                            message.error('删除失败！')
+                        })
+                },
+                onCancel() {
+                    console.log('Cancel')
+                },
+            })
+        } else {
+            message.warn('没有找到该题！')
         }
     }
 
@@ -138,7 +292,15 @@ const CategoryTree = props => {
     const handleClickPreview = () => {
         const { question } = form.getFieldsValue()
         window.open(
-            `https://zmojm.github.io/build/index.html#/xingce/${question}`,
+            `https://zmojm.github.io/build/index.html#/xingce/${question},`,
+            '',
+            'width=800,height=1000'
+        )
+    }
+
+    const handleDeletePreview = () => {
+        window.open(
+            `https://zmojm.github.io/build/index.html#/xingce/${deleteInputValue},`,
             '',
             'width=800,height=1000'
         )
@@ -153,9 +315,17 @@ const CategoryTree = props => {
                 treeData={treeData}
             />
             <Divider />
-            <Button onClick={handleClickPractice}>更新分类</Button>
+            <span>已勾选{checkedQuestionIds.length}题</span>
+            <Divider type='vertical' />
+            <Button onClick={handleClickPractice}>开始练习</Button>
+            <Divider />
+            <Button onClick={handleClickCategory}>更新分类</Button>
             <Divider type='vertical' />
             <Button onClick={handleAddQuestion}>添加错题</Button>
+            <Divider type='vertical' />
+            <Button danger onClick={handleDeleteQuestion}>
+                删除
+            </Button>
 
             <Modal
                 width={800}
@@ -174,6 +344,8 @@ const CategoryTree = props => {
                 width={600}
                 title='添加错题'
                 visible={addModalVisible}
+                okText='提交'
+                okCancel='取消'
                 onOk={() => handleOk('question')}
                 onCancel={() => handleCancel('question')}
             >
@@ -184,14 +356,32 @@ const CategoryTree = props => {
                     onFinish={onFinish}
                     autoComplete='off'
                 >
-                    <Form.Item label='分类' name='category'>
+                    <Form.Item
+                        label='分类'
+                        name='category'
+                        rules={[
+                            {
+                                required: true,
+                                message: '请选择分类',
+                            },
+                        ]}
+                    >
                         <Cascader
                             options={cascaderOptions}
                             placeholder='Please select'
                         />
                     </Form.Item>
 
-                    <Form.Item label='题目' name='question'>
+                    <Form.Item
+                        label='题目'
+                        name='question'
+                        rules={[
+                            {
+                                required: true,
+                                message: '请输入题目',
+                            },
+                        ]}
+                    >
                         <Input />
                     </Form.Item>
 
@@ -199,6 +389,23 @@ const CategoryTree = props => {
                         <Button onClick={handleClickPreview}>预览</Button>
                     </Form.Item>
                 </Form>
+            </Modal>
+
+            <Modal
+                width={600}
+                title='删除错题'
+                visible={deleteModalVisible}
+                okText='提交'
+                okCancel='取消'
+                onOk={() => handleOk('delete')}
+                onCancel={() => setDeleteModalVisible(false)}
+            >
+                <Input
+                    value={deleteInputValue}
+                    onChange={e => setDeleteInputValue(e.target.value)}
+                />
+                <Divider />
+                <Button onClick={handleDeletePreview}>预览</Button>
             </Modal>
         </div>
     )

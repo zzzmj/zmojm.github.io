@@ -42,10 +42,22 @@ const XingCeList = () => {
         }
         const id = params.objectId
         if (id.includes(',')) {
-            const questionIds = id.split(',').map(item => parseInt(item))
+            console.log('123', id.split(','))
+            const questionIds = id
+                .split(',')
+                .filter(item => item != '')
+                .map(item => parseInt(item))
+
             getExamList(questionIds).then(res => {
-                const data = res.map(item => item.toJSON())
-                setDataSource(data)
+                if (res.length === questionIds.length) {
+                    const data = res.map(item => item.toJSON())
+                    setDataSource(data)
+                } else {
+                    getQuestionList(questionIds).then(res => {
+                        const data = res.map(item => item.toJSON())
+                        setDataSource(data)
+                    })
+                }
             })
         } else {
             if (categoryList.length > 0) {

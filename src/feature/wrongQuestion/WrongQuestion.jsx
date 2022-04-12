@@ -4,6 +4,7 @@ import { InboxOutlined } from '@ant-design/icons'
 import {
     addCategoryQuestion,
     addQuestion,
+    existQuestion,
     getQuestionList,
 } from '../../service/question'
 import { addExam, getExamList } from '../../service/exam'
@@ -45,23 +46,32 @@ const WrongQuestion = () => {
         },
     }
 
+    const filterRepeatQuestion = async question => {
+        let result = [1]
+        let qs = question
+        while (result.length > 0) {
+            const ids = qs.map(item => item.id)
+            result = await existQuestion(ids)
+            const set = new Set()
+            result.forEach(item => {
+                set.add(item.toJSON().id)
+            })
+            // 去重，上传不重复的
+            qs = qs
+                .filter(item => !set.has(item.id))
+                .map(item => {
+                    return {
+                        ...item,
+                        shortSource: null,
+                    }
+                })
+        }
+        return qs
+    }
+
     const handleUpload = async () => {
         const { category, question } = dataSource
-        // const test = [question[0], question[1]]
-        const result = await getQuestionList()
-        const set = new Set()
-        result.forEach(item => {
-            set.add(item.toJSON().id)
-        })
-        // 去重，上传不重复的
-        const questionData = question
-            .filter(item => !set.has(item.id))
-            .map(item => {
-                return {
-                    ...item,
-                    shortSource: null,
-                }
-            })
+        const result = await filterRepeatQuestion(question)
         addCategoryQuestion({
             content: category,
         }).then(
@@ -72,8 +82,8 @@ const WrongQuestion = () => {
                 message.error(err.error || '上传分类失败')
             }
         )
-        if (questionData.length > 0) {
-            addQuestion(questionData).then(
+        if (result.length > 0) {
+            addQuestion(result).then(
                 res => {
                     message.success('上传题目成功')
                 },

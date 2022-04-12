@@ -10,6 +10,17 @@ export const getQuestionList = questionIds => {
     return query.find()
 }
 
+export const existQuestion = objectId => {
+    const query = new LC.Query('Question')
+    if (typeof objectId === 'object') {
+        query.containedIn('id', objectId)
+    } else {
+        query.equalTo('id', objectId)
+    }
+    query.limit(1000)
+    return query.find()
+}
+
 // 新增题目到leanCloud
 export const addQuestion = data => {
     const list = []
