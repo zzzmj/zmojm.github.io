@@ -32,6 +32,10 @@ const CategoryTree = props => {
     const [addModalVisible, setAddModalVisible] = useState(false)
     const [deleteModalVisible, setDeleteModalVisible] = useState(false)
     const [checkedQuestionIds, setCheckedQuestionIds] = useState([])
+    /**
+     * 17:10 (33) 17:38
+     * 12212 13142 33412 12312 42214 43433 21321 33244
+     */
     const onSelect = (selectedKeys, info) => {
         const selectedKey = selectedKeys[selectedKeys.length - 1]
         console.log('selected', selectedKey, info)
