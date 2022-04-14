@@ -72,17 +72,18 @@ const WrongQuestion = () => {
     const handleUpload = async () => {
         const { category, question } = dataSource
         const result = await filterRepeatQuestion(question)
-        addCategoryQuestion({
-            content: category,
-        }).then(
-            res => {
-                message.success('上传分类成功')
-            },
-            err => {
-                message.error(err.error || '上传分类失败')
-            }
-        )
         if (result.length > 0) {
+            addCategoryQuestion({
+                content: category,
+            }).then(
+                res => {
+                    message.success('上传分类成功')
+                },
+                err => {
+                    message.error(err.error || '上传分类失败')
+                }
+            )
+
             addQuestion(result).then(
                 res => {
                     message.success('上传题目成功')

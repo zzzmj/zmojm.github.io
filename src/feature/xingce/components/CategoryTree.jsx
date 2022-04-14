@@ -9,6 +9,7 @@ import {
     Modal,
     Tree,
     Form,
+    Skeleton,
 } from 'antd'
 import {
     addCustomWrongQuestionCategory,
@@ -25,6 +26,7 @@ const CategoryTree = props => {
     const history = useHistory()
     const [form] = Form.useForm()
     const [treeData, setTreeData] = useState([])
+    const [showData, setShowData] = useState([])
     const [cascaderOptions, setCascaderOptions] = useState([])
     const [inputValue, setInputValue] = useState()
     const [deleteInputValue, setDeleteInputValue] = useState()
@@ -53,6 +55,55 @@ const CategoryTree = props => {
 
     useEffect(() => {
         setInputValue(JSON.stringify(treeData, null, 4))
+
+        //
+        const getQuestionIdCount = treeNode => {
+            if (!treeNode) return 0
+            let count = 0
+            treeNode.forEach(item => {
+                count += item.questionIds.length
+                if (item.children) {
+                    count += getQuestionIdCount(item.children)
+                }
+            })
+            return count
+        }
+
+        const dfs = data => {
+            const result = []
+            for (let i = 0; i < data.length; i++) {
+                let obj = {}
+                const item = data[i]
+                const count =
+                    item.questionIds.length + getQuestionIdCount(item.children)
+                obj.title = (
+                    <div style={{ display: 'flex' }} className='tree-title'>
+                        <div className='name'>{item.title}</div>
+                        <div
+                            style={{
+                                marginLeft: '30px',
+                                fontSize: '12px',
+                                color: '#5f6368',
+                            }}
+                            className='num'
+                        >
+                            {`${count}题`}
+                        </div>
+                    </div>
+                )
+                obj.key = item.key
+                if (item.questionIds) {
+                    obj.questionIds = item.questionIds
+                }
+                if (item.children) {
+                    obj.children = dfs(item.children)
+                }
+                result.push(obj)
+            }
+            return result
+        }
+        const newShowData = dfs(treeData)
+        setShowData(newShowData)
     }, [treeData])
 
     const getCustomCategory = () => {
@@ -85,7 +136,6 @@ const CategoryTree = props => {
             qIds.push(...item.questionIds)
         })
         setCheckedQuestionIds(qIds)
-        console.log('qIDs', qIds)
     }
 
     const handleOk = type => {
@@ -312,12 +362,18 @@ const CategoryTree = props => {
 
     return (
         <div className='category-tree'>
-            <Tree
-                checkable
-                onSelect={onSelect}
-                onCheck={onCheck}
-                treeData={treeData}
-            />
+            {showData.length > 0 ? (
+                <Tree
+                    defaultExpandAll
+                    checkable
+                    onSelect={onSelect}
+                    onCheck={onCheck}
+                    treeData={showData}
+                />
+            ) : (
+                <Skeleton />
+            )}
+
             <Divider />
             <span>已勾选{checkedQuestionIds.length}题</span>
             <Divider type='vertical' />
