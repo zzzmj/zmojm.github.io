@@ -8,7 +8,7 @@ import './Admin.scss'
 import StatisticsModal from './StatisticsModal'
 import { getArticleFromLeanCloud } from '../../service/article'
 import { getConfigFromLeanCloud } from '../../service/service'
-// import { createArticle } from '../../service/article'
+import { createArticle, updateArticleToLeanCloud } from '../../service/article'
 
 // 处理中山大学
 const processText2 = str => {
@@ -226,6 +226,56 @@ const Admin = () => {
     // const handleChangeAll = e => {
     //     setText(e.target.value)
     // }
+    const handleUpp = async () => {
+        const dataList = articleList
+        for (let i = 1; i < dataList.length; i++) {
+            const article = dataList[i]
+            console.log('article', article)
+            const dd = {
+                article: processText(article.article),
+            }
+            console.log('dd', dd)
+
+            await updateArticleToLeanCloud(article.objectId, dd)
+                .then(() => {
+                    console.log('处理i', i, '成功')
+                })
+                .catch(() => {
+                    console.log('处理i', i, '失败')
+                })
+        }
+    }
+
+    // const handleClickData = async () => {
+    //     console.log('data', articleList, categoryList)
+    //     for (let i = 0; i < articleList.length; i++) {
+    //         const annotation = articleList[i].annotation
+    //         if (annotation) {
+    //             const newAnnotation = annotation.map(item => {
+    //                 if (item.text.includes('这') || item.text.includes('那')) {
+    //                     return {
+    //                         ...item,
+    //                         categoryId: 'IK65Puo0Tb1_7_LCBritI',
+    //                     }
+    //                 } else {
+    //                     return item
+    //                 }
+    //             })
+    //             console.log('newAnnotation', newAnnotation, annotation)
+    //             await updateArticleToLeanCloud(articleList[i].objectId, {
+    //                 annotation: newAnnotation,
+    //             })
+    //                 .then(() => {
+    //                     console.log('处理i', i, '成功')
+    //                 })
+    //                 .catch(() => {
+    //                     console.log('处理i', i, '失败')
+    //                 })
+    //         } else {
+    //             console.log('articleList[i]', articleList[i])
+    //         }
+    //     }
+    // }
 
     return (
         <div className='yryr-admin'>
@@ -241,6 +291,9 @@ const Admin = () => {
                 <div className='action'>
                     <Button type='secondary' onClick={handleUpload}>
                         上传文章
+                    </Button>
+                    <Button type='secondary' onClick={handleClickData}>
+                        处理回指数据
                     </Button>
                     <Divider type='vertical' />
                     <Button
