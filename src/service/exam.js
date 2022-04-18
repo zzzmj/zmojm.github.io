@@ -10,6 +10,16 @@ export const getExamList = questionIds => {
     return query.find()
 }
 
+export const getBookList = questionIds => {
+    const query = new LC.Query('QuestionBook')
+    // query.descending('createdAt')
+    query.limit(1000)
+    if (questionIds) {
+        query.containedIn('id', questionIds)
+    }
+    return query.find()
+}
+
 export const addExam = data => {
     const list = []
     data.forEach(item => {

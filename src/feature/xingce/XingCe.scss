@@ -45,6 +45,7 @@
         text-align: center;
     }
     .wrap-print {
+    font-family: serif;
         max-width: 794px;
         margin: 0 auto;
 
@@ -72,6 +73,9 @@
             .one {
                 .option {
                     display: flex;
+                }
+                .option + .option {
+                    padding-top: 4px;
                 }
             }
             .two {

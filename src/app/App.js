@@ -5,6 +5,8 @@ import Annotation from '../feature/edit/Annotation/Annotation'
 import Comment from '../feature/edit/Comment/Comment'
 import Highlighter from 'web-highlighter'
 import Admin from '../feature/admin/Admin'
+import Book from '../feature/book/Book'
+import BookList from '../feature/book/BookList'
 import Algorithm from '../feature/algorithm/Algorithm'
 import Calc from '../feature/calc/Calc'
 import Calc2 from '../feature/calc/Calc2'
@@ -55,6 +57,8 @@ const App = () => {
                 <Route exact path='/calc' component={Calc} />
                 <Route exact path='/calc2' component={Calc2} />
                 <Route exact path='/test' component={Test} />
+                <Route exact path='/book' component={Book} />
+                <Route exact path='/book/:objectId' component={BookList} />
                 <Route exact path='/question' component={WrongQuestion} />
                 {/* 这两个是打印模式 */}
                 <Route exact path='/XingCe' component={XingCe} />

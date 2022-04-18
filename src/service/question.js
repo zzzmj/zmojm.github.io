@@ -54,9 +54,9 @@ export const addCategoryQuestion = data => {
     return question.save()
 }
 
-export const getCategoryQuestion = () => {
+export const getCategoryQuestion = objectId => {
     const query = new LC.Query('Category')
-    return query.get('62031ff0a10bf856ff93cf99')
+    return query.get(objectId || '62031ff0a10bf856ff93cf99')
 }
 
 // 自定义错题分类表

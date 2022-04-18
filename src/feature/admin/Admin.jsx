@@ -292,9 +292,9 @@ const Admin = () => {
                     <Button type='secondary' onClick={handleUpload}>
                         上传文章
                     </Button>
-                    <Button type='secondary' onClick={handleClickData}>
+                    {/* <Button type='secondary' onClick={handleClickData}>
                         处理回指数据
-                    </Button>
+                    </Button> */}
                     <Divider type='vertical' />
                     <Button
                         type='secondary'
