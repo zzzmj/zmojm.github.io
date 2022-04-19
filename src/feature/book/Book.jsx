@@ -18,7 +18,7 @@ const XingCe = () => {
 
     // 开始练习
     const handleClickPractice = (questionIds, id) => {
-        history.push(`/book/${questionIds.toString()}`)
+        history.push(`/book/${questionIds.slice(0, 100).toString()}`)
     }
 
     const processCategoryList = data => {

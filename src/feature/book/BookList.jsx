@@ -38,7 +38,6 @@ const XingCeList = () => {
                                 b.questionMeta.totalCount -
                                 a.questionMeta.totalCount
                         )
-                        .slice(0, 100)
                     console.log('data', data)
                     setDataSource(data)
                 }

@@ -13,6 +13,12 @@ import {
     getCollectList,
 } from '../../service/collect'
 
+/**
+ * 16:15 16:19
+ * 23141 14413
+ * 16:40 17:20
+ * 42214 23231 11221 31343 34314 41112
+ */
 const XingCeList = () => {
     const params = useParams()
     const [categoryList, setCategoryList] = useState([])
@@ -156,7 +162,6 @@ const XingCeList = () => {
         }
     }
 
-    console.log('collectMap', collectMap)
     return (
         <div className='wrap'>
             <h2>错题整理</h2>
