@@ -1,0 +1,53 @@
+
+.calc-wrap {
+    font-family: serif;
+
+    max-width: 794px;
+    margin: 0 auto;
+    h3 {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .test-answer h3 {
+        margin-top: 45px;
+
+    }
+    .list {
+        display: grid !important;
+        border: none;
+    }
+    .list-item {
+        display: grid;
+        grid-template-columns: 50px 70px 70px 70px 70px 70px 70px 70px 100px 70px 1fr;
+        grid-template-rows: 48px;
+        border: 1px solid #333;
+        border-bottom: none;
+        .list-item-num:first-child {
+            font-weight: bold;
+        }
+    }
+    .data .list-item:last-child {
+        border-bottom: 1px solid #333;
+    }
+    .column {
+        font-weight: bold;
+    }
+    .list-item-num {
+        flex: 1;
+        // border: 1px solid #333;
+        // margin-left: -1px;
+        
+        // margin-top: -1px;
+    }
+    .list-item-num  + .list-item-num  {
+        border-left: 1px solid #333;
+    }
+    .daan {
+        color: #971712;
+    }
+
+}
+
+h3 {
+    text-align: center;
+}

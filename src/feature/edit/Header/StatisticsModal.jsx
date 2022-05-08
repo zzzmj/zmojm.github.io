@@ -98,7 +98,7 @@ const StatisticsModal = props => {
             width={800}
             onCancel={handleCancel}
         >
-            <Table dataSource={dataSource} columns={columns} />;
+            <Table dataSource={dataSource} columns={columns} />
         </Modal>
     )
 }

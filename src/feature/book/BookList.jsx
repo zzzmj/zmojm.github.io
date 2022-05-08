@@ -15,6 +15,7 @@ import {
 
 const XingCeList = () => {
     const params = useParams()
+    const [testCount, setTestCount] = useState(20)
     const [dataSource, setDataSource] = useState([])
     useEffect(() => {
         // getCollect()
@@ -22,15 +23,17 @@ const XingCeList = () => {
 
     useEffect(() => {
         const id = params.objectId
-        if (id.includes(',')) {
-            console.log('123', id.split(','))
-            const questionIds = id
-                .split(',')
-                .filter(item => item != '')
-                .map(item => parseInt(item))
+        const data = window.localStorage.getItem('dataSource')
+        if (data) {
+            setDataSource(data)
+        } else {
+            if (id.includes(',')) {
+                const questionIds = id
+                    .split(',')
+                    .filter(item => item != '')
+                    .map(item => parseInt(item))
 
-            getBookList(questionIds).then(res => {
-                if (res.length === questionIds.length) {
+                getBookList(questionIds).then(res => {
                     const data = res
                         .map(item => item.toJSON())
                         .sort(
@@ -38,24 +41,12 @@ const XingCeList = () => {
                                 b.questionMeta.totalCount -
                                 a.questionMeta.totalCount
                         )
-                        .slice(0, 100)
-                    console.log('data', data)
+                        .slice(0, 520)
                     setDataSource(data)
-                }
-            })
+                })
+            }
         }
     }, [params])
-
-    // const getCollect = () => {
-    //     getCollectList().then(res => {
-    //         const data = res.map(item => item.toJSON())
-    //         const newMap = {}
-    //         data.forEach(item => {
-    //             newMap[item.id] = item.objectId
-    //         })
-    //         setCollectMap(newMap)
-    //     })
-    // }
 
     const handleSelectOption = (item, index) => {
         const choice = item.correctAnswer.choice
@@ -98,6 +89,30 @@ const XingCeList = () => {
         setDataSource(newDataSource)
     }
 
+    const getAnswer = (left, stringArr) => {
+        const answer = dataSource.map(
+            item => parseInt(item.correctAnswer.choice) + 1
+        )
+        let pos = 0
+        let count = 0
+        let wrong = []
+        const arr = stringArr.split('').filter(item => item != ' ')
+        for (let i = left; i < arr.length + left; i++) {
+            const item = answer[i]
+            const p = arr[pos]
+            pos++
+            if (item == p) {
+                count++
+            } else {
+                wrong.push(i + 1)
+            }
+        }
+        console.log('正确率：', parseInt((count * 100) / arr.length))
+        console.log('正确答案：', answer.slice(left, arr.length + left))
+        console.log('错题：', wrong)
+    }
+    window.getAnswer = getAnswer
+
     return (
         <div className='wrap'>
             <div className='wrap-print'>
@@ -123,8 +138,10 @@ const XingCeList = () => {
                         })
                         return (
                             <div key={item.id} className='item-wrap'>
-                                {index % 20 === 0 && (
-                                    <h2>练习题{parseInt(index / 20) + 1}</h2>
+                                {index % testCount === 0 && (
+                                    <h2>
+                                        练习题{parseInt(index / testCount) + 1}
+                                    </h2>
                                 )}
                                 <div className='item'>
                                     <div className={cls}>

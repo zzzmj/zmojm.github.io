@@ -3,6 +3,7 @@ import { Upload, Tree, Button } from 'antd'
 import { getCategoryQuestion } from '../../service/question'
 import '../xingce/XingCe.scss'
 import { useHistory } from 'react-router'
+import { getBookList } from '../../service/exam'
 
 const XingCe = () => {
     const [categoryList, setCategoryList] = useState([])
@@ -18,7 +19,20 @@ const XingCe = () => {
 
     // 开始练习
     const handleClickPractice = (questionIds, id) => {
-        history.push(`/book/${questionIds.toString()}`)
+        history.push({
+            pathname: `/book/${questionIds.toString()}`,
+        })
+
+        // getBookList(questionIds).then(res => {
+        //     console.log('res', res.length, questionIds.length)
+        //     const data = res
+        //         .map(item => item.toJSON())
+        //         .sort(
+        //             (a, b) =>
+        //                 b.questionMeta.totalCount - a.questionMeta.totalCount
+        //         )
+        //     window.localStorage.setItem('dataSource', JSON.stringify(data))
+        // })
     }
 
     const processCategoryList = data => {
