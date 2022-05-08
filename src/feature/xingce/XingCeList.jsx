@@ -215,15 +215,19 @@ const XingCeList = () => {
                                                     __html: item.content,
                                                 }}
                                             ></span>
-                                            <CollectIcon
-                                                checked={collectMap[item.id]}
-                                                onClick={() =>
-                                                    handleCollect(
-                                                        item,
+                                            {item.answerVisible && (
+                                                <CollectIcon
+                                                    checked={
                                                         collectMap[item.id]
-                                                    )
-                                                }
-                                            />
+                                                    }
+                                                    onClick={() =>
+                                                        handleCollect(
+                                                            item,
+                                                            collectMap[item.id]
+                                                        )
+                                                    }
+                                                />
+                                            )}
                                         </div>
 
                                         <div className={`options ${layout}`}>

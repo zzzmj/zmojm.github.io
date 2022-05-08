@@ -96,6 +96,7 @@ const XingCeList = () => {
         let pos = 0
         let count = 0
         let wrong = []
+        let qIds = []
         const arr = stringArr.split('').filter(item => item != ' ')
         for (let i = left; i < arr.length + left; i++) {
             const item = answer[i]
@@ -105,13 +106,24 @@ const XingCeList = () => {
                 count++
             } else {
                 wrong.push(i + 1)
+                qIds.push(dataSource[i].id)
             }
         }
         console.log('正确率：', parseInt((count * 100) / arr.length))
-        console.log('正确答案：', answer.slice(left, arr.length + left))
-        console.log('错题：', wrong)
+        console.log('错题：', wrong.join(', '))
+        console.log('题号：', qIds.join(', '))
+    }
+
+    const getIds = (ids, count = 1) => {
+        const arr = []
+        ids.forEach(item => {
+            console.log('第多少题：', (count - 1) * 20 + item - 1)
+            arr.push(dataSource[(count - 1) * 20 + item - 1].id)
+        })
+        return arr
     }
     window.getAnswer = getAnswer
+    window.getIds = getIds
 
     return (
         <div className='wrap'>

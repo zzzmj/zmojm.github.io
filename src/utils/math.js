@@ -5,7 +5,6 @@ export const getNumberFromLen = numberLength => {
     }
     return parseInt(num)
 }
-
 // number是数字，len是保留的位数，并且放大到的位数
 // 例如
 // formatAnswerNumber(0.03813, 2) => 38
