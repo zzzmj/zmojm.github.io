@@ -68,6 +68,10 @@ const Answer = props => {
                     <span>题号：</span>
                     <div className='content'>{id}</div>
                 </li>
+                <li>
+                    <span>笔记：</span>
+                    <div className='content'>{id}</div>
+                </li>
             </ul>
         </div>
     )

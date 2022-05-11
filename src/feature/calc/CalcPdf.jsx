@@ -121,7 +121,7 @@ const defaultColumn = [
 const CalcPdf = () => {
     const [column, setColumn] = useState(defaultColumn)
     const [data, setData] = useState(() => getData())
-    const prefix = 'calc-wrap'
+    const prefix = 'calc-wrap calc-pdf'
 
     useEffect(() => {
         document.title = '速算练习'

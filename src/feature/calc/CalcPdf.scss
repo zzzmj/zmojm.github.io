@@ -1,7 +1,9 @@
 
-.calc-wrap {
+.calc-pdf {
+    h3 {
+        text-align: center;
+    }
     font-family: serif;
-
     max-width: 794px;
     margin: 0 auto;
     h3 {
@@ -33,6 +35,9 @@
         font-weight: bold;
     }
     .list-item-num {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         flex: 1;
         // border: 1px solid #333;
         // margin-left: -1px;
@@ -46,8 +51,4 @@
         color: #971712;
     }
 
-}
-
-h3 {
-    text-align: center;
 }
