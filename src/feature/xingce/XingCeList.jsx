@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { message } from 'antd'
+import React, { useEffect, useRef, useState } from 'react'
+import { message, Modal, Skeleton } from 'antd'
 import classNames from 'classnames'
-import { getCategoryQuestion, getQuestionList } from '../../service/question'
+import {
+    getCategoryQuestion,
+    getQuestionList,
+    updateQuestionNotes,
+} from '../../service/question'
 import './XingCe.scss'
 import { useParams } from 'react-router'
 import Answer from './components/Answer'
 import { getBookList, getExamList } from '../../service/exam'
 import CollectIcon from './components/CollectIcon'
+import { Editor } from '@tinymce/tinymce-react'
 import {
     addCollect,
     deleteCollect,
@@ -16,7 +21,11 @@ import {
 /**
  */
 const XingCeList = () => {
+    const editorRef = useRef(null)
     const params = useParams()
+    const [activeNotes, setActiveNotes] = useState({})
+    const [loading, setLoading] = useState(true)
+    const [isModalVisible, setIsModalVisible] = useState(false)
     const [categoryList, setCategoryList] = useState([])
     const [collectMap, setCollectMap] = useState({})
     const [dataSource, setDataSource] = useState([])
@@ -42,7 +51,28 @@ const XingCeList = () => {
                 }
             }
         }
+        const id = params.objectId
+        if (id.includes(',')) {
+            getQuestions()
+        } else {
+            if (categoryList.length > 0) {
+                let questionIds = ''
+                getQuestionIds(categoryList, id, res => {
+                    questionIds = res
+                })
+                if (questionIds) {
+                    getQuestionList(questionIds).then(res => {
+                        const data = res.map(item => item.toJSON())
+                        setDataSource(data)
+                    })
+                } else {
+                    message.error('题目不存在')
+                }
+            }
+        }
+    }, [])
 
+    const getQuestions = () => {
         const getAllData = async questionIds => {
             const examData = await getExamList(questionIds)
             const questionData = await getQuestionList(questionIds)
@@ -62,32 +92,21 @@ const XingCeList = () => {
             return result
         }
         const id = params.objectId
-        if (id.includes(',')) {
-            const questionIds = id
-                .split(',')
-                .filter(item => item != '')
-                .map(item => parseInt(item))
+        const questionIds = id
+            .split(',')
+            .filter(item => item != '')
+            .map(item => parseInt(item))
 
-            getAllData(questionIds).then(res => {
+        setLoading(true)
+        getAllData(questionIds)
+            .then(res => {
                 setDataSource(res)
+                setLoading(false)
             })
-        } else {
-            if (categoryList.length > 0) {
-                let questionIds = ''
-                getQuestionIds(categoryList, id, res => {
-                    questionIds = res
-                })
-                if (questionIds) {
-                    getQuestionList(questionIds).then(res => {
-                        const data = res.map(item => item.toJSON())
-                        setDataSource(data)
-                    })
-                } else {
-                    message.error('题目不存在')
-                }
-            }
-        }
-    }, [categoryList, params])
+            .catch(err => {
+                setLoading(false)
+            })
+    }
 
     const getCollect = () => {
         getCollectList().then(res => {
@@ -168,120 +187,215 @@ const XingCeList = () => {
         }
     }
 
+    const showModal = () => {
+        setIsModalVisible(true)
+    }
+
+    const handleOk = () => {
+        const content = editorRef.current.getContent()
+        // 更新看看
+        console.log('activeNotes.objectId', activeNotes.id)
+        updateQuestionNotes(activeNotes.id, content)
+            .then(res => {
+                message.success('更新成功')
+                getQuestions()
+                setIsModalVisible(false)
+            })
+            .catch(err => {
+                message.success('更新失败')
+            })
+    }
+
+    const handleCancel = () => {
+        setIsModalVisible(false)
+    }
+
+    const handleNotesChange = data => {
+        const { notes, objectId, id } = data
+        setActiveNotes({
+            id: objectId,
+            notes,
+        })
+        console.log('data', data)
+        setIsModalVisible(true)
+        editorRef.current.setContent(notes || '')
+    }
+
     return (
         <div className='wrap'>
             <h2>错题整理</h2>
             <div className='wrap-print'>
-                <div className='list'>
-                    {dataSource.map((item, index) => {
-                        let layout = 'four'
-                        // 任一选项文字长度超过10，则选择两栏布局
-                        // 任一选项文字长度超过20，则选择一栏布局
-                        // 否则使用四栏布局
-                        const itemLength = []
-                        item.accessories[0].options.forEach(item => {
-                            itemLength.push(item.length)
-                        })
-                        const len = Math.max(...itemLength)
-                        if (len >= 20) {
-                            layout = 'one'
-                        } else if (len > 10) {
-                            layout = 'two'
-                        }
-                        const cls = classNames({
-                            question: true,
-                            [item.status]: item.status,
-                        })
-                        return (
-                            <div key={item.id} className='item'>
-                                <div className={cls}>
-                                    <span>{index + 1}.</span>
-                                    <div className='content'>
-                                        <div className='title'>
-                                            <span
-                                                dangerouslySetInnerHTML={{
-                                                    __html: item.content,
-                                                }}
-                                            ></span>
-                                            {item.answerVisible && (
-                                                <CollectIcon
-                                                    checked={
-                                                        collectMap[item.id]
-                                                    }
-                                                    onClick={() =>
-                                                        handleCollect(
-                                                            item,
+                {loading ? (
+                    <Skeleton />
+                ) : (
+                    <div className='list'>
+                        {dataSource.map((item, index) => {
+                            let layout = 'four'
+                            // 任一选项文字长度超过10，则选择两栏布局
+                            // 任一选项文字长度超过20，则选择一栏布局
+                            // 否则使用四栏布局
+                            const itemLength = []
+                            item.accessories[0].options.forEach(item => {
+                                itemLength.push(item.length)
+                            })
+                            const len = Math.max(...itemLength)
+                            if (len >= 20) {
+                                layout = 'one'
+                            } else if (len > 10) {
+                                layout = 'two'
+                            }
+                            const cls = classNames({
+                                question: true,
+                                [item.status]: item.status,
+                            })
+                            return (
+                                <div key={item.id} className='item'>
+                                    <div className={cls}>
+                                        <span>{index + 1}.</span>
+                                        <div className='content'>
+                                            <div className='title'>
+                                                <span
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: item.content,
+                                                    }}
+                                                ></span>
+                                                {item.answerVisible && (
+                                                    <CollectIcon
+                                                        checked={
                                                             collectMap[item.id]
-                                                        )
-                                                    }
-                                                />
-                                            )}
-                                        </div>
-
-                                        <div className={`options ${layout}`}>
-                                            {item.accessories[0] &&
-                                                item.accessories[0].options.map(
-                                                    (option, pos) => {
-                                                        const mapIndexToLetter =
-                                                            ['A', 'B', 'C', 'D']
-                                                        let status =
-                                                            pos ==
-                                                                item.selectIndex &&
-                                                            item.status ==
-                                                                'correct'
-                                                                ? 'correct'
-                                                                : 'wrong'
-                                                        const optionCls =
-                                                            classNames({
-                                                                option: true,
-                                                                [status]:
-                                                                    pos ===
-                                                                    item.selectIndex,
-                                                            })
-                                                        return (
-                                                            <div
-                                                                key={pos}
-                                                                onClick={() =>
-                                                                    handleSelectOption(
-                                                                        item,
-                                                                        pos
-                                                                    )
-                                                                }
-                                                                className={
-                                                                    optionCls
-                                                                }
-                                                            >
-                                                                <span className='num'>
-                                                                    {
-                                                                        mapIndexToLetter[
-                                                                            pos
-                                                                        ]
-                                                                    }
-                                                                    .
-                                                                </span>
-                                                                <span
-                                                                    dangerouslySetInnerHTML={{
-                                                                        __html: option,
-                                                                    }}
-                                                                ></span>
-                                                            </div>
-                                                        )
-                                                    }
+                                                        }
+                                                        onClick={() =>
+                                                            handleCollect(
+                                                                item,
+                                                                collectMap[
+                                                                    item.id
+                                                                ]
+                                                            )
+                                                        }
+                                                    />
                                                 )}
+                                            </div>
+
+                                            <div
+                                                className={`options ${layout}`}
+                                            >
+                                                {item.accessories[0] &&
+                                                    item.accessories[0].options.map(
+                                                        (option, pos) => {
+                                                            const mapIndexToLetter =
+                                                                [
+                                                                    'A',
+                                                                    'B',
+                                                                    'C',
+                                                                    'D',
+                                                                ]
+                                                            let status =
+                                                                pos ==
+                                                                    item.selectIndex &&
+                                                                item.status ==
+                                                                    'correct'
+                                                                    ? 'correct'
+                                                                    : 'wrong'
+                                                            const optionCls =
+                                                                classNames({
+                                                                    option: true,
+                                                                    [status]:
+                                                                        pos ===
+                                                                        item.selectIndex,
+                                                                })
+                                                            return (
+                                                                <div
+                                                                    key={pos}
+                                                                    onClick={() =>
+                                                                        handleSelectOption(
+                                                                            item,
+                                                                            pos
+                                                                        )
+                                                                    }
+                                                                    className={
+                                                                        optionCls
+                                                                    }
+                                                                >
+                                                                    <span className='num'>
+                                                                        {
+                                                                            mapIndexToLetter[
+                                                                                pos
+                                                                            ]
+                                                                        }
+                                                                        .
+                                                                    </span>
+                                                                    <span
+                                                                        dangerouslySetInnerHTML={{
+                                                                            __html: option,
+                                                                        }}
+                                                                    ></span>
+                                                                </div>
+                                                            )
+                                                        }
+                                                    )}
+                                            </div>
                                         </div>
                                     </div>
+                                    {item.answerVisible && (
+                                        <Answer
+                                            onChange={handleNotesChange}
+                                            onClose={() => handleClose(item)}
+                                            data={item}
+                                        />
+                                    )}
                                 </div>
-                                {item.answerVisible && (
-                                    <Answer
-                                        onClose={() => handleClose(item)}
-                                        data={item}
-                                    />
-                                )}
-                            </div>
-                        )
-                    })}
-                </div>
+                            )
+                        })}
+                    </div>
+                )}
             </div>
+            <Modal
+                forceRender={true}
+                width={1000}
+                title='编辑笔记'
+                visible={isModalVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+            >
+                <Editor
+                    className='notes-editor'
+                    onInit={(evt, editor) => {
+                        setLoading(false)
+                        editorRef.current = editor
+                    }}
+                    apiKey='24p0l3ih7zoyefn7sj47oxgrjz14zp69vuiyxo9tzk25oapj'
+                    init={{
+                        height: 500,
+                        menubar: false,
+                        plugins: [
+                            'advlist',
+                            'autolink',
+                            'lists',
+                            'link',
+                            'image',
+                            'charmap',
+                            'anchor',
+                            'searchreplace',
+                            'visualblocks',
+                            'code',
+                            'fullscreen',
+                            'insertdatetime',
+                            'media',
+                            'table',
+                            'preview',
+                            'help',
+                            'wordcount',
+                        ],
+                        toolbar:
+                            'undo redo | blocks | ' +
+                            'bold italic forecolor | alignleft aligncenter ' +
+                            'alignright alignjustify | bullist numlist outdent indent | ' +
+                            'removeformat | help',
+                        content_style:
+                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+                    }}
+                />
+            </Modal>
         </div>
     )
 }

@@ -1,16 +1,30 @@
 // 答案组件
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Divider, Tag } from 'antd'
+import { Editor } from '@tinymce/tinymce-react'
 import './Answer.scss'
 
 const Answer = props => {
-    const { correctAnswer, solution, keypoints, questionMeta, source, id } =
-        props.data
+    const {
+        correctAnswer,
+        solution,
+        keypoints,
+        questionMeta,
+        source,
+        id,
+        notes,
+    } = props.data
 
     const mapIndexToLetter = ['A', 'B', 'C', 'D']
 
     const handleClick = () => {
         props.onClose()
+    }
+
+    useEffect(() => {}, [])
+
+    const handleClickNotes = () => {
+        props.onChange && props.onChange(props.data)
     }
 
     return (
@@ -70,7 +84,12 @@ const Answer = props => {
                 </li>
                 <li>
                     <span>笔记：</span>
-                    <div className='content'>{id}</div>
+                    <div onClick={handleClickNotes} className='question-notes'>
+                        <div
+                            className='html'
+                            dangerouslySetInnerHTML={{ __html: notes }}
+                        />
+                    </div>
                 </li>
             </ul>
         </div>
