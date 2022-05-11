@@ -5,7 +5,7 @@ import { getCategoryQuestion, getQuestionList } from '../../service/question'
 import './XingCe.scss'
 import { useParams } from 'react-router'
 import Answer from './components/Answer'
-import { getExamList } from '../../service/exam'
+import { getBookList, getExamList } from '../../service/exam'
 import CollectIcon from './components/CollectIcon'
 import {
     addCollect,
@@ -14,10 +14,6 @@ import {
 } from '../../service/collect'
 
 /**
- * 16:15 16:19
- * 23141 14413
- * 16:40 17:20
- * 42214 23231 11221 31343 34314 41112
  */
 const XingCeList = () => {
     const params = useParams()
@@ -46,24 +42,34 @@ const XingCeList = () => {
                 }
             }
         }
+
+        const getAllData = async questionIds => {
+            const examData = await getExamList(questionIds)
+            const questionData = await getQuestionList(questionIds)
+            const bookData = await getBookList(questionIds)
+            const data = [
+                ...examData.map(item => item.toJSON()),
+                ...questionData.map(item => item.toJSON()),
+                ...bookData.map(item => item.toJSON()),
+            ]
+            const result = []
+            questionIds.forEach(qId => {
+                const question = data.find(item => item.id === qId)
+                if (question) {
+                    result.push(question)
+                }
+            })
+            return result
+        }
         const id = params.objectId
         if (id.includes(',')) {
-            console.log('123', id.split(','))
             const questionIds = id
                 .split(',')
                 .filter(item => item != '')
                 .map(item => parseInt(item))
 
-            getExamList(questionIds).then(res => {
-                if (res.length === questionIds.length) {
-                    const data = res.map(item => item.toJSON())
-                    setDataSource(data)
-                } else {
-                    getQuestionList(questionIds).then(res => {
-                        const data = res.map(item => item.toJSON())
-                        setDataSource(data)
-                    })
-                }
+            getAllData(questionIds).then(res => {
+                setDataSource(res)
             })
         } else {
             if (categoryList.length > 0) {
@@ -197,15 +203,19 @@ const XingCeList = () => {
                                                     __html: item.content,
                                                 }}
                                             ></span>
-                                            <CollectIcon
-                                                checked={collectMap[item.id]}
-                                                onClick={() =>
-                                                    handleCollect(
-                                                        item,
+                                            {item.answerVisible && (
+                                                <CollectIcon
+                                                    checked={
                                                         collectMap[item.id]
-                                                    )
-                                                }
-                                            />
+                                                    }
+                                                    onClick={() =>
+                                                        handleCollect(
+                                                            item,
+                                                            collectMap[item.id]
+                                                        )
+                                                    }
+                                                />
+                                            )}
                                         </div>
 
                                         <div className={`options ${layout}`}>

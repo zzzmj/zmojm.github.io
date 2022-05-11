@@ -4,7 +4,7 @@ import { Button, Divider, Tag } from 'antd'
 import './Answer.scss'
 
 const Answer = props => {
-    const { correctAnswer, solution, keypoints, questionMeta, source } =
+    const { correctAnswer, solution, keypoints, questionMeta, source, id } =
         props.data
 
     const mapIndexToLetter = ['A', 'B', 'C', 'D']
@@ -63,6 +63,10 @@ const Answer = props => {
                             }
                         </Tag>
                     </div>
+                </li>
+                <li>
+                    <span>题号：</span>
+                    <div className='content'>{id}</div>
                 </li>
             </ul>
         </div>

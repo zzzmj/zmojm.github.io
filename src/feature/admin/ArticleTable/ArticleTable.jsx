@@ -13,8 +13,8 @@ const mapKeyToText = {
     SYSU: '中山大学汉字偏误中介语语料库',
     mid: '中级',
     high: '高级',
-    korea: '韩国',
-    britain: '英国',
+    korea: '韩语',
+    britain: '英语',
 }
 
 const ArticleTable = props => {
@@ -39,7 +39,7 @@ const ArticleTable = props => {
             render: key => mapKeyToText[key] || key,
         },
         {
-            title: '国籍',
+            title: '母语',
             dataIndex: 'nationality',
             key: 'nationality',
             render: key => mapKeyToText[key] || key,

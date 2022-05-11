@@ -16,6 +16,7 @@ import './App.scss'
 import XingCe from '../feature/xingce/XingCe'
 import XingCeList from '../feature/xingce/XingCeList'
 import Exam from '../feature/xingce/Exam'
+import CalcPdf from '../feature/calc/CalcPdf'
 
 const Edit = () => {
     const params = useParams()
@@ -56,6 +57,7 @@ const App = () => {
                 <Route exact path='/algorithm' component={Algorithm} />
                 <Route exact path='/calc' component={Calc} />
                 <Route exact path='/calc2' component={Calc2} />
+                <Route exact path='/calcPdf' component={CalcPdf} />
                 <Route exact path='/test' component={Test} />
                 <Route exact path='/book' component={Book} />
                 <Route exact path='/book/:objectId' component={BookList} />

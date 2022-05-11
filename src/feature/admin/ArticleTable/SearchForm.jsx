@@ -30,7 +30,7 @@ const SearchForm = props => {
                 <Form.Item name='title' label='文章标题'>
                     <Input />
                 </Form.Item>
-
+                {/* 
                 <Form.Item name='source' label='语料来源'>
                     <Select onChange={handleSelectChange} allowClear>
                         <Option value='BLCU'>hsk动态作文语料库</Option>
@@ -38,17 +38,17 @@ const SearchForm = props => {
                             中山大学汉字偏误中介语语料库
                         </Option>
                     </Select>
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item name='score' label='汉语水平'>
                     <Select onChange={handleSelectChange} allowClear>
                         <Option value='mid'>中级</Option>
                         <Option value='high'>高级</Option>
                     </Select>
                 </Form.Item>
-                <Form.Item name='nationality' label='国籍'>
+                <Form.Item name='nationality' label='母语'>
                     <Select onChange={handleSelectChange} allowClear>
-                        <Option value='korea'>韩国</Option>
-                        <Option value='britain'>英国</Option>
+                        <Option value='korea'>韩语</Option>
+                        <Option value='britain'>英语</Option>
                     </Select>
                 </Form.Item>
                 <Form.Item>
