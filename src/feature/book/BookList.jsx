@@ -1,21 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { message } from 'antd'
 import classNames from 'classnames'
-import { getCategoryQuestion, getQuestionList } from '../../service/question'
 import '../xingce/XingCe.scss'
 import { useParams } from 'react-router'
 import Answer from '../xingce/components/Answer'
-import { getBookList, getExamList } from '../../service/exam'
-import CollectIcon from '../xingce/components/CollectIcon'
-import {
-    addCollect,
-    deleteCollect,
-    getCollectList,
-} from '../../service/collect'
+import { getBookList } from '../../service/exam'
 
 const XingCeList = () => {
     const params = useParams()
-    const [testCount, setTestCount] = useState(20)
+    const [testCount, setTestCount] = useState(40)
     const [dataSource, setDataSource] = useState([])
     useEffect(() => {
         // getCollect()
@@ -97,7 +89,16 @@ const XingCeList = () => {
         let count = 0
         let wrong = []
         let qIds = []
-        const arr = stringArr.split('').filter(item => item != ' ')
+        let arr = stringArr.split('').filter(item => item != ' ')
+        if (
+            arr.includes('A') ||
+            arr.includes('B') ||
+            arr.includes('C') ||
+            arr.includes('D')
+        ) {
+            arr = arr.map(item => item.charCodeAt() - 64)
+            console.log('arr', arr)
+        }
         for (let i = left; i < arr.length + left; i++) {
             const item = answer[i]
             const p = arr[pos]
@@ -122,7 +123,24 @@ const XingCeList = () => {
         })
         return arr
     }
+
+    // 过滤题目，留下需要的
+    const filterQ = qIds => {
+        const newDataSource = dataSource.map((item, index) => {
+            if (qIds.includes(index + 1)) {
+                return item
+            } else {
+                return {
+                    ...item,
+                    hidden: true,
+                }
+            }
+        })
+        console.log(newDataSource)
+        setDataSource(newDataSource)
+    }
     window.getAnswer = getAnswer
+    window.filterQ = filterQ
     window.getIds = getIds
 
     return (
@@ -148,8 +166,12 @@ const XingCeList = () => {
                             question: true,
                             [item.status]: item.status,
                         })
+                        const clsWrap = classNames({
+                            'item-wrap': true,
+                            hidden: item.hidden,
+                        })
                         return (
-                            <div key={item.id} className='item-wrap'>
+                            <div key={item.id} className={clsWrap}>
                                 {index % testCount === 0 && (
                                     <h2>
                                         练习题{parseInt(index / testCount) + 1}

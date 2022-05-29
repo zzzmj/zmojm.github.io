@@ -220,6 +220,41 @@ const XingCeList = () => {
         setIsModalVisible(true)
         editorRef.current.setContent(notes || '')
     }
+    const getAnswer = (left, stringArr) => {
+        const answer = dataSource.map(
+            item => parseInt(item.correctAnswer.choice) + 1
+        )
+
+        let pos = 0
+        let count = 0
+        let wrong = []
+        let qIds = []
+        let arr = stringArr.split('').filter(item => item != ' ')
+        if (
+            arr.includes('A') ||
+            arr.includes('B') ||
+            arr.includes('C') ||
+            arr.includes('D')
+        ) {
+            arr = arr.map(item => item.charCodeAt() - 64)
+            console.log('arr', arr)
+        }
+        for (let i = left; i < arr.length + left; i++) {
+            const item = answer[i]
+            const p = arr[pos]
+            pos++
+            if (item == p) {
+                count++
+            } else {
+                wrong.push(i + 1)
+                qIds.push(dataSource[i].id)
+            }
+        }
+        console.log('正确率：', parseInt((count * 100) / arr.length))
+        console.log('错题：', wrong.join(', '))
+        console.log('题号：', qIds.join(', '))
+    }
+    window.getAnswer = getAnswer
 
     return (
         <div className='wrap'>
