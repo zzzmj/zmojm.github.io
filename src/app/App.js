@@ -5,6 +5,7 @@ import Annotation from '../feature/edit/Annotation/Annotation'
 import Comment from '../feature/edit/Comment/Comment'
 import Highlighter from 'web-highlighter'
 import Admin from '../feature/admin/Admin'
+import ShenLun from '../feature/shenlun'
 import Book from '../feature/book/Book'
 import BookList from '../feature/book/BookList'
 import Algorithm from '../feature/algorithm/Algorithm'
@@ -53,10 +54,11 @@ const App = () => {
             <Switch>
                 <Route exact path='/' component={Admin} />
                 <Route exact path='/admin' component={Admin} />
+                <Route exact path='/shenlun' component={ShenLun} />
                 <Route exact path='/edit/:objectId' component={Edit} />
-                <Route exact path='/algorithm' component={Algorithm} />
-                <Route exact path='/calc' component={Calc} />
-                <Route exact path='/calc2' component={Calc2} />
+                {/* <Route exact path='/algorithm' component={Algorithm} /> */}
+                {/* <Route exact path='/calc' component={Calc} /> */}
+                <Route exact path='/calc' component={Calc2} />
                 <Route exact path='/calcPdf' component={CalcPdf} />
                 <Route exact path='/test' component={Test} />
                 <Route exact path='/book' component={Book} />

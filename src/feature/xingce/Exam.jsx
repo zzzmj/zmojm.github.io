@@ -120,11 +120,10 @@ const Exam = () => {
 
     return (
         <div className='exam'>
-            能力训练
             <div className='category'>
-                <div className='read'>
+                {/* <div className='read'>
                     <h3>阅读概括能力</h3>
-                    {/* <Tree className='xing-ce-tree' treeData={categoryList} /> */}
+                    <Tree className='xing-ce-tree' treeData={categoryList} />
                     <Select style={{ width: 120 }} onChange={handleChange}>
                         {pageList.map((item, index) => {
                             return (
@@ -132,7 +131,7 @@ const Exam = () => {
                                     key={index}
                                     value={index}
                                 >{`套卷 ${index}`}</Option>
-                            )
+                            )77
                         })}
                     </Select>
                     <Divider type='vertical' />
@@ -144,7 +143,7 @@ const Exam = () => {
                     <Divider type='vertical' />
                     <Button onClick={handleCollectCopy}>收藏题复制</Button>
                 </div>
-                <Divider />
+                <Divider /> */}
                 <div className='wrong-question'>
                     <h3>错题训练</h3>
                     <CategoryTree />
