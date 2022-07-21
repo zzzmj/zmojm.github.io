@@ -31,7 +31,7 @@ const getData = (type = 1) => {
         if (type === 1) {
             answerObj = {
                 answer: a / b,
-                formatAnswer: formatAnswerNumber(a / b, 2),
+                formatAnswer: formatAnswerNumber(a / b, 3),
             }
         } else if (type === 2) {
             answerObj = {

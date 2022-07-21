@@ -28,9 +28,14 @@ const getData = (type = 1, count = 10) => {
                     {b}
                 </div>
             ),
-            formatAnswer: formatAnswerNumber(a / b, 2),
-            // 误差小于1
-            errorAnalysis: (input, answer) => Math.abs(input - answer) <= 1,
+            formatAnswer: formatAnswerNumber(a / b, 3),
+            // 误差小于3%
+            errorAnalysis: (input, answer) => {
+                return (
+                    Math.abs(`0.${input}` - `0.${answer}`) / `0.${answer}` <=
+                    0.03
+                )
+            },
         }
     }
     // 高难度除法，不好算的数字
