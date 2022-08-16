@@ -1,0 +1,9 @@
+@media print {
+    .book-oper {
+        visibility: hidden;
+    }
+}
+.book-oper {
+    max-width: 800px;
+    margin: 0 auto;
+}
