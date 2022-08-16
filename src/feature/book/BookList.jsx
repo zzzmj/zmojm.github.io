@@ -33,7 +33,17 @@ const XingCeList = () => {
                                 b.questionMeta.totalCount -
                                 a.questionMeta.totalCount
                         )
-                    console.log('data', data)
+                    // const obj = {}
+                    // res.map(item => item.toJSON()).map(item => {
+                    //     const pos = item.source.indexOf('第')
+                    //     const key = item.source.slice(0, pos)
+                    //     if (obj[key]) {
+                    //         obj[key].push(item)
+                    //     } else {
+                    //         obj[key] = [item]
+                    //     }
+                    // })
+                    // console.log('data', obj)
                     setDataSource(data)
                 })
             }
