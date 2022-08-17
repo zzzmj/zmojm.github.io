@@ -66,7 +66,6 @@ function BookListOper(props) {
                             value={filterIdList}
                             rows={4}
                             placeholder='请筛选题目的id'
-                            maxLength={6}
                             onChange={handleChangeId}
                         />
                     </div>

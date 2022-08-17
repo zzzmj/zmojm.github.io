@@ -6,14 +6,75 @@ import Answer from '../xingce/components/Answer'
 import { getBookList } from '../../service/exam'
 import QuestionItem from './components/QuestionItem'
 import BookListOper from './components/BookListOper'
-import './BookList.scss'
 import SkeletonList from '../../components/SkeletonList/SkeletonList'
+import './BookList.scss'
+import useVisibleData from './hooks/useVisibleData'
 
+// 格式化数据源
+const formatDataSource = dataSource => {
+    const data = dataSource
+        .map(item => item.toJSON())
+        // 排序，按照题目做过的次数
+        .sort((a, b) => b.questionMeta.totalCount - a.questionMeta.totalCount)
+        // 选项栏布局
+        .map(item => {
+            let layout = 'four'
+            // 任一选项文字长度超过10，则选择两栏布局
+            // 任一选项文字长度超过20，则选择一栏布局
+            // 否则使用四栏布局
+            const itemLength = []
+            item.accessories[0].options.forEach(item => {
+                itemLength.push(item.length)
+            })
+            const len = Math.max(...itemLength)
+            if (len >= 20) {
+                layout = 'one'
+            } else if (len > 10) {
+                layout = 'two'
+            }
+            return {
+                ...item,
+                layout,
+            }
+        })
+
+    return data
+}
+
+// 格式化被选中的数据
+const formatSelectedItem = (item, selectIndex) => {
+    if (!selectIndex) {
+        return {
+            ...item,
+            answerVisible: false,
+            status: '',
+            selectIndex: '',
+        }
+    }
+    const choice = item.correctAnswer.choice
+    let status = ''
+    if (choice == selectIndex) {
+        status = 'correct'
+    } else {
+        status = 'wrong'
+    }
+    return {
+        ...item,
+        answerVisible: true,
+        status,
+        selectIndex,
+    }
+}
+
+// 2264418,2448379
 const XingCeList = () => {
     const params = useParams()
     const [questionIds, setQuestionIds] = useState([])
     const [testCount, setTestCount] = useState(40)
     const [dataSource, setDataSource] = useState([])
+    const [visibleIdList, setVisibleIdList] = useState([])
+    const { visibleData } = useVisibleData(dataSource, visibleIdList)
+    console.log('visibleData', visibleData)
     useEffect(() => {
         const id = params.objectId
         if (id && id.includes(',')) {
@@ -25,42 +86,23 @@ const XingCeList = () => {
             console.log('长度', qIds.length)
         }
     }, [params])
-
     useEffect(() => {
         const data = window.localStorage.getItem('dataSource')
         if (data) {
             setDataSource(data)
         } else {
             getBookList(questionIds).then(res => {
-                const data = res
-                    .map(item => item.toJSON())
-                    .sort(
-                        (a, b) =>
-                            b.questionMeta.totalCount -
-                            a.questionMeta.totalCount
-                    )
+                const data = formatDataSource(res)
                 setDataSource(data)
             })
         }
     }, [questionIds])
 
     const handleSelectOption = (item, index) => {
-        const choice = item.correctAnswer.choice
         const questionId = item.id
-        let status = ''
-        if (choice == index) {
-            status = 'correct'
-        } else {
-            status = 'wrong'
-        }
         const newDataSource = dataSource.map(item => {
             if (item.id === questionId) {
-                return {
-                    ...item,
-                    answerVisible: true,
-                    status,
-                    selectIndex: index,
-                }
+                return formatSelectedItem(item, index)
             } else {
                 return item
             }
@@ -72,12 +114,7 @@ const XingCeList = () => {
         const questionId = item.id
         const newDataSource = dataSource.map(item => {
             if (item.id === questionId) {
-                return {
-                    ...item,
-                    answerVisible: false,
-                    status: '',
-                    selectIndex: '',
-                }
+                return formatSelectedItem(item)
             } else {
                 return item
             }
@@ -87,6 +124,12 @@ const XingCeList = () => {
 
     const handleChangeCount = count => {
         setTestCount(count)
+    }
+
+    // 控制需要单独显示的题目
+    const handleChangeIdList = value => {
+        const qIds = value ? value.split(',') : []
+        setVisibleIdList(qIds)
     }
 
     const getAnswer = (left, stringArr) => {
@@ -123,67 +166,27 @@ const XingCeList = () => {
         console.log('题号：', qIds.join(', '))
     }
 
-    const getIds = (ids, count = 1) => {
-        const arr = []
-        ids.forEach(item => {
-            console.log('第多少题：', (count - 1) * 20 + item - 1)
-            arr.push(dataSource[(count - 1) * 20 + item - 1].id)
-        })
-        return arr
-    }
-
-    // 过滤题目，留下需要的
-    const filterQ = qIds => {
-        const newDataSource = dataSource.map((item, index) => {
-            if (qIds.includes(index + 1)) {
-                return item
-            } else {
-                return {
-                    ...item,
-                    hidden: true,
-                }
-            }
-        })
-        console.log(newDataSource)
-        setDataSource(newDataSource)
-    }
     window.getAnswer = getAnswer
-    window.filterQ = filterQ
-    window.getIds = getIds
 
     return (
         <div className='wrap'>
-            <BookListOper count={testCount} onChangeCount={handleChangeCount} />
+            <BookListOper
+                count={testCount}
+                onChangeCount={handleChangeCount}
+                onChangeIdList={handleChangeIdList}
+            />
             <div className='wrap-print'>
-                {dataSource.length <= 0 ? (
+                {visibleData.length <= 0 ? (
                     <SkeletonList count={10} />
                 ) : (
                     <div className='list'>
-                        {dataSource.map((item, index) => {
-                            let layout = 'four'
-                            // 任一选项文字长度超过10，则选择两栏布局
-                            // 任一选项文字长度超过20，则选择一栏布局
-                            // 否则使用四栏布局
-                            const itemLength = []
-                            item.accessories[0].options.forEach(item => {
-                                itemLength.push(item.length)
-                            })
-                            const len = Math.max(...itemLength)
-                            if (len >= 20) {
-                                layout = 'one'
-                            } else if (len > 10) {
-                                layout = 'two'
-                            }
+                        {visibleData.map((item, index) => {
                             const clsItem = classNames({
                                 question: true,
                                 [item.status]: item.status,
                             })
-                            const clsWrap = classNames({
-                                'item-wrap': true,
-                                hidden: item.hidden,
-                            })
                             return (
-                                <div key={item.id} className={clsWrap}>
+                                <div key={item.id} className='item-wrap'>
                                     {index % testCount === 0 && (
                                         <h2>
                                             练习题
@@ -195,7 +198,7 @@ const XingCeList = () => {
                                             className={clsItem}
                                             data={item}
                                             index={index}
-                                            layout={layout}
+                                            layout={item.layout}
                                             onClick={handleSelectOption}
                                         />
                                         {item.answerVisible && (
