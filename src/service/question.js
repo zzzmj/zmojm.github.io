@@ -36,15 +36,9 @@ export const addQuestion = data => {
 }
 
 export const updateQuestionNotes = (objectId, notes) => {
-    const q1 = LC.Object.createWithoutData('Question', objectId)
-    const q2 = LC.Object.createWithoutData('FbQuestion', objectId)
-    const q3 = LC.Object.createWithoutData('QuestionBook', objectId)
+    const q = LC.Object.createWithoutData('QuestionBook', objectId)
     // 更新笔记
-    return Promise.any([
-        q1.save({ notes }),
-        q2.save({ notes }),
-        q3.save({ notes }),
-    ])
+    return q.save({ notes })
 }
 
 // delete

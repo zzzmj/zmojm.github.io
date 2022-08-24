@@ -10,10 +10,13 @@ export const getExamList = questionIds => {
     return query.find()
 }
 
-export const getBookList = questionIds => {
+export const getBookList = (questionIds, skip) => {
     const query = new LC.Query('QuestionBook')
     // query.descending('createdAt')
     query.limit(1000)
+    if (skip) {
+        query.skip(skip)
+    }
     if (questionIds) {
         query.containedIn('id', questionIds)
     }

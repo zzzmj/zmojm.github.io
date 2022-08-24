@@ -9,6 +9,9 @@ import BookListOper from './components/BookListOper'
 import SkeletonList from '../../components/SkeletonList/SkeletonList'
 import './BookList.scss'
 import useVisibleData from './hooks/useVisibleData'
+import NotesEditor from './components/NotesEditor'
+import { updateQuestionNotes } from '../../service/question'
+import { message } from 'antd'
 
 // 格式化数据源
 const formatDataSource = dataSource => {
@@ -43,7 +46,7 @@ const formatDataSource = dataSource => {
 
 // 格式化被选中的数据
 const formatSelectedItem = (item, selectIndex) => {
-    if (!selectIndex) {
+    if (!selectIndex && selectIndex !== 0) {
         return {
             ...item,
             answerVisible: false,
@@ -73,8 +76,16 @@ const XingCeList = () => {
     const [testCount, setTestCount] = useState(40)
     const [dataSource, setDataSource] = useState([])
     const [visibleIdList, setVisibleIdList] = useState([])
+
+    // 笔记相关state
+    const [notes, setNotes] = useState({
+        id: '',
+        content: '',
+    })
+    const [notesVisible, setNotesVisible] = useState(false)
+
     const { visibleData } = useVisibleData(dataSource, visibleIdList)
-    console.log('visibleData', visibleData)
+
     useEffect(() => {
         const id = params.objectId
         if (id && id.includes(',')) {
@@ -86,17 +97,31 @@ const XingCeList = () => {
             console.log('长度', qIds.length)
         }
     }, [params])
+
     useEffect(() => {
         const data = window.localStorage.getItem('dataSource')
         if (data) {
             setDataSource(data)
         } else {
-            getBookList(questionIds).then(res => {
-                const data = formatDataSource(res)
-                setDataSource(data)
-            })
+            getAllBookList(questionIds)
         }
     }, [questionIds])
+
+    const getAllBookList = questionIds => {
+        const requestList = []
+        for (let i = 0; i < questionIds.length / 1000; i++) {
+            const request = getBookList(questionIds, i * 1000)
+            requestList.push(request)
+        }
+        Promise.all(requestList)
+            .then(res => {
+                const data = res.map(item => formatDataSource(item)).flat()
+                setDataSource(data)
+            })
+            .catch(err => {
+                console.log('err', err)
+            })
+    }
 
     const handleSelectOption = (item, index) => {
         const questionId = item.id
@@ -130,6 +155,32 @@ const XingCeList = () => {
     const handleChangeIdList = value => {
         const qIds = value ? value.split(',') : []
         setVisibleIdList(qIds)
+    }
+
+    const handleNotesChange = data => {
+        console.log('data', data)
+        setNotes({
+            id: data.objectId,
+            content: data.notes || '',
+        })
+        setNotesVisible(true)
+    }
+
+    const handleNotesOk = content => {
+        // 更新看看
+        updateQuestionNotes(notes.id, content)
+            .then(() => {
+                getAllBookList(questionIds)
+                setNotesVisible(false)
+                message.success('更新成功')
+            })
+            .catch(() => {
+                message.error('更新失败')
+            })
+    }
+
+    const handleNotesCancel = () => {
+        setNotesVisible(false)
     }
 
     const getAnswer = (left, stringArr) => {
@@ -203,6 +254,9 @@ const XingCeList = () => {
                                         />
                                         {item.answerVisible && (
                                             <Answer
+                                                onChange={() =>
+                                                    handleNotesChange(item)
+                                                }
                                                 onClose={() =>
                                                     handleClose(item)
                                                 }
@@ -216,6 +270,12 @@ const XingCeList = () => {
                     </div>
                 )}
             </div>
+            <NotesEditor
+                value={notes.content}
+                visible={notesVisible}
+                onOk={handleNotesOk}
+                onCancel={handleNotesCancel}
+            />
         </div>
     )
 }
