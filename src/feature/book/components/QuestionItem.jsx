@@ -1,14 +1,31 @@
 import classNames from 'classnames'
-import React from 'react'
+import React, { useState } from 'react'
+import { EditOutlined } from '@ant-design/icons'
+import Sketch from '../../../components/Sketch/Sketch'
+import './QuestionItem.scss'
 
 function QuestionItem(props) {
-    const { data, index, layout, className } = props
+    const { data, index, layout, className, status } = props
+    const [sketchVisible, setSketchVisible] = useState(false)
+
     const cls = classNames({
+        question: true,
         [className]: className,
+        [status]: status,
     })
     const handleSelectOption = (data, pos) => {
         props.onClick && props.onClick(data, pos)
     }
+
+    const handleClickEdit = () => {
+        console.log('点击', sketchVisible)
+        setSketchVisible(true)
+    }
+
+    const handleClose = () => {
+        setSketchVisible(false)
+    }
+
     return (
         <div className={cls}>
             <span>{index + 1}.</span>
@@ -54,7 +71,13 @@ function QuestionItem(props) {
                             )
                         })}
                 </div>
+                <EditOutlined
+                    className='edit-icon'
+                    onClick={handleClickEdit}
+                    style={{ fontSize: 22, color: '#a2a9be' }}
+                />
             </div>
+            {sketchVisible && <Sketch onClose={handleClose} />}
         </div>
     )
 }

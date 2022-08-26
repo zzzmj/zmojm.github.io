@@ -7,6 +7,9 @@
         margin: 0 auto;
         padding: 36px;
         box-sizing: border-box;
+        .ant-tree-title {
+            position: relative;
+        }
         .category-item {
             display: flex;
             .name {
@@ -38,90 +41,90 @@
     .ant-tree-switcher {
         line-height: 36px;
     }
-}
-
-.wrap {
-    h2 {
-        text-align: center;
-    }
-    .wrap-print {
-        font-family: serif;
-        max-width: 794px;
-        margin: 0 auto;
-
-        .item {
-            margin-bottom: 6px;
-            .question {
-                display: flex;
-            }
-            .question.correct {
-                background: rgba(43, 200, 160, 0.05);
-            }
-            .question.wrong {
-                background: rgba(255, 90, 90, 0.05);
-            }
-            .content {
-                flex: 1;
-            }
-            .title {
-                display: flex;
+    .wrap {
+        h2 {
+            text-align: center;
+        }
+        .wrap-print {
+            font-family: serif;
+            max-width: 794px;
+            margin: 0 auto;
+    
+            .item {
                 margin-bottom: 6px;
-                img {
-                    display: inline-block;
-                    max-height: 300px !important;
-                    width: auto !important;
-                }
-            }
-            p {
-                margin-bottom: 0;
-            }
-            .one {
-                .option {
+                .question {
                     display: flex;
                 }
-                .option + .option {
-                    padding-top: 4px;
+                .question.correct {
+                    background: rgba(43, 200, 160, 0.05);
                 }
-            }
-            .two {
-                .option {
-                    display: inline-block;
-                    box-sizing: border-box;
-                    width: 50%;
+                .question.wrong {
+                    background: rgba(255, 90, 90, 0.05);
                 }
-            }
-            .four {
-                .option {
-                    display: inline-block;
-                    box-sizing: border-box;
-                    width: 25%;
+                .content {
+                    flex: 1;
                 }
-            }
-            .option:hover {
-                background-color: rgba(0, 0, 0, 0.1);
-                cursor: pointer;
-                transition: 200ms all;
-            }
-            .option.correct {
-                background: rgba(43, 200, 160, 0.2);
-            }
-            .option.wrong {
-                background: rgba(255, 90, 90, 0.2);
-            }
-            .option:active {
-                background-color: #bae7ff;
+                .title {
+                    display: flex;
+                    margin-bottom: 6px;
+                    img {
+                        display: inline-block;
+                        max-height: 300px !important;
+                        width: auto !important;
+                    }
+                }
+                p {
+                    margin-bottom: 0;
+                }
+                .one {
+                    .option {
+                        display: flex;
+                    }
+                    .option + .option {
+                        padding-top: 4px;
+                    }
+                }
+                .two {
+                    .option {
+                        display: inline-block;
+                        box-sizing: border-box;
+                        width: 50%;
+                    }
+                }
+                .four {
+                    .option {
+                        display: inline-block;
+                        box-sizing: border-box;
+                        width: 25%;
+                    }
+                }
+                .option:hover {
+                    background-color: rgba(0, 0, 0, 0.1);
+                    cursor: pointer;
+                    transition: 200ms all;
+                }
+                .option.correct {
+                    background: rgba(43, 200, 160, 0.2);
+                }
+                .option.wrong {
+                    background: rgba(255, 90, 90, 0.2);
+                }
+                .option:active {
+                    background-color: #bae7ff;
+                }
             }
         }
     }
-}
-·
-.notes-editor {
-    margin: 0 auto;
+    ·
+    .notes-editor {
+        margin: 0 auto;
+    }
+    
+    .tox-notifications-container {
+        display: none;
+    }
+    .hidden {
+        display: none;
+    }
 }
 
-.tox-notifications-container {
-    display: none;
-}
-.hidden {
-    display: none;
-}

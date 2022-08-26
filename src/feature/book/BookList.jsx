@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+// import { SketchField, Tools } from 'react-sketch'
+import { message } from 'antd'
 import classNames from 'classnames'
-import { useParams } from 'react-router'
 
 import Answer from '../xingce/components/Answer'
 import { getBookList } from '../../service/exam'
 import QuestionItem from './components/QuestionItem'
 import BookListOper from './components/BookListOper'
 import SkeletonList from '../../components/SkeletonList/SkeletonList'
-import './BookList.scss'
 import useVisibleData from './hooks/useVisibleData'
 import NotesEditor from './components/NotesEditor'
 import { updateQuestionNotes } from '../../service/question'
-import { message } from 'antd'
+import useQuestionIds from './hooks/useQuestionIds'
+import './BookList.scss'
+import useDeviceInfo from './hooks/useDeviceInfo'
 
 // 格式化数据源
-const formatDataSource = dataSource => {
+const formatDataSource = (dataSource, isMobile) => {
     const data = dataSource
         .map(item => item.toJSON())
         // 排序，按照题目做过的次数
@@ -34,6 +36,10 @@ const formatDataSource = dataSource => {
                 layout = 'one'
             } else if (len > 10) {
                 layout = 'two'
+            }
+
+            if (isMobile) {
+                layout = 'one'
             }
             return {
                 ...item,
@@ -71,8 +77,6 @@ const formatSelectedItem = (item, selectIndex) => {
 
 // 2264418,2448379
 const XingCeList = () => {
-    const params = useParams()
-    const [questionIds, setQuestionIds] = useState([])
     const [testCount, setTestCount] = useState(40)
     const [dataSource, setDataSource] = useState([])
     const [visibleIdList, setVisibleIdList] = useState([])
@@ -83,20 +87,30 @@ const XingCeList = () => {
         content: '',
     })
     const [notesVisible, setNotesVisible] = useState(false)
-
+    const { isMobile } = useDeviceInfo()
     const { visibleData } = useVisibleData(dataSource, visibleIdList)
+    const { questionIds } = useQuestionIds()
 
-    useEffect(() => {
-        const id = params.objectId
-        if (id && id.includes(',')) {
-            const qIds = id
-                .split(',')
-                .filter(item => item != '')
-                .map(item => parseInt(item))
-            setQuestionIds(qIds)
-            console.log('长度', qIds.length)
-        }
-    }, [params])
+    const getAllBookList = useCallback(
+        questionIds => {
+            const requestList = []
+            for (let i = 0; i < questionIds.length / 1000; i++) {
+                const request = getBookList(questionIds, i * 1000)
+                requestList.push(request)
+            }
+            Promise.all(requestList)
+                .then(res => {
+                    const data = res
+                        .map(item => formatDataSource(item, isMobile))
+                        .flat()
+                    setDataSource(data)
+                })
+                .catch(err => {
+                    console.log('err', err)
+                })
+        },
+        [isMobile]
+    )
 
     useEffect(() => {
         const data = window.localStorage.getItem('dataSource')
@@ -105,25 +119,11 @@ const XingCeList = () => {
         } else {
             getAllBookList(questionIds)
         }
-    }, [questionIds])
-
-    const getAllBookList = questionIds => {
-        const requestList = []
-        for (let i = 0; i < questionIds.length / 1000; i++) {
-            const request = getBookList(questionIds, i * 1000)
-            requestList.push(request)
-        }
-        Promise.all(requestList)
-            .then(res => {
-                const data = res.map(item => formatDataSource(item)).flat()
-                setDataSource(data)
-            })
-            .catch(err => {
-                console.log('err', err)
-            })
-    }
+    }, [questionIds, getAllBookList])
 
     const handleSelectOption = (item, index) => {
+        // console.log('is', isMobile)
+        // if (isMobile) return
         const questionId = item.id
         const newDataSource = dataSource.map(item => {
             if (item.id === questionId) {
@@ -220,7 +220,7 @@ const XingCeList = () => {
     window.getAnswer = getAnswer
 
     return (
-        <div className='wrap'>
+        <div className='book-wrap'>
             <BookListOper
                 count={testCount}
                 onChangeCount={handleChangeCount}
@@ -232,10 +232,6 @@ const XingCeList = () => {
                 ) : (
                     <div className='list'>
                         {visibleData.map((item, index) => {
-                            const clsItem = classNames({
-                                question: true,
-                                [item.status]: item.status,
-                            })
                             return (
                                 <div key={item.id} className='item-wrap'>
                                     {index % testCount === 0 && (
@@ -246,7 +242,7 @@ const XingCeList = () => {
                                     )}
                                     <div className='item'>
                                         <QuestionItem
-                                            className={clsItem}
+                                            status={item.status}
                                             data={item}
                                             index={index}
                                             layout={item.layout}
@@ -270,6 +266,13 @@ const XingCeList = () => {
                     </div>
                 )}
             </div>
+            {/* <SketchField
+                width='1024px'
+                height='768px'
+                tool={Tools.Pencil}
+                lineColor='black'
+                lineWidth={3}
+            /> */}
             <NotesEditor
                 value={notes.content}
                 visible={notesVisible}

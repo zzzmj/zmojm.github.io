@@ -52,7 +52,7 @@ const XingCe = () => {
                             }
                             shape='round'
                         >
-                            开始练习
+                            练习
                         </Button>
                     </div>
                 </div>
@@ -65,8 +65,7 @@ const XingCe = () => {
     }
 
     return (
-        <div className='xing-ce'>
-            hello, world
+        <div className='xing-ce-book'>
             <div className='category'>
                 <Tree className='xing-ce-tree' treeData={categoryList} />
             </div>
