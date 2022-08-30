@@ -12,7 +12,7 @@ class GuaFabric {
         // 未来队列
         this.future = []
         this.canvas = canvas
-        this.canvas.freeDrawingBrush.width = 4
+        this.canvas.freeDrawingBrush.width = 3
         this.canvas.freeDrawingBrush.color = '#ff4d4f'
         canvas.on('mouse:up', () => {
             const state = canvas.toDatalessJSON()
