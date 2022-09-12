@@ -8,14 +8,6 @@ const ShenLun = () => {
     const [textList, setTextList] = useState(new Array(1400).fill(''))
     const [activeIndex, setActiveIndex] = useState(0)
 
-    const handleKeyDown = e => {
-        // 禁用删除键
-        const keyCode = e.keyCode
-        if (keyCode === 8) {
-            return e.preventDefault()
-        }
-    }
-
     const handleInputChange = e => {
         let value = e.target.value
         const stringifyValue = JSON.stringify(value)
@@ -42,7 +34,6 @@ const ShenLun = () => {
                 type='text'
                 value={inputValue}
                 onChange={handleInputChange}
-                onKeyDown={handleKeyDown}
             />
 
             <div className='list'>

@@ -1,7 +1,6 @@
 // 答案组件
 import React, { useEffect } from 'react'
 import { Button, Divider, Tag } from 'antd'
-import { Editor } from '@tinymce/tinymce-react'
 import './Answer.scss'
 
 const Answer = props => {
