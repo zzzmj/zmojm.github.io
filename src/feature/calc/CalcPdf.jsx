@@ -25,7 +25,7 @@ const getData = (count = 20) => {
     const divisionFn = () => {
         const a = getNumberFromLen(5)
         const b = getNumberFromLen(3)
-        return [a, b, formatAnswerNumber(a / b, 2)]
+        return [a, b, formatAnswerNumber(a / b, 3)]
     }
 
     // 加减

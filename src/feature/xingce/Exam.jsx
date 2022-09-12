@@ -47,7 +47,7 @@ const Exam = () => {
     const handleClickPractice = () => {
         const ids = pageList[selectIndex].map(item => item.id)
         console.log('ids', ids.toString())
-        history.push(`/xingce/${ids.toString()}`)
+        history.push(`/book/${ids.toString()}`)
     }
 
     const copyText = text => {

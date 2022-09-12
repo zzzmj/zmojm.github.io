@@ -3,7 +3,7 @@
  * 功能：
  * 1. 选择习题题量
  * 2. 过滤题目
- * 3. 提交测试成绩
+ * 3. 答案验证
  */
 import { Radio, Input, Modal } from 'antd'
 import { SettingOutlined } from '@ant-design/icons'
@@ -12,16 +12,22 @@ import './BookListOper.scss'
 
 const TextArea = Input.TextArea
 function BookListOper(props) {
-    const { count, filterIdList } = props
+    const { filterIdList, onChange } = props
     const [isModalVisible, setIsModalVisible] = useState(false)
+    const [count, setCount] = useState(40)
+    const [filterIds, setFilterIds] = useState('')
+    const [answer, setAnswer] = useState({
+        key: '',
+        value: '',
+    })
 
     const handleChangeCount = e => {
         const value = e.target.value
-        props.onChangeCount && props.onChangeCount(value)
+        setCount(value)
     }
     const handleChangeId = e => {
         const value = e.target.value
-        props.onChangeIdList && props.onChangeIdList(value)
+        setFilterIds(value)
     }
 
     const showModal = () => {
@@ -29,12 +35,27 @@ function BookListOper(props) {
     }
 
     const handleOk = () => {
+        onChange &&
+            onChange({
+                count,
+                filterIds,
+                answer,
+            })
         setIsModalVisible(false)
     }
 
     const handleCancel = () => {
         setIsModalVisible(false)
     }
+
+    const handleChangeAnswer = (e, key) => {
+        const value = e.target.value
+        setAnswer({
+            ...answer,
+            [key]: value,
+        })
+    }
+
     return (
         <div className='book-oper'>
             <SettingOutlined
@@ -48,7 +69,6 @@ function BookListOper(props) {
                 visible={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
-                footer={null}
             >
                 <div className='btn-list'>
                     <div className='item'>
@@ -62,12 +82,28 @@ function BookListOper(props) {
                     </div>
                     <div className='item'>
                         <h3 className='label'>筛选题目：</h3>
-                        <TextArea
+                        <Input
                             value={filterIdList}
-                            rows={4}
                             placeholder='请筛选题目的id'
                             onChange={handleChangeId}
                         />
+                    </div>
+                    <div className='item'>
+                        <h3 className='label'>验证答案：</h3>
+                        <Input.Group compact>
+                            <Input
+                                type='number'
+                                style={{ width: '20%' }}
+                                onChange={e => handleChangeAnswer(e, 'key')}
+                                placeholder='练习几？'
+                            />
+                            <Input
+                                style={{ width: '80%' }}
+                                onChange={e => handleChangeAnswer(e, 'value')}
+                                defaultValue=''
+                                placeholder='请输入答案，逗号分隔'
+                            />
+                        </Input.Group>
                     </div>
                 </div>
             </Modal>

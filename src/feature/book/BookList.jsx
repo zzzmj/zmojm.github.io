@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 // import { SketchField, Tools } from 'react-sketch'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import classNames from 'classnames'
 
 import Answer from '../xingce/components/Answer'
@@ -183,6 +183,18 @@ const XingCeList = () => {
         setNotesVisible(false)
     }
 
+    const handleChangeOper = data => {
+        const { count, filterIds, answer } = data
+        setTestCount(count)
+        const qIds = filterIds ? filterIds.split(',') : []
+        setVisibleIdList(qIds)
+
+        // 验证答案
+        const { key, value } = answer
+        const left = (key - 1) * count
+        getAnswer(left, value)
+    }
+
     const getAnswer = (left, stringArr) => {
         const answer = dataSource.map(
             item => parseInt(item.correctAnswer.choice) + 1
@@ -212,20 +224,35 @@ const XingCeList = () => {
                 qIds.push(dataSource[i].id)
             }
         }
-        console.log('正确率：', parseInt((count * 100) / arr.length))
-        console.log('错题：', wrong.join(', '))
-        console.log('题号：', qIds.join(', '))
+        const zql = parseInt((count * 100) / arr.length)
+        const ct = wrong.join(', ')
+        const zqda = answer
+            .slice(left, arr.length + left)
+            .map((item, index) => {
+                if (index % 5 === 0) {
+                    return ' ' + String.fromCharCode(item + 64)
+                } else {
+                    return String.fromCharCode(item + 64)
+                }
+            })
+            .join('')
+        Modal.success({
+            title: '答案验证结果',
+            content: (
+                <div>
+                    <p>正确率：{zql}%</p>
+                    <p>错题：{ct}</p>
+                    <p>正确答案：{zqda}</p>
+                </div>
+            ),
+        })
     }
 
     window.getAnswer = getAnswer
 
     return (
         <div className='book-wrap'>
-            <BookListOper
-                count={testCount}
-                onChangeCount={handleChangeCount}
-                onChangeIdList={handleChangeIdList}
-            />
+            <BookListOper onChange={handleChangeOper} />
             <div className='wrap-print'>
                 {visibleData.length <= 0 ? (
                     <SkeletonList count={10} />

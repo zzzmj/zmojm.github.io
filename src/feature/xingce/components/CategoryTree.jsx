@@ -175,7 +175,7 @@ const CategoryTree = props => {
     }
 
     const handleClickPractice = () => {
-        history.push(`/xingce/${checkedQuestionIds.toString()},`)
+        history.push(`/book/${checkedQuestionIds.toString()},`)
     }
 
     const handleClickCategory = () => {
@@ -346,7 +346,7 @@ const CategoryTree = props => {
     const handleClickPreview = () => {
         const { question } = form.getFieldsValue()
         window.open(
-            `https://zmojm.github.io/build/index.html#/xingce/${question},`,
+            `https://zmojm.github.io/build/index.html#/book/${question},`,
             '',
             'width=800,height=1000'
         )
@@ -354,7 +354,7 @@ const CategoryTree = props => {
 
     const handleDeletePreview = () => {
         window.open(
-            `https://zmojm.github.io/build/index.html#/xingce/${deleteInputValue},`,
+            `https://zmojm.github.io/build/index.html#/book/${deleteInputValue},`,
             '',
             'width=800,height=1000'
         )
