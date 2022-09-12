@@ -145,10 +145,31 @@ const getData = (type = 1, count = 10) => {
                 </div>
             ),
             formatAnswer: a * b,
+            // 误差为0
+            errorAnalysis: (input, answer) => input - answer === 0,
+        }
+    }
+
+    // 2*1乘法
+    const twoMulToOneFn = () => {
+        let a = getNumberFromLen(2)
+        let b = getNumberFromLen(1)
+        while (a < 10) {
+            a = getNumberFromLen(2)
+            b = getNumberFromLen(1)
+        }
+        return {
+            formula: (
+                <div>
+                    {a} * {b}
+                </div>
+            ),
+            formatAnswer: a * b,
             // 误差控制在3%
             errorAnalysis: (input, answer) => input - answer === 0,
         }
     }
+
     // 三位数乘法误差允许3%以内
     const threeMulFn = () => {
         const a = getNumberFromLen(3)
@@ -218,6 +239,7 @@ const getData = (type = 1, count = 10) => {
         7: fractionFn(),
         8: divisionFn2,
         9: threeMulToOneFn,
+        10: twoMulToOneFn,
     }
     const arr = []
     for (let i = 0; i < count; i++) {
@@ -254,21 +276,7 @@ const defaultColumn = [
         span: 4,
     },
 ]
-/**
- * 各清理了200米，
- * 前半段设甲效率是4，乙是3（设是x分钟）。 中间十分钟是4:0，提高效率后半段是4:6（50-x分钟）
- * 总效率是4:4
- * 则：4x+40 + 4（50-x） = 3x + 6*（50-x） => x+40 = 2*(50-x) => 2x = 60, x = 30
- * 甲60分钟清理了4*60 = 240，乙则是4*60 = 240
- * 所以乙后面工作了20分钟
- * 【例2】
- * 乙：7.5小时完成1/2+40个，甲：300个 =》 说明总量 = 640个
- * 1/2差40 = 280个， 所以360/7.5 = 720/15 = 48个
- * 【例7】设工作总量分别是120,150，晴天：甲效率是10 乙效率是10。 雨天：甲6，乙9。设晴天为x，雨天为y
- * 10x + 6y = 120
- * 10x + 9y = 150，y = 10。
- * 【例8】
- */
+
 const Calc = () => {
     const [column, setColumn] = useState(defaultColumn)
     const [calcMethod, setCalcMethod] = useState(1)
@@ -366,6 +374,7 @@ const Calc = () => {
                     <Radio value={7}>特殊分数</Radio>
                     <Radio value={8}>高难度除法</Radio>
                     <Radio value={9}>3*1乘法</Radio>
+                    <Radio value={10}>2*1乘法</Radio>
                 </Radio.Group>
             </div>
             <div className={`${prefix}-content`}>
