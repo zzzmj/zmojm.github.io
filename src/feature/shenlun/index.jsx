@@ -4,22 +4,24 @@ import React, { useState } from 'react'
 import './index.scss'
 
 const ShenLun = () => {
-    const [inputValue, setInputValue] = useState('')
     const [textList, setTextList] = useState(new Array(1400).fill(''))
     const [activeIndex, setActiveIndex] = useState(0)
 
     const handleInputChange = e => {
         let value = e.target.value
-        const stringifyValue = JSON.stringify(value)
-        if (stringifyValue.includes('\\n')) {
-            const suffix = 25 - (value.length % 25)
-            value = value.replace(
-                '\n',
-                ' ' + new Array(suffix).fill(' ').join('')
-            )
-            window.string = value
+        while (value.includes('\n')) {
+            const pos = value.indexOf('\n')
+            const suffix = 25 - (pos % 25)
+            if (suffix < 25) {
+                value = value.replace(
+                    '\n',
+                    new Array(suffix).fill(' ').join('')
+                )
+            } else {
+                value = value.replace('\n', '')
+            }
         }
-        setInputValue(value)
+        // setInputValue(value)
         const newTextList = new Array(1400).fill('')
         Array.from(value).forEach((item, index) => {
             newTextList[index] = item
@@ -32,7 +34,6 @@ const ShenLun = () => {
             <Input.TextArea
                 className='input'
                 type='text'
-                value={inputValue}
                 onChange={handleInputChange}
             />
 
