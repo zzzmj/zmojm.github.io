@@ -25,7 +25,7 @@ const Answer = props => {
     const handleClickNotes = () => {
         props.onChange && props.onChange(props.data)
     }
-
+    console.log('keypoints', keypoints, props.data)
     return (
         <div className='answer'>
             <div className='correct'>
@@ -48,13 +48,14 @@ const Answer = props => {
                 <li>
                     <span>考点：</span>
                     <div className='content'>
-                        {keypoints.map((item, index) => {
-                            return (
-                                <Tag key={index} color='#108ee9'>
-                                    {item.name}
-                                </Tag>
-                            )
-                        })}
+                        {keypoints &&
+                            keypoints.map((item, index) => {
+                                return (
+                                    <Tag key={index} color='#108ee9'>
+                                        {item.name}
+                                    </Tag>
+                                )
+                            })}
                     </div>
                 </li>
                 <li>
