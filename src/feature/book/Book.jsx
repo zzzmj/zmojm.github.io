@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Upload, Tree, Button } from 'antd'
+import { Tree, Button } from 'antd'
 import { getCategoryQuestion } from '../../service/question'
-import '../xingce/XingCe.scss'
 import { useHistory } from 'react-router'
-import { getBookList } from '../../service/exam'
+import './BookList.scss'
 
 const XingCe = () => {
     const [categoryList, setCategoryList] = useState([])
@@ -35,13 +34,6 @@ const XingCe = () => {
         // })
     }
 
-    /**
-     * 17:36
-     * [ 335, 337, 351, 357 ]
-     * 337：
-     * 351：拓展才能体现将范围扩大，而推广并没有这个意思
-     * 357：前文说到不仅是无视，因此填空处要比无视的力度要强，因此抹杀比漠视更好
-     */
     const processCategoryList = data => {
         // 处理数据
         data.forEach(item => {

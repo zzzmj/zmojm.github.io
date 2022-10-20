@@ -1,52 +1,22 @@
-import React, { useEffect, useState } from 'react'
-import { HashRouter, Route, Switch, useParams } from 'react-router-dom'
-import Header from '../feature/edit/Header/Header'
-import Annotation from '../feature/edit/Annotation/Annotation'
-import Comment from '../feature/edit/Comment/Comment'
-import Highlighter from 'web-highlighter'
-import Admin from '../feature/admin/Admin'
-import ShenLun from '../feature/shenlun'
-import Book from '../feature/book/Book'
-import BookList from '../feature/book/BookList'
-import Algorithm from '../feature/algorithm/Algorithm'
-import Calc from '../feature/calc/Calc'
-import Calc2 from '../feature/calc/Calc2'
-import Test from './test'
-import WrongQuestion from '../feature/wrongQuestion/WrongQuestion'
+import React from 'react'
+import { HashRouter, Route, Switch } from 'react-router-dom'
+import loadable from '@loadable/component'
+
+const Admin = loadable(() => import('../feature/admin/Admin'))
+const ShenLun = loadable(() => import('../feature/shenlun'))
+const Book = loadable(() => import('../feature/book/Book'))
+const BookList = loadable(() => import('../feature/book/BookList'))
+const Calc2 = loadable(() => import('../feature/calc/Calc2'))
+const Test = loadable(() => import('./test'))
+const WrongQuestion = loadable(() =>
+    import('../feature/wrongQuestion/WrongQuestion')
+)
+const XingCe = loadable(() => import('../feature/xingce/XingCe'))
+const XingCeList = loadable(() => import('../feature/xingce/XingCeList'))
+const Exam = loadable(() => import('../feature/xingce/Exam'))
+const CalcPdf = loadable(() => import('../feature/calc/CalcPdf'))
+const EditCompoent = loadable(() => import('../feature/edit/Edit'))
 import './App.scss'
-import XingCe from '../feature/xingce/XingCe'
-import XingCeList from '../feature/xingce/XingCeList'
-import Exam from '../feature/xingce/Exam'
-import CalcPdf from '../feature/calc/CalcPdf'
-
-const Edit = () => {
-    const params = useParams()
-    const [highlighter, setHighlighter] = useState(
-        new Highlighter({
-            exceptSelectors: ['.ant-list-item'],
-        })
-    )
-    useEffect(() => {
-        const h = new Highlighter({
-            exceptSelectors: ['.ant-list-item'],
-        })
-        setHighlighter(h)
-
-        return () => {
-            h.dispose()
-        }
-    }, [params])
-
-    return (
-        <div className='yryr-home'>
-            <Header />
-            <div className='main'>
-                <Annotation key={highlighter} highlighter={highlighter} />
-                <Comment key={highlighter} highlighter={highlighter} />
-            </div>
-        </div>
-    )
-}
 
 const App = () => {
     return (
@@ -55,7 +25,7 @@ const App = () => {
                 <Route exact path='/' component={Admin} />
                 <Route exact path='/admin' component={Admin} />
                 <Route exact path='/shenlun' component={ShenLun} />
-                <Route exact path='/edit/:objectId' component={Edit} />
+                <Route exact path='/edit/:objectId' component={EditCompoent} />
                 {/* <Route exact path='/algorithm' component={Algorithm} /> */}
                 {/* <Route exact path='/calc' component={Calc} /> */}
                 <Route exact path='/calc' component={Calc2} />

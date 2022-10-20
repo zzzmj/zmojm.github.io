@@ -16,7 +16,6 @@ import {
     deleteAnnotation,
     updateSavaStatus,
 } from '../Annotation/AnnotationSlice'
-// import { Button } from 'react-bootstrap'
 
 const log = console.log.bind(console, '[comment]')
 // 自定义颜色。
