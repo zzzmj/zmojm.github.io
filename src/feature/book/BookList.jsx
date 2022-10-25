@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 // import { SketchField, Tools } from 'react-sketch'
 import { message, Modal } from 'antd'
-import classNames from 'classnames'
-
 import Answer from '../xingce/components/Answer'
 import { getBookList } from '../../service/exam'
 import QuestionItem from './components/QuestionItem'
@@ -14,6 +12,7 @@ import { updateQuestionNotes } from '../../service/question'
 import useQuestionIds from './hooks/useQuestionIds'
 import './BookList.scss'
 import useDeviceInfo from './hooks/useDeviceInfo'
+import { getParams } from '../../utils'
 
 // 格式化数据源
 const formatDataSource = (dataSource, isMobile) => {
@@ -46,7 +45,7 @@ const formatDataSource = (dataSource, isMobile) => {
                 layout,
             }
         })
-
+    console.log('data', data)
     return data
 }
 
@@ -75,8 +74,8 @@ const formatSelectedItem = (item, selectIndex) => {
     }
 }
 
-// 2264418,2448379
 const XingCeList = () => {
+    const [exerTitle, setExerTitle] = useState('')
     const [testCount, setTestCount] = useState(40)
     const [dataSource, setDataSource] = useState([])
     const [visibleIdList, setVisibleIdList] = useState([])
@@ -113,6 +112,12 @@ const XingCeList = () => {
     )
 
     useEffect(() => {
+        const title = getParams('title')
+        title && setExerTitle(title)
+        document.title = title
+    }, [])
+
+    useEffect(() => {
         const data = window.localStorage.getItem('dataSource')
         if (data) {
             setDataSource(data)
@@ -145,16 +150,6 @@ const XingCeList = () => {
             }
         })
         setDataSource(newDataSource)
-    }
-
-    const handleChangeCount = count => {
-        setTestCount(count)
-    }
-
-    // 控制需要单独显示的题目
-    const handleChangeIdList = value => {
-        const qIds = value ? value.split(',') : []
-        setVisibleIdList(qIds)
     }
 
     const handleNotesChange = data => {
@@ -263,8 +258,13 @@ const XingCeList = () => {
                                 <div key={item.id} className='item-wrap'>
                                     {index % testCount === 0 && (
                                         <h2>
-                                            练习题
-                                            {parseInt(index / testCount) + 1}
+                                            {exerTitle
+                                                ? exerTitle
+                                                : ` 练习题${
+                                                      parseInt(
+                                                          index / testCount
+                                                      ) + 1
+                                                  }`}
                                         </h2>
                                     )}
                                     <div className='item'>

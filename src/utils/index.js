@@ -188,3 +188,8 @@ export const setHightlightSpanEl = (els, option) => {
         // 再添加新的
     }
 }
+
+export const getParams = param => {
+    const url = new URL(window.location.href)
+    return url.searchParams.get(param)
+}

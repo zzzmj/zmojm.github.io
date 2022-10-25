@@ -7,7 +7,6 @@ function useDeviceInfo() {
     })
     useEffect(() => {
         const resizeFn = () => {
-            console.log('document.body.clientWidth', document.body.clientWidth)
             if (document.body.clientWidth < 1200) {
                 setDeviceInfo(device => ({
                     ...device,
