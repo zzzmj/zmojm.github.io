@@ -16,6 +16,7 @@ const XingCeList = loadable(() => import('../feature/xingce/XingCeList'))
 const Exam = loadable(() => import('../feature/xingce/Exam'))
 const CalcPdf = loadable(() => import('../feature/calc/CalcPdf'))
 const EditCompoent = loadable(() => import('../feature/edit/Edit'))
+const Idiom = loadable(() => import('../feature/idiom'))
 import './App.scss'
 
 const App = () => {
@@ -39,6 +40,7 @@ const App = () => {
                 <Route exact path='/XingCe/:objectId' component={XingCeList} />
                 {/* 考试模式，提高能力 */}
                 <Route exact path='/exam' component={Exam} />
+                <Route exact path='/idiom' component={Idiom} />
             </Switch>
         </HashRouter>
     )
