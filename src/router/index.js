@@ -18,7 +18,7 @@ const Idiom = loadable(() => import('../feature/idiom'))
 const routes = [
     {
         path: '/',
-        redirect: '/index', // 路由重定向字段
+        element: <Admin />,
     },
     {
         path: '/index',

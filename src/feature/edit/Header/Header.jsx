@@ -66,7 +66,7 @@ const Header = props => {
     }
 
     const handleNavigate = () => {
-        history.push({
+        history({
             pathname: `/admin`,
         })
     }

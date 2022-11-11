@@ -175,7 +175,7 @@ const CategoryTree = props => {
     }
 
     const handleClickPractice = () => {
-        history.push(`/book/${checkedQuestionIds.toString()},`)
+        history(`/book/${checkedQuestionIds.toString()},`)
     }
 
     const handleClickCategory = () => {

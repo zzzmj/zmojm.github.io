@@ -6,7 +6,7 @@ import './BookList.scss'
 
 const XingCe = () => {
     const [categoryList, setCategoryList] = useState([])
-    const history = useNavigate()
+    const navigate = useNavigate()
     useEffect(() => {
         getCategoryQuestion('625d56e11122b910ec683964').then(res => {
             const data = res.toJSON().content
@@ -18,7 +18,7 @@ const XingCe = () => {
 
     // 开始练习
     const handleClickPractice = (questionIds, id) => {
-        history.push({
+        navigate({
             pathname: `/book/${questionIds.toString()}`,
         })
 

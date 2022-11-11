@@ -20,7 +20,7 @@ const mapKeyToText = {
 const ArticleTable = props => {
     const { loading, dataSource, onUpdate } = props
     const [searchList, setSearchList] = useState(dataSource || [])
-    const history = useNavigate()
+    const navigate = useNavigate()
     const columns = [
         {
             title: 'No.',
@@ -112,7 +112,7 @@ const ArticleTable = props => {
     // }, [update])
 
     const handleEdit = id => {
-        history.push({
+        navigate({
             pathname: `/edit/${id}`,
         })
     }
