@@ -1,5 +1,5 @@
 import React from 'react'
-import { useRoutes, BrowserRouter } from 'react-router-dom'
+import { useRoutes, HashRouter } from 'react-router-dom'
 import routes from '../router'
 import './App.scss'
 
@@ -10,9 +10,9 @@ const RouterConfig = () => {
 
 const App = () => {
     return (
-        <BrowserRouter>
+        <HashRouter>
             <RouterConfig />
-        </BrowserRouter>
+        </HashRouter>
     )
 }
 
