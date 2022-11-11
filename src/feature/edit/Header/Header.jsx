@@ -6,7 +6,7 @@ import './Header.scss'
 import { useState } from 'react'
 import EditCategoryModal from './EditCategoryModal'
 import { useSelector } from 'react-redux'
-import { useHistory, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router-dom'
 import { updateArticleToLeanCloud } from '../../../service/article'
 import StatisticsModal from './StatisticsModal'
 import { useDispatch } from 'react-redux'
@@ -14,7 +14,7 @@ import { updateSavaStatus } from '../Annotation/AnnotationSlice'
 
 const Header = props => {
     const { className, type = 'edit' } = props
-    const history = useHistory()
+    const history = useNavigate()
     const params = useParams()
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(false)

@@ -16,14 +16,14 @@ import {
     getCustomWrongQuestionCategory,
 } from '../../../service/question'
 import lodash from 'lodash'
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 
 const { TextArea } = Input
 const { confirm } = Modal
 
 // 分类树
 const CategoryTree = props => {
-    const history = useHistory()
+    const history = useNavigate()
     const [form] = Form.useForm()
     const [treeData, setTreeData] = useState([])
     const [showData, setShowData] = useState([])

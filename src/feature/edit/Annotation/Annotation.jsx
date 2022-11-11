@@ -24,7 +24,7 @@ import {
     createAnnotation,
     updateSavaStatus,
 } from './AnnotationSlice'
-import { Prompt, useHistory, useParams } from 'react-router'
+import { Prompt, useParams } from 'react-router-dom'
 import { getArticleFromLeanCloud } from '../../../service/article'
 
 const log = console.log.bind(console, '[annota]')
@@ -299,7 +299,7 @@ const Annotation = props => {
                 dangerouslySetInnerHTML={{ __html: content }}
             />
 
-            <Prompt when={isSave} message='您的内容尚未保存确定要离开吗?' />
+            {/* <Prompt when={isSave} message='您的内容尚未保存确定要离开吗?' /> */}
 
             <div className='action'>
                 <Button onClick={() => handleNavigate('pre')}>上一篇</Button>

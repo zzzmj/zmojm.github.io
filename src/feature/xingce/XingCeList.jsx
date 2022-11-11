@@ -7,7 +7,7 @@ import {
     updateQuestionNotes,
 } from '../../service/question'
 import './XingCe.scss'
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 import Answer from './components/Answer'
 import { getBookList, getExamList } from '../../service/exam'
 import CollectIcon from './components/CollectIcon'

@@ -4,7 +4,7 @@ import { Button, Divider, message, Modal, Select } from 'antd'
 import { getCategoryQuestion } from '../../service/question'
 import './XingCe.scss'
 import './Exam.scss'
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import { getExamList } from '../../service/exam'
 import { getCollectList } from '../../service/collect'
 import CategoryTree from './components/CategoryTree'
@@ -16,7 +16,7 @@ const Exam = () => {
     const [selectIndex, setSelectIndex] = useState(0)
     const [pageList, setPageList] = useState([])
     const [collectList, setCollectList] = useState([])
-    const history = useHistory()
+    const history = useNavigate()
     useEffect(() => {
         getExamList().then(res => {
             const data = res.map(item => item.toJSON())

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Tree, Button } from 'antd'
 import { getCategoryQuestion } from '../../service/question'
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import './BookList.scss'
 
 const XingCe = () => {
     const [categoryList, setCategoryList] = useState([])
-    const history = useHistory()
+    const history = useNavigate()
     useEffect(() => {
         getCategoryQuestion('625d56e11122b910ec683964').then(res => {
             const data = res.toJSON().content

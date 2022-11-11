@@ -5,7 +5,7 @@ import {
     getArticleFromLeanCloud,
     updateArticleToLeanCloud,
 } from '../../../service/article'
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 import SearchForm from './SearchForm'
 
 const mapKeyToText = {
@@ -20,7 +20,7 @@ const mapKeyToText = {
 const ArticleTable = props => {
     const { loading, dataSource, onUpdate } = props
     const [searchList, setSearchList] = useState(dataSource || [])
-    const history = useHistory()
+    const history = useNavigate()
     const columns = [
         {
             title: 'No.',

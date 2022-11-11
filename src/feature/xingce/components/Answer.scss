@@ -12,24 +12,28 @@
     }
 
     ul {
+        
+        padding-left: 0;
         li {
+            position: relative;
             display: flex;
             span {
                 font-weight: bold;
                 white-space: nowrap;
             }
             margin-bottom: 12px;
+            padding-left: 20px;
         }
         li::before {
-            display: inline-block;
+            position: absolute;
+            display: block;
             content: '';
             width: 4px;
             height: 4px;
             background: #3c7cfc;
-            margin-right: 10px;
             border-radius: 4px;
-            position: relative;
-            top: 9px;
+            left: 8px;
+            top: 10px;
         }
     }
     .question-notes {

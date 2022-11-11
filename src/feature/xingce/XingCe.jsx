@@ -8,11 +8,11 @@ import {
     getQuestionList,
 } from '../../service/question'
 import './XingCe.scss'
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 
 const XingCe = () => {
     const [categoryList, setCategoryList] = useState([])
-    const history = useHistory()
+    const history = useNavigate()
     useEffect(() => {
         getCategoryQuestion().then(res => {
             const data = res.toJSON().content

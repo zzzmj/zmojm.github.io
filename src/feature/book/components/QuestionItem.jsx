@@ -41,7 +41,16 @@ function QuestionItem(props) {
                 <div className={`options ${layout}`}>
                     {data.accessories[0] &&
                         data.accessories[0].options.map((option, pos) => {
-                            const mapIndexToLetter = ['A', 'B', 'C', 'D']
+                            const mapIndexToLetter = [
+                                'A',
+                                'B',
+                                'C',
+                                'D',
+                                'E',
+                                'F',
+                                'G',
+                                'H',
+                            ]
                             let status =
                                 pos == data.selectIndex &&
                                 data.status == 'correct'

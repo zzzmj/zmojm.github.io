@@ -10,11 +10,11 @@ import { SettingOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
 import './BookListOper.scss'
 
-const TextArea = Input.TextArea
 function BookListOper(props) {
     const { filterIdList, onChange } = props
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [count, setCount] = useState(40)
+    const [sortType, setSortType] = useState(1)
     const [filterIds, setFilterIds] = useState('')
     const [answer, setAnswer] = useState({
         key: '',
@@ -24,6 +24,10 @@ function BookListOper(props) {
     const handleChangeCount = e => {
         const value = e.target.value
         setCount(value)
+    }
+    const handleChangeSortType = e => {
+        const value = e.target.value
+        setSortType(value)
     }
     const handleChangeId = e => {
         const value = e.target.value
@@ -39,6 +43,7 @@ function BookListOper(props) {
             onChange({
                 count,
                 filterIds,
+                sortType,
                 answer,
             })
         setIsModalVisible(false)
@@ -71,6 +76,18 @@ function BookListOper(props) {
                 onCancel={handleCancel}
             >
                 <div className='btn-list'>
+                    <div className='item'>
+                        <h3 className='label'>选择排序方式：</h3>
+                        <Radio.Group
+                            onChange={handleChangeSortType}
+                            value={sortType}
+                        >
+                            <Radio value={1}>按默认顺序</Radio>
+                            <Radio value={2}>按做题次数</Radio>
+                            <Radio value={3}>按正确率正序</Radio>
+                            <Radio value={4}>按正确率倒序</Radio>
+                        </Radio.Group>
+                    </div>
                     <div className='item'>
                         <h3 className='label'>选择题量：</h3>
                         <Radio.Group onChange={handleChangeCount} value={count}>

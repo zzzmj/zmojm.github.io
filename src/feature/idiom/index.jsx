@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import sentenceList from './sentence.json'
 import idiomList from './idiom.json'
-import SearchSvg from './icon.svg'
 import './github.css'
 import './index.scss'
 // 成语查询页面
@@ -32,11 +31,12 @@ function Idiom() {
             })
         }
     }
-
     useEffect(() => {
         document.title = '成语查询'
     }, [])
-
+    // 2:19 ,14:41李代桃僵，交相辉映 （刚正不阿，克己奉公，自怨自艾）
+    // 相映成趣，水乳交融，珠联璧合
+    // 11423 1
     return (
         <div className='container'>
             <div className='title'>

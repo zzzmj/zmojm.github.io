@@ -14,7 +14,7 @@ const Answer = props => {
         notes,
     } = props.data
 
-    const mapIndexToLetter = ['A', 'B', 'C', 'D']
+    const mapIndexToLetter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
     const handleClick = () => {
         props.onClose()

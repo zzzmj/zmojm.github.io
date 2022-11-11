@@ -18,8 +18,6 @@ import { getParams } from '../../utils'
 const formatDataSource = (dataSource, isMobile) => {
     const data = dataSource
         .map(item => item.toJSON())
-        // 排序，按照题目做过的次数
-        .sort((a, b) => b.questionMeta.totalCount - a.questionMeta.totalCount)
         // 选项栏布局
         .map(item => {
             let layout = 'four'
@@ -45,7 +43,6 @@ const formatDataSource = (dataSource, isMobile) => {
                 layout,
             }
         })
-    console.log('data', data)
     return data
 }
 
@@ -85,9 +82,10 @@ const XingCeList = () => {
         id: '',
         content: '',
     })
+    const [sortType, setSortType] = useState(1)
     const [notesVisible, setNotesVisible] = useState(false)
     const { isMobile } = useDeviceInfo()
-    const { visibleData } = useVisibleData(dataSource, visibleIdList)
+    const { visibleData } = useVisibleData(dataSource, visibleIdList, sortType)
     const { questionIds } = useQuestionIds()
 
     const getAllBookList = useCallback(
@@ -114,7 +112,9 @@ const XingCeList = () => {
     useEffect(() => {
         const title = getParams('title')
         title && setExerTitle(title)
-        document.title = title
+        if (title) {
+            document.title = title
+        }
     }, [])
 
     useEffect(() => {
@@ -153,7 +153,6 @@ const XingCeList = () => {
     }
 
     const handleNotesChange = data => {
-        console.log('data', data)
         setNotes({
             id: data.objectId,
             content: data.notes || '',
@@ -179,15 +178,18 @@ const XingCeList = () => {
     }
 
     const handleChangeOper = data => {
-        const { count, filterIds, answer } = data
+        const { count, filterIds, answer, sortType } = data
+        setSortType(sortType)
         setTestCount(count)
         const qIds = filterIds ? filterIds.split(',') : []
         setVisibleIdList(qIds)
 
-        // 验证答案
-        const { key, value } = answer
-        const left = (key - 1) * count
-        getAnswer(left, value)
+        if (answer && answer.key && answer.value) {
+            // 验证答案
+            const { key, value } = answer
+            const left = (key - 1) * count
+            getAnswer(left, value)
+        }
     }
 
     const getAnswer = (left, stringArr) => {
@@ -243,8 +245,7 @@ const XingCeList = () => {
         })
     }
 
-    window.getAnswer = getAnswer
-
+    window.data = visibleData
     return (
         <div className='book-wrap'>
             <BookListOper onChange={handleChangeOper} />
