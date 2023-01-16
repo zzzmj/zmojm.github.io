@@ -187,13 +187,14 @@ const XingCeList = () => {
         if (answer && answer.key && answer.value) {
             // 验证答案
             const { key, value } = answer
+            console.log('ke', key, value)
             const left = (key - 1) * count
             getAnswer(left, value)
         }
     }
 
     const getAnswer = (left, stringArr) => {
-        const answer = dataSource.map(
+        const answer = visibleData.map(
             item => parseInt(item.correctAnswer.choice) + 1
         )
         let pos = 0

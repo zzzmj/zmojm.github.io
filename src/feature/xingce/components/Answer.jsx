@@ -25,7 +25,6 @@ const Answer = props => {
     const handleClickNotes = () => {
         props.onChange && props.onChange(props.data)
     }
-    console.log('keypoints', keypoints, props.data)
     return (
         <div className='answer'>
             <div className='correct'>
@@ -81,6 +80,17 @@ const Answer = props => {
                 <li>
                     <span>题号：</span>
                     <div className='content'>{id}</div>
+                </li>
+                <li>
+                    <span>粉笔：</span>
+                    <Button
+                        className='video-href'
+                        type='link'
+                        target='_blank'
+                        href={`https://www.fenbi.com/spa/tiku/report/preview/xingce/xingce/questions?questionIds=${id}&fromType=1`}
+                    >
+                        详细解析
+                    </Button>
                 </li>
                 <li>
                     <span>笔记：</span>
