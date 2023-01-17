@@ -76,6 +76,10 @@ const XingCeList = () => {
     const [testCount, setTestCount] = useState(40)
     const [dataSource, setDataSource] = useState([])
     const [visibleIdList, setVisibleIdList] = useState([])
+    const [correctRate, setCorrectRate] = useState({
+        left: '',
+        right: '',
+    })
 
     // 笔记相关state
     const [notes, setNotes] = useState({
@@ -85,7 +89,12 @@ const XingCeList = () => {
     const [sortType, setSortType] = useState(1)
     const [notesVisible, setNotesVisible] = useState(false)
     const { isMobile } = useDeviceInfo()
-    const { visibleData } = useVisibleData(dataSource, visibleIdList, sortType)
+    const { visibleData } = useVisibleData(
+        dataSource,
+        visibleIdList,
+        sortType,
+        correctRate
+    )
     const { questionIds } = useQuestionIds()
 
     const getAllBookList = useCallback(
@@ -178,7 +187,7 @@ const XingCeList = () => {
     }
 
     const handleChangeOper = data => {
-        const { count, filterIds, answer, sortType } = data
+        const { count, filterIds, answer, sortType, correctRate } = data
         setSortType(sortType)
         setTestCount(count)
         const qIds = filterIds ? filterIds.split(',') : []
@@ -190,6 +199,16 @@ const XingCeList = () => {
             console.log('ke', key, value)
             const left = (key - 1) * count
             getAnswer(left, value)
+        }
+
+        if (correctRate && correctRate.left && correctRate.right) {
+            // 验证答案
+            const left = parseInt(correctRate.left)
+            const right = parseInt(correctRate.right)
+            setCorrectRate({
+                left,
+                right,
+            })
         }
     }
 

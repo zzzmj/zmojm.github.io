@@ -13,6 +13,10 @@ import './BookListOper.scss'
 function BookListOper(props) {
     const { filterIdList, onChange } = props
     const [isModalVisible, setIsModalVisible] = useState(false)
+    const [correctRate, setCorrectRate] = useState({
+        left: '',
+        right: '',
+    })
     const [count, setCount] = useState(40)
     const [sortType, setSortType] = useState(1)
     const [filterIds, setFilterIds] = useState('')
@@ -45,6 +49,7 @@ function BookListOper(props) {
                 filterIds,
                 sortType,
                 answer,
+                correctRate,
             })
         setIsModalVisible(false)
     }
@@ -103,6 +108,29 @@ function BookListOper(props) {
                             value={filterIdList}
                             placeholder='请筛选题目的id'
                             onChange={handleChangeId}
+                        />
+                    </div>
+                    <div className='item'>
+                        <h3 className='label'>根据正确率筛选题目：</h3>
+                        <Input
+                            value={correctRate.left}
+                            placeholder='左区间'
+                            onChange={e =>
+                                setCorrectRate(v => ({
+                                    ...v,
+                                    left: e.target.value,
+                                }))
+                            }
+                        />
+                        <Input
+                            value={correctRate.right}
+                            placeholder='右区间'
+                            onChange={e =>
+                                setCorrectRate(v => ({
+                                    ...v,
+                                    right: e.target.value,
+                                }))
+                            }
                         />
                     </div>
                     <div className='item'>
