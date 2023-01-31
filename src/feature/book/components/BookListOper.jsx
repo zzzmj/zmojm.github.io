@@ -100,6 +100,10 @@ function BookListOper(props) {
                             <Radio value={20}>20题</Radio>
                             <Radio value={30}>30题</Radio>
                             <Radio value={40}>40题</Radio>
+                            <Radio value={50}>50题</Radio>
+                            <Radio value={100}>100题</Radio>
+                            <Radio value={200}>200题</Radio>
+                            <Radio value={500}>500题</Radio>
                         </Radio.Group>
                     </div>
                     <div className='item'>
