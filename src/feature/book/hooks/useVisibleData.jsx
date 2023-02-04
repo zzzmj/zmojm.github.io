@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import useQuestionIds from './useQuestionIds'
-function useVisibleData(dataSource, visibleIdList, sortType, correctRate) {
+function useVisibleData({
+    dataSource,
+    visibleIdList,
+    sortType,
+    correctRate,
+    hasVideo,
+}) {
     const [visibleData, setVisibleData] = useState([])
     const { questionIds } = useQuestionIds()
 
@@ -25,7 +31,7 @@ function useVisibleData(dataSource, visibleIdList, sortType, correctRate) {
         if (data.length <= 0 || visibleIdList.length <= 0) {
             setVisibleData(data)
         } else {
-            const data = data.filter(item => {
+            data = data.filter(item => {
                 return visibleIdList.includes(String(item.id))
             })
             setVisibleData(data)
@@ -35,16 +41,29 @@ function useVisibleData(dataSource, visibleIdList, sortType, correctRate) {
             // 验证答案
             const l = parseInt(correctRate.left)
             const r = parseInt(correctRate.right)
-            const newData = data.filter(item => {
+            data = data.filter(item => {
                 return (
                     item.questionMeta.correctRatio >= l &&
                     item.questionMeta.correctRatio <= r
                 )
             })
-            console.log('l', l, r, newData)
-            setVisibleData(newData)
+            setVisibleData(data)
         }
-    }, [dataSource, visibleIdList, sortType, questionIds, correctRate])
+
+        if (hasVideo) {
+            data = data.filter(item => item.video)
+            setVisibleData(data)
+        } else {
+            setVisibleData(data)
+        }
+    }, [
+        dataSource,
+        visibleIdList,
+        sortType,
+        questionIds,
+        correctRate,
+        hasVideo,
+    ])
     return {
         visibleData,
     }

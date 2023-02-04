@@ -5,7 +5,7 @@
  * 2. 过滤题目
  * 3. 答案验证
  */
-import { Radio, Input, Modal } from 'antd'
+import { Radio, Input, Modal, Switch } from 'antd'
 import { SettingOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
 import './BookListOper.scss'
@@ -24,6 +24,7 @@ function BookListOper(props) {
         key: '',
         value: '',
     })
+    const [hasVideo, setHasVideo] = useState(false)
 
     const handleChangeCount = e => {
         const value = e.target.value
@@ -38,6 +39,10 @@ function BookListOper(props) {
         setFilterIds(value)
     }
 
+    const handleChangeHasVideo = checked => {
+        setHasVideo(checked)
+    }
+
     const showModal = () => {
         setIsModalVisible(true)
     }
@@ -45,6 +50,7 @@ function BookListOper(props) {
     const handleOk = () => {
         onChange &&
             onChange({
+                hasVideo,
                 count,
                 filterIds,
                 sortType,
@@ -107,12 +113,16 @@ function BookListOper(props) {
                         </Radio.Group>
                     </div>
                     <div className='item'>
-                        <h3 className='label'>筛选题目：</h3>
-                        <Input
+                        <h3 className='label'>有视频解析：</h3>
+                        <Switch
+                            checked={hasVideo}
+                            onChange={handleChangeHasVideo}
+                        />
+                        {/* <Input
                             value={filterIdList}
                             placeholder='请筛选题目的id'
                             onChange={handleChangeId}
-                        />
+                        /> */}
                     </div>
                     <div className='item'>
                         <h3 className='label'>根据正确率筛选题目：</h3>

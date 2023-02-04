@@ -86,15 +86,17 @@ const XingCeList = () => {
         id: '',
         content: '',
     })
+    const [hasVideo, setHasVideo] = useState(false)
     const [sortType, setSortType] = useState(1)
     const [notesVisible, setNotesVisible] = useState(false)
     const { isMobile } = useDeviceInfo()
-    const { visibleData } = useVisibleData(
+    const { visibleData } = useVisibleData({
         dataSource,
         visibleIdList,
         sortType,
-        correctRate
-    )
+        correctRate,
+        hasVideo,
+    })
     const { questionIds } = useQuestionIds()
 
     const getAllBookList = useCallback(
@@ -187,7 +189,9 @@ const XingCeList = () => {
     }
 
     const handleChangeOper = data => {
-        const { count, filterIds, answer, sortType, correctRate } = data
+        const { count, filterIds, answer, sortType, correctRate, hasVideo } =
+            data
+        setHasVideo(hasVideo)
         setSortType(sortType)
         setTestCount(count)
         const qIds = filterIds ? filterIds.split(',') : []
@@ -276,7 +280,10 @@ const XingCeList = () => {
                     <div className='list'>
                         {visibleData.map((item, index) => {
                             return (
-                                <div key={item.id} className='item-wrap'>
+                                <div
+                                    key={`${item.id}+${index}`}
+                                    className='item-wrap'
+                                >
                                     {index % testCount === 0 && (
                                         <h2>
                                             {exerTitle
