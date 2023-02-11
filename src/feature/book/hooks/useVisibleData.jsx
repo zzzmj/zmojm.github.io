@@ -1,6 +1,7 @@
 // 隐藏元素hooks
 
 import { useEffect, useState } from 'react'
+import { removeDuplicateElements } from '../../../utils'
 import useQuestionIds from './useQuestionIds'
 function useVisibleData({
     dataSource,
@@ -14,7 +15,7 @@ function useVisibleData({
 
     useEffect(() => {
         // 给元素排序
-        let data = [...dataSource]
+        let data = removeDuplicateElements([...dataSource], 'id')
         const mapNumToSort = {
             1: (a, b) => questionIds.indexOf(a.id) - questionIds.indexOf(b.id),
             2: (a, b) => b.questionMeta.totalCount - a.questionMeta.totalCount,

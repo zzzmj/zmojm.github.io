@@ -193,3 +193,9 @@ export const getParams = param => {
     const url = new URL(window.location.href)
     return url.searchParams.get(param)
 }
+
+export function removeDuplicateElements(array, idProp) {
+    return array.filter((obj, pos, arr) => {
+        return arr.map(mapObj => mapObj[idProp]).indexOf(obj[idProp]) === pos
+    })
+}
