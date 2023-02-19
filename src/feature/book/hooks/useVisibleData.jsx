@@ -61,8 +61,6 @@ function useVisibleData({
                     return map[optionKeyword].ids.has(item.id)
                 })
                 setVisibleData(data)
-            } else {
-                message.error('当前选项关键字不存在')
             }
         }
 
