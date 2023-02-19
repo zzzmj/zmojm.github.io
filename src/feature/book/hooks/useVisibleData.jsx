@@ -103,7 +103,7 @@ function useVisibleData({
                     mapIdiomToIds[idiom.name].ids.add(question.id)
                 } else {
                     mapIdiomToIds[idiom.name] = {
-                        ids: new Set(),
+                        ids: new Set(question.id),
                         count: 1,
                     }
                 }
