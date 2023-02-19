@@ -194,8 +194,32 @@ export const getParams = param => {
     return url.searchParams.get(param)
 }
 
+// 去重数组中重复的元素
 export function removeDuplicateElements(array, idProp) {
     return array.filter((obj, pos, arr) => {
         return arr.map(mapObj => mapObj[idProp]).indexOf(obj[idProp]) === pos
     })
+}
+
+// 统计数组中元素出现的频率
+export function getFrequency(arr, propName) {
+    return arr.reduce((acc, curr) => {
+        const propValue = curr[propName]
+        if (propValue in acc) {
+            acc[propValue] += 1
+        } else {
+            acc[propValue] = 1
+        }
+        return acc
+    }, {})
+}
+
+export function extractChineseWords(str) {
+    const regex = /([\u4E00-\u9FA5]+)/g
+    const result = []
+    let match
+    while ((match = regex.exec(str)) !== null) {
+        result.push(match[1])
+    }
+    return result
 }

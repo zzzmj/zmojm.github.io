@@ -89,6 +89,7 @@ const XingCeList = () => {
     const [hasVideo, setHasVideo] = useState(false)
     const [sortType, setSortType] = useState(1)
     const [notesVisible, setNotesVisible] = useState(false)
+    const [optionKeyword, setOptionKeyword] = useState('')
     const { isMobile } = useDeviceInfo()
     const { visibleData } = useVisibleData({
         dataSource,
@@ -96,6 +97,7 @@ const XingCeList = () => {
         sortType,
         correctRate,
         hasVideo,
+        optionKeyword,
     })
     const { questionIds } = useQuestionIds()
 
@@ -189,8 +191,15 @@ const XingCeList = () => {
     }
 
     const handleChangeOper = data => {
-        const { count, filterIds, answer, sortType, correctRate, hasVideo } =
-            data
+        const {
+            count,
+            filterIds,
+            answer,
+            sortType,
+            correctRate,
+            hasVideo,
+            optionKeyword,
+        } = data
         setHasVideo(hasVideo)
         setSortType(sortType)
         setTestCount(count)
@@ -213,6 +222,9 @@ const XingCeList = () => {
                 left,
                 right,
             })
+        }
+        if (optionKeyword) {
+            setOptionKeyword(optionKeyword)
         }
     }
 

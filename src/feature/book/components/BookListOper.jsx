@@ -25,6 +25,7 @@ function BookListOper(props) {
         value: '',
     })
     const [hasVideo, setHasVideo] = useState(false)
+    const [optionKeyword, setOptionKeyword] = useState('')
 
     const handleChangeCount = e => {
         const value = e.target.value
@@ -56,6 +57,7 @@ function BookListOper(props) {
                 sortType,
                 answer,
                 correctRate,
+                optionKeyword,
             })
         setIsModalVisible(false)
     }
@@ -145,6 +147,14 @@ function BookListOper(props) {
                                     right: e.target.value,
                                 }))
                             }
+                        />
+                    </div>
+                    <div className='item'>
+                        <h3 className='label'>根据选项词筛选题目：</h3>
+                        <Input
+                            value={optionKeyword}
+                            placeholder='请输入关键词'
+                            onChange={e => setOptionKeyword(e.target.value)}
                         />
                     </div>
                     <div className='item'>

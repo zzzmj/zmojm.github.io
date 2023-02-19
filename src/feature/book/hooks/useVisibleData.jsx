@@ -1,7 +1,8 @@
 // 隐藏元素hooks
 
+import { message } from 'antd'
 import { useEffect, useState } from 'react'
-import { removeDuplicateElements } from '../../../utils'
+import { removeDuplicateElements, extractChineseWords } from '../../../utils'
 import useQuestionIds from './useQuestionIds'
 function useVisibleData({
     dataSource,
@@ -9,6 +10,7 @@ function useVisibleData({
     sortType,
     correctRate,
     hasVideo,
+    optionKeyword,
 }) {
     const [visibleData, setVisibleData] = useState([])
     const { questionIds } = useQuestionIds()
@@ -38,8 +40,8 @@ function useVisibleData({
             setVisibleData(data)
         }
 
+        // 按照正确率过滤元素
         if (correctRate && correctRate.left && correctRate.right) {
-            // 验证答案
             const l = parseInt(correctRate.left)
             const r = parseInt(correctRate.right)
             data = data.filter(item => {
@@ -49,6 +51,19 @@ function useVisibleData({
                 )
             })
             setVisibleData(data)
+        }
+
+        // 按照选项关键词筛选
+        if (optionKeyword) {
+            const map = getMapIdiomToIds(data)
+            if (map[optionKeyword]) {
+                data = data.filter(item => {
+                    return map[optionKeyword].ids.has(item.id)
+                })
+                setVisibleData(data)
+            } else {
+                message.error('当前选项关键字不存在')
+            }
         }
 
         if (hasVideo) {
@@ -64,7 +79,54 @@ function useVisibleData({
         questionIds,
         correctRate,
         hasVideo,
+        optionKeyword,
     ])
+
+    var getMapIdiomToIds = data => {
+        // 智能排序
+        // 统计词频
+        const mapIdiomToIds = {}
+        data.map(question => {
+            const options = question.accessories[0].options
+            // 将词语纳入数组中
+            let idiomArr = []
+            options.forEach(item => {
+                const idioms = extractChineseWords(item).map(item => ({
+                    name: item,
+                }))
+                idiomArr = idiomArr.concat(idioms)
+            })
+            // 去除重复的词语
+            idiomArr = removeDuplicateElements(idiomArr, 'name')
+
+            idiomArr.forEach(idiom => {
+                if (mapIdiomToIds[idiom.name]) {
+                    mapIdiomToIds[idiom.name].count++
+                    mapIdiomToIds[idiom.name].ids.add(question.id)
+                } else {
+                    mapIdiomToIds[idiom.name] = {
+                        ids: new Set(),
+                        count: 1,
+                    }
+                }
+            })
+
+            return {
+                id: question.id,
+                options: idiomArr,
+            }
+        })
+        // const arr = Object.keys(mapIdiomToIds)
+        //     .map(key => {
+        //         return {
+        //             name: key,
+        //             ...mapIdiomToIds[key],
+        //         }
+        //     })
+        //     .sort((a, b) => a.count - b.count)
+        return mapIdiomToIds
+    }
+
     return {
         visibleData,
     }
