@@ -33,6 +33,7 @@ function QuestionItem(props) {
                 <div className='title'>
                     <span
                         dangerouslySetInnerHTML={{
+                            // __html: `<div><div class="fl">【${data.miniSource}】</div>${data.content}</div>`,
                             __html: data.content,
                         }}
                     ></span>

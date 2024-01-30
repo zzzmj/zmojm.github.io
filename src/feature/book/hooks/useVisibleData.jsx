@@ -6,6 +6,43 @@ import { removeDuplicateElements, extractChineseWords } from '../../../utils'
 import useQuestionIds from './useQuestionIds'
 import dayjs from 'dayjs'
 
+const province = [
+    '河北',
+    '山西',
+    '辽宁',
+    '吉林',
+    '黑龙江',
+    '江苏',
+    '浙江',
+    '安徽',
+    '福建',
+    '江西',
+    '山东',
+    '河南',
+    '湖北',
+    '湖南',
+    '广东',
+    '海南',
+    '四川',
+    '贵州',
+    '云南',
+    '陕西',
+    '甘肃',
+    '青海',
+    '台湾',
+    '内蒙古',
+    '广西',
+    '西藏',
+    '宁夏',
+    '新疆',
+    '北京',
+    '天津',
+    '上海',
+    '重庆',
+    '深圳',
+    '国家',
+]
+
 function extractYearFromSource(source) {
     // 正则表达式匹配四位数字年份
     const yearRegex = /\b(20\d{2}|19\d{2})\b/g
@@ -92,6 +129,16 @@ function useVisibleData({
                 }))
                 .filter(item => item.createdYear >= diff)
                 .filter(item => !item.source.includes('模考'))
+                .map(item => {
+                    const p = province.find(p => item.source.includes(p))
+                    if (!p) {
+                        console.log('不存在item', item)
+                    }
+                    return {
+                        ...item,
+                        miniSource: `${item.createdYear}年${p}`,
+                    }
+                })
             data.sort((a, b) => b.createdYear - a.createdYear)
         }
 
