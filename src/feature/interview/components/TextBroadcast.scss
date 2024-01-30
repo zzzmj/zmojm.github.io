@@ -1,0 +1,15 @@
+.text-broadcast {
+    height: 1.5em; /* 调整高度以适应展示区域 */
+    overflow: hidden; /* 隐藏溢出的文本 */
+  }
+  
+  .text-broadcast-item {
+    display: flex;
+    align-items: center;
+    height: 1.5em; /* 文本容器高度和父级容器相同 */
+    transition: transform 0.5s ease; /* 添加平移动画 */
+  }
+  
+  .text-broadcast-item.active {
+    transform: translateY(-100%); /* 当前文本容器向上平移一个容器的高度 */
+  }

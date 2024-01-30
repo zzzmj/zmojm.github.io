@@ -4,6 +4,18 @@ import { message } from 'antd'
 import { useEffect, useState } from 'react'
 import { removeDuplicateElements, extractChineseWords } from '../../../utils'
 import useQuestionIds from './useQuestionIds'
+import dayjs from 'dayjs'
+
+function extractYearFromSource(source) {
+    // 正则表达式匹配四位数字年份
+    const yearRegex = /\b(20\d{2}|19\d{2})\b/g
+    // 执行匹配操作
+    const matches = source.match(yearRegex)
+    // 如果匹配到年份，则返回第一个匹配项（最常见的情况）
+    // 如果没有匹配到或者需要其他处理，可以根据实际情况调整
+    return matches ? matches[0] : null
+}
+
 function useVisibleData({
     dataSource,
     visibleIdList,
@@ -11,6 +23,7 @@ function useVisibleData({
     correctRate,
     hasVideo,
     optionKeyword,
+    createdTime,
 }) {
     const [visibleData, setVisibleData] = useState([])
     const { questionIds } = useQuestionIds()
@@ -64,6 +77,24 @@ function useVisibleData({
             }
         }
 
+        // 按照创建时间筛选
+        // data = data.map(item => ({
+        //     time: dayjs(item.createdTime).format('YYYY/MM/DD'),
+        //     ...item,
+        //     format: extractYearFromSource(item.source),
+        // }))
+        if (createdTime) {
+            const diff = new Date().getFullYear() - createdTime
+            data = data
+                .map(item => ({
+                    ...item,
+                    createdYear: extractYearFromSource(item.source),
+                }))
+                .filter(item => item.createdYear >= diff)
+                .filter(item => !item.source.includes('模考'))
+            data.sort((a, b) => b.createdYear - a.createdYear)
+        }
+
         if (hasVideo) {
             data = data.filter(item => item.video)
             setVisibleData(data)
@@ -78,6 +109,7 @@ function useVisibleData({
         correctRate,
         hasVideo,
         optionKeyword,
+        createdTime,
     ])
 
     var getMapIdiomToIds = data => {

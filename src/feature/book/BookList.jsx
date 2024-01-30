@@ -89,12 +89,14 @@ const XingCeList = () => {
     const [hasVideo, setHasVideo] = useState(false)
     const [sortType, setSortType] = useState(1)
     const [notesVisible, setNotesVisible] = useState(false)
+    const [createdTime, setCreatedTime] = useState(3)
     const [optionKeyword, setOptionKeyword] = useState('')
     const { isMobile } = useDeviceInfo()
     const { visibleData } = useVisibleData({
         dataSource,
         visibleIdList,
         sortType,
+        createdTime,
         correctRate,
         hasVideo,
         optionKeyword,
@@ -199,10 +201,12 @@ const XingCeList = () => {
             correctRate,
             hasVideo,
             optionKeyword,
+            createdTime,
         } = data
         setHasVideo(hasVideo)
         setSortType(sortType)
         setTestCount(count)
+        setCreatedTime(createdTime)
         const qIds = filterIds ? filterIds.split(',') : []
         setVisibleIdList(qIds)
 

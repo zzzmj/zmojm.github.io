@@ -14,6 +14,8 @@ const Exam = loadable(() => import('../feature/xingce/Exam'))
 const CalcPdf = loadable(() => import('../feature/calc/CalcPdf'))
 const EditCompoent = loadable(() => import('../feature/edit/Edit'))
 const Idiom = loadable(() => import('../feature/idiom'))
+const Interview = loadable(() => import('../feature/interview'))
+const Ps = loadable(() => import('../feature/ps/index'))
 
 const routes = [
     {
@@ -47,11 +49,6 @@ const routes = [
         element: <CalcPdf />,
         meta: { title: '' },
     },
-    // {
-    //     path: '/test',
-    //     element: <Test />,
-    //     meta: { title: '测试' },
-    // },
     {
         path: '/book',
         element: <Book />,
@@ -86,6 +83,16 @@ const routes = [
         path: '/idiom',
         element: <Idiom />,
         meta: { title: '成语词典' },
+    },
+    {
+        path: '/interview',
+        element: <Interview />,
+        meta: { title: '面试' },
+    },
+    {
+        path: '/ps',
+        element: <Ps />,
+        meta: { title: '切图工具' },
     },
 ]
 

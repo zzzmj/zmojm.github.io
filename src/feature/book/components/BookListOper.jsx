@@ -19,11 +19,13 @@ function BookListOper(props) {
     })
     const [count, setCount] = useState(40)
     const [sortType, setSortType] = useState(1)
+    const [createdTime, setCreatedTime] = useState(3)
     const [filterIds, setFilterIds] = useState('')
     const [answer, setAnswer] = useState({
         key: '',
         value: '',
     })
+
     const [hasVideo, setHasVideo] = useState(false)
     const [optionKeyword, setOptionKeyword] = useState('')
 
@@ -58,6 +60,7 @@ function BookListOper(props) {
                 answer,
                 correctRate,
                 optionKeyword,
+                createdTime,
             })
         setIsModalVisible(false)
     }
@@ -120,11 +123,17 @@ function BookListOper(props) {
                             checked={hasVideo}
                             onChange={handleChangeHasVideo}
                         />
-                        {/* <Input
-                            value={filterIdList}
-                            placeholder='请筛选题目的id'
-                            onChange={handleChangeId}
-                        /> */}
+                    </div>
+                    <div className='item'>
+                        <h3 className='label'>创建时间：</h3>
+                        <Radio.Group
+                            onChange={e => setCreatedTime(e.target.value)}
+                            value={createdTime}
+                        >
+                            <Radio value={3}>三年内</Radio>
+                            <Radio value={5}>五年内</Radio>
+                            <Radio value={10}>十年内</Radio>
+                        </Radio.Group>
                     </div>
                     <div className='item'>
                         <h3 className='label'>根据正确率筛选题目：</h3>

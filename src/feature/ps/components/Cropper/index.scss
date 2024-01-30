@@ -1,0 +1,35 @@
+.cropper {
+    position: relative;
+    flex: 1;
+    background-color: rgb(238 242 248);
+    .preview {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .line {
+        position: absolute;
+    }
+    .x-line {
+        // height: 1px;
+        border-top: 1px dashed black;
+        width: 100%;
+    }
+    .x-line:hover {
+        cursor: ns-resize;
+    }
+    .y-line {
+        width: 1px;
+        border-right: 1px dashed black;
+        height: 100%;
+    }
+
+    .y-line:hover {
+        cursor: ew-resize;
+    }
+    img {
+        user-select: none;
+        pointer-events: none;
+    }
+}
