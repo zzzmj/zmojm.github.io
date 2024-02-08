@@ -12,7 +12,7 @@ module.exports = {
         "react/prop-types": "off",
         "prettier/prettier": ["error", {
             "endOfLine": "auto",
-            "printWidth": 80,
+            "printWidth": 140,
             "tabWidth": 4,
             "semi": false,
             "singleQuote": true,

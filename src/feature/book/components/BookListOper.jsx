@@ -9,41 +9,25 @@ import { Radio, Input, Modal, Switch } from 'antd'
 import { SettingOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
 import './BookListOper.scss'
+import { useDispatch, useSelector } from 'react-redux'
+import { setFilter } from '../BookSlice'
+import { provinceList } from '../config'
 
 function BookListOper(props) {
-    const { filterIdList, onChange } = props
     const [isModalVisible, setIsModalVisible] = useState(false)
-    const [correctRate, setCorrectRate] = useState({
-        left: '',
-        right: '',
-    })
-    const [count, setCount] = useState(40)
-    const [sortType, setSortType] = useState(1)
-    const [createdTime, setCreatedTime] = useState(3)
-    const [filterIds, setFilterIds] = useState('')
-    const [answer, setAnswer] = useState({
-        key: '',
-        value: '',
-    })
+    const count = useSelector(state => state.book.filter.count)
+    const sortType = useSelector(state => state.book.filter.sortType)
+    const createdTime = useSelector(state => state.book.filter.createdTime)
+    const province = useSelector(state => state.book.filter.province)
+    const dispatch = useDispatch()
 
-    const [hasVideo, setHasVideo] = useState(false)
-    const [optionKeyword, setOptionKeyword] = useState('')
-
-    const handleChangeCount = e => {
-        const value = e.target.value
-        setCount(value)
-    }
-    const handleChangeSortType = e => {
-        const value = e.target.value
-        setSortType(value)
-    }
-    const handleChangeId = e => {
-        const value = e.target.value
-        setFilterIds(value)
-    }
-
-    const handleChangeHasVideo = checked => {
-        setHasVideo(checked)
+    const handleChangeRadioValue = (type, value) => {
+        dispatch(
+            setFilter({
+                type,
+                value,
+            })
+        )
     }
 
     const showModal = () => {
@@ -51,30 +35,11 @@ function BookListOper(props) {
     }
 
     const handleOk = () => {
-        onChange &&
-            onChange({
-                hasVideo,
-                count,
-                filterIds,
-                sortType,
-                answer,
-                correctRate,
-                optionKeyword,
-                createdTime,
-            })
         setIsModalVisible(false)
     }
 
     const handleCancel = () => {
         setIsModalVisible(false)
-    }
-
-    const handleChangeAnswer = (e, key) => {
-        const value = e.target.value
-        setAnswer({
-            ...answer,
-            [key]: value,
-        })
     }
 
     return (
@@ -85,28 +50,21 @@ function BookListOper(props) {
                     fontSize: 24,
                 }}
             />
-            <Modal
-                title='操作'
-                visible={isModalVisible}
-                onOk={handleOk}
-                onCancel={handleCancel}
-            >
+            <Modal title='操作' visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                 <div className='btn-list'>
                     <div className='item'>
                         <h3 className='label'>选择排序方式：</h3>
-                        <Radio.Group
-                            onChange={handleChangeSortType}
-                            value={sortType}
-                        >
+                        <Radio.Group onChange={e => handleChangeRadioValue('createdTime', e.target.value)} value={sortType}>
                             <Radio value={1}>按默认顺序</Radio>
                             <Radio value={2}>按做题次数</Radio>
                             <Radio value={3}>按正确率正序</Radio>
                             <Radio value={4}>按正确率倒序</Radio>
+                            <Radio value={5}>按创建时间</Radio>
                         </Radio.Group>
                     </div>
                     <div className='item'>
                         <h3 className='label'>选择题量：</h3>
-                        <Radio.Group onChange={handleChangeCount} value={count}>
+                        <Radio.Group onChange={e => handleChangeRadioValue('createdTime', e.target.value)} value={count}>
                             <Radio value={10}>10题</Radio>
                             <Radio value={20}>20题</Radio>
                             <Radio value={30}>30题</Radio>
@@ -118,70 +76,24 @@ function BookListOper(props) {
                         </Radio.Group>
                     </div>
                     <div className='item'>
-                        <h3 className='label'>有视频解析：</h3>
-                        <Switch
-                            checked={hasVideo}
-                            onChange={handleChangeHasVideo}
-                        />
-                    </div>
-                    <div className='item'>
                         <h3 className='label'>创建时间：</h3>
-                        <Radio.Group
-                            onChange={e => setCreatedTime(e.target.value)}
-                            value={createdTime}
-                        >
+                        <Radio.Group onChange={e => handleChangeRadioValue('createdTime', e.target.value)} value={createdTime}>
                             <Radio value={3}>三年内</Radio>
                             <Radio value={5}>五年内</Radio>
                             <Radio value={10}>十年内</Radio>
                         </Radio.Group>
                     </div>
                     <div className='item'>
-                        <h3 className='label'>根据正确率筛选题目：</h3>
-                        <Input
-                            value={correctRate.left}
-                            placeholder='左区间'
-                            onChange={e =>
-                                setCorrectRate(v => ({
-                                    ...v,
-                                    left: e.target.value,
-                                }))
-                            }
-                        />
-                        <Input
-                            value={correctRate.right}
-                            placeholder='右区间'
-                            onChange={e =>
-                                setCorrectRate(v => ({
-                                    ...v,
-                                    right: e.target.value,
-                                }))
-                            }
-                        />
-                    </div>
-                    <div className='item'>
-                        <h3 className='label'>根据选项词筛选题目：</h3>
-                        <Input
-                            value={optionKeyword}
-                            placeholder='请输入关键词'
-                            onChange={e => setOptionKeyword(e.target.value)}
-                        />
-                    </div>
-                    <div className='item'>
-                        <h3 className='label'>验证答案：</h3>
-                        <Input.Group compact>
-                            <Input
-                                type='number'
-                                style={{ width: '20%' }}
-                                onChange={e => handleChangeAnswer(e, 'key')}
-                                placeholder='练习几？'
-                            />
-                            <Input
-                                style={{ width: '80%' }}
-                                onChange={e => handleChangeAnswer(e, 'value')}
-                                defaultValue=''
-                                placeholder='请输入答案，逗号分隔'
-                            />
-                        </Input.Group>
+                        <h3 className='label'>省份</h3>
+                        <Radio.Group onChange={e => handleChangeRadioValue('province', e.target.value)} value={province}>
+                            {provinceList.map(p => {
+                                return (
+                                    <Radio key={p} value={p}>
+                                        {p}
+                                    </Radio>
+                                )
+                            })}
+                        </Radio.Group>
                     </div>
                 </div>
             </Modal>

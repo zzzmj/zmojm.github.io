@@ -13,6 +13,8 @@ import useQuestionIds from './hooks/useQuestionIds'
 import './BookList.scss'
 import useDeviceInfo from './hooks/useDeviceInfo'
 import { getParams } from '../../utils'
+import { useDispatch, useSelector } from 'react-redux'
+import { setList, updateList } from './BookSlice'
 
 // 格式化数据源
 const formatDataSource = (dataSource, isMobile) => {
@@ -73,35 +75,17 @@ const formatSelectedItem = (item, selectIndex) => {
 
 const XingCeList = () => {
     const [exerTitle, setExerTitle] = useState('')
-    const [testCount, setTestCount] = useState(40)
-    const [dataSource, setDataSource] = useState([])
-    const [visibleIdList, setVisibleIdList] = useState([])
-    const [correctRate, setCorrectRate] = useState({
-        left: '',
-        right: '',
-    })
-
+    const testCount = useSelector(state => state.book.filter.count)
     // 笔记相关state
     const [notes, setNotes] = useState({
         id: '',
         content: '',
     })
-    const [hasVideo, setHasVideo] = useState(false)
-    const [sortType, setSortType] = useState(1)
     const [notesVisible, setNotesVisible] = useState(false)
-    const [createdTime, setCreatedTime] = useState(3)
-    const [optionKeyword, setOptionKeyword] = useState('')
     const { isMobile } = useDeviceInfo()
-    const { visibleData } = useVisibleData({
-        dataSource,
-        visibleIdList,
-        sortType,
-        createdTime,
-        correctRate,
-        hasVideo,
-        optionKeyword,
-    })
+    const filterDataList = useSelector(state => state.book.filterDataList)
     const { questionIds } = useQuestionIds()
+    const dispatch = useDispatch()
 
     const getAllBookList = useCallback(
         questionIds => {
@@ -112,10 +96,9 @@ const XingCeList = () => {
             }
             Promise.all(requestList)
                 .then(res => {
-                    const data = res
-                        .map(item => formatDataSource(item, isMobile))
-                        .flat()
-                    setDataSource(data)
+                    const data = res.map(item => formatDataSource(item, isMobile)).flat()
+                    // setDataSource(data)
+                    dispatch(setList(data))
                 })
                 .catch(err => {
                     console.log('err', err)
@@ -135,36 +118,34 @@ const XingCeList = () => {
     useEffect(() => {
         const data = window.localStorage.getItem('dataSource')
         if (data) {
-            setDataSource(data)
+            dispatch(setList(data))
         } else {
             getAllBookList(questionIds)
         }
     }, [questionIds, getAllBookList])
 
     const handleSelectOption = (item, index) => {
-        // console.log('is', isMobile)
-        // if (isMobile) return
         const questionId = item.id
-        const newDataSource = dataSource.map(item => {
+        const newDataSource = filterDataList.map(item => {
             if (item.id === questionId) {
                 return formatSelectedItem(item, index)
             } else {
                 return item
             }
         })
-        setDataSource(newDataSource)
+        dispatch(updateList(newDataSource))
     }
 
     const handleClose = item => {
         const questionId = item.id
-        const newDataSource = dataSource.map(item => {
+        const newDataSource = filterDataList.map(item => {
             if (item.id === questionId) {
                 return formatSelectedItem(item)
             } else {
                 return item
             }
         })
-        setDataSource(newDataSource)
+        dispatch(updateList(newDataSource))
     }
 
     const handleNotesChange = data => {
@@ -192,124 +173,19 @@ const XingCeList = () => {
         setNotesVisible(false)
     }
 
-    const handleChangeOper = data => {
-        const {
-            count,
-            filterIds,
-            answer,
-            sortType,
-            correctRate,
-            hasVideo,
-            optionKeyword,
-            createdTime,
-        } = data
-        setHasVideo(hasVideo)
-        setSortType(sortType)
-        setTestCount(count)
-        setCreatedTime(createdTime)
-        const qIds = filterIds ? filterIds.split(',') : []
-        setVisibleIdList(qIds)
-
-        if (answer && answer.key && answer.value) {
-            // 验证答案
-            const { key, value } = answer
-            console.log('ke', key, value)
-            const left = (key - 1) * count
-            getAnswer(left, value)
-        }
-
-        if (correctRate && correctRate.left && correctRate.right) {
-            // 验证答案
-            const left = parseInt(correctRate.left)
-            const right = parseInt(correctRate.right)
-            setCorrectRate({
-                left,
-                right,
-            })
-        }
-        if (optionKeyword) {
-            setOptionKeyword(optionKeyword)
-        }
-    }
-
-    const getAnswer = (left, stringArr) => {
-        const answer = visibleData.map(
-            item => parseInt(item.correctAnswer.choice) + 1
-        )
-        let pos = 0
-        let count = 0
-        let wrong = []
-        let qIds = []
-        let arr = stringArr.split('').filter(item => item != ' ')
-        if (
-            arr.includes('A') ||
-            arr.includes('B') ||
-            arr.includes('C') ||
-            arr.includes('D')
-        ) {
-            arr = arr.map(item => item.charCodeAt() - 64)
-            console.log('arr', arr)
-        }
-        for (let i = left; i < arr.length + left; i++) {
-            const item = answer[i]
-            const p = arr[pos]
-            pos++
-            if (item == p) {
-                count++
-            } else {
-                wrong.push(i + 1)
-                qIds.push(dataSource[i].id)
-            }
-        }
-        const zql = parseInt((count * 100) / arr.length)
-        const ct = wrong.join(', ')
-        const zqda = answer
-            .slice(left, arr.length + left)
-            .map((item, index) => {
-                if (index % 5 === 0) {
-                    return ' ' + String.fromCharCode(item + 64)
-                } else {
-                    return String.fromCharCode(item + 64)
-                }
-            })
-            .join('')
-        Modal.success({
-            title: '答案验证结果',
-            content: (
-                <div>
-                    <p>正确率：{zql}%</p>
-                    <p>错题：{ct}</p>
-                    <p>正确答案：{zqda}</p>
-                </div>
-            ),
-        })
-    }
-
-    window.data = visibleData
     return (
         <div className='book-wrap'>
-            <BookListOper onChange={handleChangeOper} />
+            <BookListOper />
             <div className='wrap-print'>
-                {visibleData.length <= 0 ? (
+                {filterDataList.length <= 0 ? (
                     <SkeletonList count={10} />
                 ) : (
                     <div className='list'>
-                        {visibleData.map((item, index) => {
+                        {filterDataList.map((item, index) => {
                             return (
-                                <div
-                                    key={`${item.id}+${index}`}
-                                    className='item-wrap'
-                                >
+                                <div key={item.id} className='item-wrap'>
                                     {index % testCount === 0 && (
-                                        <h2>
-                                            {exerTitle
-                                                ? exerTitle
-                                                : ` 练习题${
-                                                      parseInt(
-                                                          index / testCount
-                                                      ) + 1
-                                                  }`}
-                                        </h2>
+                                        <h2>{exerTitle ? exerTitle : ` 练习题${parseInt(index / testCount) + 1}`}</h2>
                                     )}
                                     <div className='item'>
                                         <QuestionItem
@@ -321,12 +197,8 @@ const XingCeList = () => {
                                         />
                                         {item.answerVisible && (
                                             <Answer
-                                                onChange={() =>
-                                                    handleNotesChange(item)
-                                                }
-                                                onClose={() =>
-                                                    handleClose(item)
-                                                }
+                                                onChange={() => handleNotesChange(item)}
+                                                onClose={() => handleClose(item)}
                                                 data={item}
                                             />
                                         )}
@@ -337,19 +209,7 @@ const XingCeList = () => {
                     </div>
                 )}
             </div>
-            {/* <SketchField
-                width='1024px'
-                height='768px'
-                tool={Tools.Pencil}
-                lineColor='black'
-                lineWidth={3}
-            /> */}
-            <NotesEditor
-                value={notes.content}
-                visible={notesVisible}
-                onOk={handleNotesOk}
-                onCancel={handleNotesCancel}
-            />
+            <NotesEditor value={notes.content} visible={notesVisible} onOk={handleNotesOk} onCancel={handleNotesCancel} />
         </div>
     )
 }

@@ -53,111 +53,89 @@ function extractYearFromSource(source) {
     return matches ? matches[0] : null
 }
 
-function useVisibleData({
-    dataSource,
-    visibleIdList,
-    sortType,
-    correctRate,
-    hasVideo,
-    optionKeyword,
-    createdTime,
-}) {
+function useVisibleData({ dataSource, visibleIdList, sortType, correctRate, hasVideo, optionKeyword, createdTime }) {
     const [visibleData, setVisibleData] = useState([])
-    const { questionIds } = useQuestionIds()
+    // const { questionIds } = useQuestionIds()
 
-    useEffect(() => {
-        // 给元素排序
-        let data = removeDuplicateElements([...dataSource], 'id')
-        const mapNumToSort = {
-            1: (a, b) => questionIds.indexOf(a.id) - questionIds.indexOf(b.id),
-            2: (a, b) => b.questionMeta.totalCount - a.questionMeta.totalCount,
-            3: (a, b) =>
-                a.questionMeta.correctRatio - b.questionMeta.correctRatio,
-            4: (a, b) =>
-                b.questionMeta.correctRatio - a.questionMeta.correctRatio,
-        }
-        // 1按照默认顺序, 2按照频率排序, 3正确率正序排序, 4正确率倒序排序
-        if (sortType) {
-            data.sort(mapNumToSort[sortType])
-        }
+    // useEffect(() => {
+    //     // 给元素排序
+    //     let data = removeDuplicateElements([...dataSource], 'id')
+    //     const mapNumToSort = {
+    //         1: (a, b) => questionIds.indexOf(a.id) - questionIds.indexOf(b.id),
+    //         2: (a, b) => b.questionMeta.totalCount - a.questionMeta.totalCount,
+    //         3: (a, b) => a.questionMeta.correctRatio - b.questionMeta.correctRatio,
+    //         4: (a, b) => b.questionMeta.correctRatio - a.questionMeta.correctRatio,
+    //     }
+    //     // 1按照默认顺序, 2按照频率排序, 3正确率正序排序, 4正确率倒序排序
+    //     if (sortType) {
+    //         data.sort(mapNumToSort[sortType])
+    //     }
 
-        if (data.length <= 0 || visibleIdList.length <= 0) {
-            setVisibleData(data)
-        } else {
-            data = data.filter(item => {
-                return visibleIdList.includes(String(item.id))
-            })
-            setVisibleData(data)
-        }
+    //     if (data.length <= 0 || visibleIdList.length <= 0) {
+    //         setVisibleData(data)
+    //     } else {
+    //         data = data.filter(item => {
+    //             return visibleIdList.includes(String(item.id))
+    //         })
+    //         setVisibleData(data)
+    //     }
 
-        // 按照正确率过滤元素
-        if (correctRate && correctRate.left && correctRate.right) {
-            const l = parseInt(correctRate.left)
-            const r = parseInt(correctRate.right)
-            data = data.filter(item => {
-                return (
-                    item.questionMeta.correctRatio >= l &&
-                    item.questionMeta.correctRatio <= r
-                )
-            })
-            setVisibleData(data)
-        }
+    //     // 按照正确率过滤元素
+    //     if (correctRate && correctRate.left && correctRate.right) {
+    //         const l = parseInt(correctRate.left)
+    //         const r = parseInt(correctRate.right)
+    //         data = data.filter(item => {
+    //             return item.questionMeta.correctRatio >= l && item.questionMeta.correctRatio <= r
+    //         })
+    //         setVisibleData(data)
+    //     }
 
-        // 按照选项关键词筛选
-        if (optionKeyword) {
-            const map = getMapIdiomToIds(data)
-            if (map[optionKeyword]) {
-                data = data.filter(item => {
-                    return map[optionKeyword].ids.has(item.id)
-                })
-                setVisibleData(data)
-            }
-        }
+    //     // 按照选项关键词筛选
+    //     if (optionKeyword) {
+    //         const map = getMapIdiomToIds(data)
+    //         if (map[optionKeyword]) {
+    //             data = data.filter(item => {
+    //                 return map[optionKeyword].ids.has(item.id)
+    //             })
+    //             setVisibleData(data)
+    //         }
+    //     }
 
-        // 按照创建时间筛选
-        // data = data.map(item => ({
-        //     time: dayjs(item.createdTime).format('YYYY/MM/DD'),
-        //     ...item,
-        //     format: extractYearFromSource(item.source),
-        // }))
-        if (createdTime) {
-            const diff = new Date().getFullYear() - createdTime
-            data = data
-                .map(item => ({
-                    ...item,
-                    createdYear: extractYearFromSource(item.source),
-                }))
-                .filter(item => item.createdYear >= diff)
-                .filter(item => !item.source.includes('模考'))
-                .map(item => {
-                    const p = province.find(p => item.source.includes(p))
-                    if (!p) {
-                        console.log('不存在item', item)
-                    }
-                    return {
-                        ...item,
-                        miniSource: `${item.createdYear}年${p}`,
-                    }
-                })
-            data.sort((a, b) => b.createdYear - a.createdYear)
-        }
+    //     // 按照创建时间筛选
+    //     // data = data.map(item => ({
+    //     //     time: dayjs(item.createdTime).format('YYYY/MM/DD'),
+    //     //     ...item,
+    //     //     format: extractYearFromSource(item.source),
+    //     // }))
+    //     if (createdTime) {
+    //         const diff = new Date().getFullYear() - createdTime
+    //         data = data
+    //             .map(item => ({
+    //                 ...item,
+    //                 createdYear: extractYearFromSource(item.source),
+    //             }))
+    //             .filter(item => item.createdYear >= diff)
+    //             .filter(item => !item.source.includes('模考'))
+    //             .map(item => {
+    //                 const p = province.find(p => item.source.includes(p))
+    //                 if (!p) {
+    //                     console.log('不存在item', item)
+    //                 }
+    //                 return {
+    //                     ...item,
+    //                     miniSource: `${item.createdYear}年${p}`,
+    //                 }
+    //             })
+    //         data.sort((a, b) => b.createdYear - a.createdYear)
+    //     }
 
-        if (hasVideo) {
-            data = data.filter(item => item.video)
-            setVisibleData(data)
-        } else {
-            setVisibleData(data)
-        }
-    }, [
-        dataSource,
-        visibleIdList,
-        sortType,
-        questionIds,
-        correctRate,
-        hasVideo,
-        optionKeyword,
-        createdTime,
-    ])
+    //     if (hasVideo) {
+    //         data = data.filter(item => item.video)
+    //         setVisibleData(data)
+    //     } else {
+    //         setVisibleData(data)
+    //     }
+    // }, [dataSource, visibleIdList, sortType, questionIds, correctRate, hasVideo, optionKeyword, createdTime])
 
     var getMapIdiomToIds = data => {
         // 智能排序

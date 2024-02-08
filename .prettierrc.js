@@ -1,5 +1,5 @@
 module.exports = {
-    printWidth: 80, //编辑器每行的长度，默认80
+    printWidth: 140, //编辑器每行的长度，默认80
     tabWidth: 4, //制表符tab的宽度，默认值是2
     useTabs: false, //是否使用 tab 代替 space(空格) 为单位缩进，默认 false
     singleQuote: true, // 使用单引号
