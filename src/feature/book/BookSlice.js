@@ -13,6 +13,16 @@ function extractYearFromSource(source) {
     // 如果没有匹配到或者需要其他处理，可以根据实际情况调整
     return matches ? matches[0] : null
 }
+function extractNumberFromSource(source) {
+    if (!source) return null
+    // 正则表达式匹配四位数字年份
+    const yearRegex = /\d{2}题/g
+    // 执行匹配操作
+    const matches = source.match(yearRegex)
+    // 如果匹配到年份，则返回第一个匹配项（最常见的情况）
+    // 如果没有匹配到或者需要其他处理，可以根据实际情况调整
+    return matches ? matches[0] : null
+}
 
 // 重构排序逻辑
 const sortData = (data, sortType, questionIds) => {
@@ -35,12 +45,13 @@ const filterDataByCreatedTime = (data, createdTime) => {
     const diff = new Date().getFullYear() - createdTime
     return data.reduce((result, item) => {
         const createdYear = extractYearFromSource(item.source)
+        const number = extractNumberFromSource(item.source)?.slice(0, -1)
         const p = provinceList.find(p => item.source.includes(p))
         if (createdYear >= diff && !item.source.includes('模考') && p) {
             result.push({
                 ...item,
                 createdYear,
-                miniSource: `${createdYear}年${p}`,
+                miniSource: `${createdYear}年${p === '国家' ? '国考' : p}${number}`,
             })
         }
         return result
@@ -49,6 +60,11 @@ const filterDataByCreatedTime = (data, createdTime) => {
 
 const filterDataByProvince = (data, province) => {
     if (province === '全部') return data
+    if (province === '除国家') {
+        return data.filter(item => {
+            return !item.source.includes('国家')
+        })
+    }
     return data.filter(item => {
         return item.source.includes(province)
     })

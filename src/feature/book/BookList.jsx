@@ -84,6 +84,7 @@ const XingCeList = () => {
     const [notesVisible, setNotesVisible] = useState(false)
     const { isMobile } = useDeviceInfo()
     const filterDataList = useSelector(state => state.book.filterDataList)
+    console.log('filterDataList', filterDataList)
     const { questionIds } = useQuestionIds()
     const dispatch = useDispatch()
 

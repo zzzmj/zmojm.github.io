@@ -1,5 +1,7 @@
 export const provinceList = [
     '全部',
+    '国家',
+    '除国家',
     '河北',
     '山西',
     '辽宁',
@@ -33,5 +35,4 @@ export const provinceList = [
     '上海',
     '重庆',
     '深圳',
-    '国家',
 ]

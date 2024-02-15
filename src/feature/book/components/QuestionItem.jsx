@@ -42,36 +42,15 @@ function QuestionItem(props) {
                 <div className={`options ${layout}`}>
                     {data.accessories[0] &&
                         data.accessories[0].options.map((option, pos) => {
-                            const mapIndexToLetter = [
-                                'A',
-                                'B',
-                                'C',
-                                'D',
-                                'E',
-                                'F',
-                                'G',
-                                'H',
-                            ]
-                            let status =
-                                pos == data.selectIndex &&
-                                data.status == 'correct'
-                                    ? 'correct'
-                                    : 'wrong'
+                            const mapIndexToLetter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+                            let status = pos == data.selectIndex && data.status == 'correct' ? 'correct' : 'wrong'
                             const optionCls = classNames({
                                 option: true,
                                 [status]: pos === data.selectIndex,
                             })
                             return (
-                                <div
-                                    key={pos}
-                                    onClick={() =>
-                                        handleSelectOption(data, pos)
-                                    }
-                                    className={optionCls}
-                                >
-                                    <span className='num'>
-                                        {mapIndexToLetter[pos]}.
-                                    </span>
+                                <div key={pos} onClick={() => handleSelectOption(data, pos)} className={optionCls}>
+                                    <span className='num'>{mapIndexToLetter[pos]}.</span>
                                     <span
                                         dangerouslySetInnerHTML={{
                                             __html: option,
@@ -81,11 +60,7 @@ function QuestionItem(props) {
                             )
                         })}
                 </div>
-                <EditOutlined
-                    className='edit-icon'
-                    onClick={handleClickEdit}
-                    style={{ fontSize: 22, color: '#a2a9be' }}
-                />
+                <EditOutlined className='edit-icon' onClick={handleClickEdit} style={{ fontSize: 22, color: '#a2a9be' }} />
             </div>
             {sketchVisible && <Sketch onClose={handleClose} />}
         </div>
