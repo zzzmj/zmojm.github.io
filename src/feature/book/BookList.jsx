@@ -173,7 +173,7 @@ const XingCeList = () => {
     const handleNotesCancel = () => {
         setNotesVisible(false)
     }
-
+    console.log('filterDataList', filterDataList)
     return (
         <div className='book-wrap'>
             <BookListOper />
@@ -209,7 +209,27 @@ const XingCeList = () => {
                         })}
                     </div>
                 )}
+                <div className='book-list-answer'>
+                    {filterDataList.map((item, index) => {
+                        const choice = item.correctAnswer.choice
+                        const mapIndexToLetter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+                        console.log('')
+                        return index % testCount === 0 ? (
+                            <>
+                                <div style={{ height: 20 }} />
+                                <span>
+                                    {index + 1}-{index + 1 + testCount}：
+                                </span>
+                                <span key={index}>{mapIndexToLetter[choice]}</span>
+                                
+                            </>
+                        ) : (
+                            <span key={index}>{index % 5 === 0 && "，"}{mapIndexToLetter[choice]}</span>
+                        )
+                    })}
+                </div>
             </div>
+
             <NotesEditor value={notes.content} visible={notesVisible} onOk={handleNotesOk} onCancel={handleNotesCancel} />
         </div>
     )
