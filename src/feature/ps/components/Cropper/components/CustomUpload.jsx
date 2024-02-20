@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons'
-import Ruler from '@scena/ruler'
+// import Ruler from '@scena/ruler'
 import { Upload } from 'antd'
 import './CustomUpload.scss'
 

@@ -73,6 +73,12 @@ const formatSelectedItem = (item, selectIndex) => {
     }
 }
 
+const prefixZero = (number) => {
+    if (number < 10) return `00${number}`
+    if (number < 100) return `0${number}`
+    return number
+}
+
 const XingCeList = () => {
     const [exerTitle, setExerTitle] = useState('')
     const testCount = useSelector(state => state.book.filter.count)
@@ -213,18 +219,18 @@ const XingCeList = () => {
                     {filterDataList.map((item, index) => {
                         const choice = item.correctAnswer.choice
                         const mapIndexToLetter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-                        console.log('')
                         return index % testCount === 0 ? (
                             <>
                                 <div style={{ height: 20 }} />
-                                <span>
-                                    {index + 1}-{index + 1 + testCount}：
+                                <span style={{ display: 'inline-block', width: 78 }}>
+                                    {prefixZero(index+1)}-{prefixZero(index + 1 + testCount)}：
                                 </span>
-                                <span key={index}>{mapIndexToLetter[choice]}</span>
-                                
+                                <span style={{ display: 'inline-block', width: 12 }} key={index}>{mapIndexToLetter[choice]}</span>
                             </>
                         ) : (
-                            <span key={index}>{index % 5 === 0 && "，"}{mapIndexToLetter[choice]}</span>
+                            <span style={{ display: 'inline-block', width:  index % 5 === 0 ? 28 : 12 }} key={index}>
+                                {index % 5 === 0 && "，"}
+                                {mapIndexToLetter[choice]}</span>
                         )
                     })}
                 </div>
