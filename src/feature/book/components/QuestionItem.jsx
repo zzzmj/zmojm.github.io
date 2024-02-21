@@ -3,10 +3,12 @@ import React, { useState } from 'react'
 import { EditOutlined } from '@ant-design/icons'
 import Sketch from '../../../components/Sketch/Sketch'
 import './QuestionItem.scss'
+import MaterialModal from './MaterialModal'
 
 function QuestionItem(props) {
     const { data, index, layout, className, status } = props
     const [sketchVisible, setSketchVisible] = useState(false)
+    const [materialVisible, setMaterialVisible] = useState(false)
 
     const cls = classNames({
         question: true,
@@ -38,7 +40,9 @@ function QuestionItem(props) {
                         }}
                     ></span>
                 </div>
-
+                {
+                    data.material && !materialVisible && <div onClick={() => setMaterialVisible(true)} className='m-btn'>弹出材料</div>
+                }
                 <div className={`options ${layout}`}>
                     {data.accessories[0] &&
                         data.accessories[0].options.map((option, pos) => {
@@ -63,6 +67,9 @@ function QuestionItem(props) {
                 <EditOutlined className='edit-icon' onClick={handleClickEdit} style={{ fontSize: 22, color: '#a2a9be' }} />
             </div>
             {sketchVisible && <Sketch onClose={handleClose} />}
+            {
+                materialVisible && <MaterialModal content={data.material.content} onClose={() => setMaterialVisible(false)} />
+            }
         </div>
     )
 }
