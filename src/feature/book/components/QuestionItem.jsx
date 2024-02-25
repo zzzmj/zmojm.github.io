@@ -11,7 +11,7 @@ function QuestionItem(props) {
     const [materialVisible, setMaterialVisible] = useState(false)
 
     const cls = classNames({
-        question: true,
+        // question: true,
         [className]: className,
         [status]: status,
     })
@@ -30,6 +30,10 @@ function QuestionItem(props) {
 
     return (
         <div className={cls}>
+            {
+                data.material && <div dangerouslySetInnerHTML={{ __html: data.material.content}} />
+            }
+            <div className='question'>
             <span>{index + 1}.</span>
             <div className='content'>
                 <div className='title'>
@@ -40,9 +44,9 @@ function QuestionItem(props) {
                         }}
                     ></span>
                 </div>
-                {
+                {/* {
                     data.material && !materialVisible && <div onClick={() => setMaterialVisible(true)} className='m-btn'>弹出材料</div>
-                }
+                } */}
                 <div className={`options ${layout}`}>
                     {data.accessories[0] &&
                         data.accessories[0].options.map((option, pos) => {
@@ -65,6 +69,7 @@ function QuestionItem(props) {
                         })}
                 </div>
                 <EditOutlined className='edit-icon' onClick={handleClickEdit} style={{ fontSize: 22, color: '#a2a9be' }} />
+            </div>
             </div>
             {sketchVisible && <Sketch onClose={handleClose} />}
             {

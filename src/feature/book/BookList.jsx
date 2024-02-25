@@ -15,6 +15,7 @@ import useDeviceInfo from './hooks/useDeviceInfo'
 import { getParams } from '../../utils'
 import { useDispatch, useSelector } from 'react-redux'
 import { setList, updateList } from './BookSlice'
+import { useLocation, useSearchParams } from 'react-router-dom'
 
 // 格式化数据源
 const formatDataSource = (dataSource, isMobile) => {
@@ -90,7 +91,6 @@ const XingCeList = () => {
     const [notesVisible, setNotesVisible] = useState(false)
     const { isMobile } = useDeviceInfo()
     const filterDataList = useSelector(state => state.book.filterDataList)
-    console.log('filterDataList', filterDataList)
     const { questionIds } = useQuestionIds()
     const dispatch = useDispatch()
 

@@ -65,6 +65,17 @@ const filterDataByProvince = (data, province) => {
             return !item.source.includes('国家')
         })
     }
+    const autonomyList = ["江苏", '浙江', '上海', '山东', '北京', '四川', '深圳']
+    if (province === '参加联考') {
+        return data.filter(item => {
+            return !autonomyList.some(autonomy => item.source.includes(autonomy)) && !item.source.includes('国家');
+        })
+    }
+    if (province === '自主命题') {
+        return data.filter(item => {
+            return autonomyList.some(autonomy => item.source.includes(autonomy));
+        })
+    }
     return data.filter(item => {
         return item.source.includes(province)
     })
