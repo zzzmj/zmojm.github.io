@@ -19,6 +19,7 @@ function BookListOper(props) {
     const sortType = useSelector(state => state.book.filter.sortType)
     const createdTime = useSelector(state => state.book.filter.createdTime)
     const province = useSelector(state => state.book.filter.province)
+    const correctRatio = useSelector(state => state.book.filter.correctRatio)
     const dispatch = useDispatch()
 
     const handleChangeRadioValue = (type, value) => {
@@ -64,7 +65,7 @@ function BookListOper(props) {
                     </div>
                     <div className='item'>
                         <h3 className='label'>选择题量：</h3>
-                        <Radio.Group onChange={e => handleChangeRadioValue('createdTime', e.target.value)} value={count}>
+                        <Radio.Group onChange={e => handleChangeRadioValue('count',  Number(e.target.value))} value={count}>
                             <Radio value={10}>10题</Radio>
                             <Radio value={20}>20题</Radio>
                             <Radio value={30}>30题</Radio>
@@ -73,6 +74,16 @@ function BookListOper(props) {
                             <Radio value={100}>100题</Radio>
                             <Radio value={200}>200题</Radio>
                             <Radio value={500}>500题</Radio>
+                        </Radio.Group>
+                    </div>
+                    <div className='item'>
+                        <h3 className='label'>正确率：</h3>
+                        <Radio.Group onChange={e => handleChangeRadioValue('correctRatio', Number(e.target.value))} value={correctRatio}>
+                            <Radio value={0}>不过滤</Radio>
+                            <Radio value={40}>40%以上</Radio>
+                            <Radio value={50}>50%以上</Radio>
+                            <Radio value={60}>60%以上</Radio>
+                            <Radio value={70}>70%以上</Radio>
                         </Radio.Group>
                     </div>
                     <div className='item'>

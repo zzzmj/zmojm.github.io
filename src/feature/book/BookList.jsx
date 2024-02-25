@@ -16,6 +16,7 @@ import { getParams } from '../../utils'
 import { useDispatch, useSelector } from 'react-redux'
 import { setList, updateList } from './BookSlice'
 import { useLocation, useSearchParams } from 'react-router-dom'
+import PieCharts from '../../components/PieChart'
 
 // 格式化数据源
 const formatDataSource = (dataSource, isMobile) => {
@@ -91,6 +92,7 @@ const XingCeList = () => {
     const [notesVisible, setNotesVisible] = useState(false)
     const { isMobile } = useDeviceInfo()
     const filterDataList = useSelector(state => state.book.filterDataList)
+    const sortedKeyPoints = useSelector(state => state.book.sortedKeyPoints)
     const { questionIds } = useQuestionIds()
     const dispatch = useDispatch()
 
@@ -234,8 +236,11 @@ const XingCeList = () => {
                         )
                     })}
                 </div>
+                <div>
+                    <PieCharts dataSource={sortedKeyPoints} />
+                </div>
             </div>
-
+            
             <NotesEditor value={notes.content} visible={notesVisible} onOk={handleNotesOk} onCancel={handleNotesCancel} />
         </div>
     )
