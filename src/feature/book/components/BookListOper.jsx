@@ -5,13 +5,14 @@
  * 2. 过滤题目
  * 3. 答案验证
  */
-import { Radio, Input, Modal, Switch } from 'antd'
+import { Radio, Input, Modal, Switch, Slider } from 'antd'
 import { SettingOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
 import './BookListOper.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { setFilter } from '../BookSlice'
 import { provinceList } from '../config'
+import { debounce, throttle } from 'lodash'
 
 function BookListOper(props) {
     const [isModalVisible, setIsModalVisible] = useState(false)
@@ -42,6 +43,10 @@ function BookListOper(props) {
     const handleCancel = () => {
         setIsModalVisible(false)
     }
+
+    const handleChangeSlider = debounce((value) => {
+        handleChangeRadioValue('correctRatio', value)
+    }, 1000)
 
     return (
         <div className='book-oper'>
@@ -78,13 +83,18 @@ function BookListOper(props) {
                     </div>
                     <div className='item'>
                         <h3 className='label'>正确率：</h3>
-                        <Radio.Group onChange={e => handleChangeRadioValue('correctRatio', Number(e.target.value))} value={correctRatio}>
+                        <Slider 
+                            range 
+                            defaultValue={[0, 100]} 
+                            onChange={handleChangeSlider}
+                        />
+                        {/* <Radio.Group onChange={e => handleChangeRadioValue('correctRatio', Number(e.target.value))} value={correctRatio}>
                             <Radio value={0}>不过滤</Radio>
                             <Radio value={40}>40%以上</Radio>
                             <Radio value={50}>50%以上</Radio>
                             <Radio value={60}>60%以上</Radio>
                             <Radio value={70}>70%以上</Radio>
-                        </Radio.Group>
+                        </Radio.Group> */}
                     </div>
                     <div className='item'>
                         <h3 className='label'>创建时间：</h3>

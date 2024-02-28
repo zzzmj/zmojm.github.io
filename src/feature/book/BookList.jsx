@@ -75,7 +75,7 @@ const formatSelectedItem = (item, selectIndex) => {
     }
 }
 
-const prefixZero = (number) => {
+const prefixZero = number => {
     if (number < 10) return `00${number}`
     if (number < 100) return `0${number}`
     return number
@@ -225,14 +225,17 @@ const XingCeList = () => {
                             <>
                                 <div style={{ height: 20 }} />
                                 <span style={{ display: 'inline-block', width: 78 }}>
-                                    {prefixZero(index+1)}-{prefixZero(index + 1 + testCount)}：
+                                    {prefixZero(index + 1)}-{prefixZero(index + 1 + testCount)}：
                                 </span>
-                                <span style={{ display: 'inline-block', width: 12 }} key={index}>{mapIndexToLetter[choice]}</span>
+                                <span style={{ display: 'inline-block', width: 12 }} key={index}>
+                                    {mapIndexToLetter[choice]}
+                                </span>
                             </>
                         ) : (
-                            <span style={{ display: 'inline-block', width:  index % 5 === 0 ? 28 : 12 }} key={index}>
-                                {index % 5 === 0 && "，"}
-                                {mapIndexToLetter[choice]}</span>
+                            <span style={{ display: 'inline-block', width: index % 5 === 0 ? 28 : 12 }} key={index}>
+                                {index % 5 === 0 && '，'}
+                                {mapIndexToLetter[choice]}
+                            </span>
                         )
                     })}
                 </div>
@@ -240,7 +243,7 @@ const XingCeList = () => {
                     <PieCharts dataSource={sortedKeyPoints} />
                 </div>
             </div>
-            
+
             <NotesEditor value={notes.content} visible={notesVisible} onOk={handleNotesOk} onCancel={handleNotesCancel} />
         </div>
     )
