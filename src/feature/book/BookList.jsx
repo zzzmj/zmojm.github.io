@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setList, updateList } from './BookSlice'
 import { useLocation, useSearchParams } from 'react-router-dom'
 import PieCharts from '../../components/PieChart'
+import WordFrequency from './components/WordFrequency'
 
 // 格式化数据源
 const formatDataSource = (dataSource, isMobile) => {
@@ -238,6 +239,10 @@ const XingCeList = () => {
                 </div>
                 <div>
                     <PieCharts dataSource={sortedKeyPoints} />
+                </div>
+                <div>
+                    {/* 查看词频 */}
+                    <WordFrequency />
                 </div>
             </div>
             
