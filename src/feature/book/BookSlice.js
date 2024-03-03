@@ -65,25 +65,26 @@ const filterDataByProvince = (data, province) => {
             return !item.source.includes('国家')
         })
     }
-    const autonomyList = ["江苏", '浙江', '上海', '山东', '北京', '四川', '深圳']
+    const autonomyList = ['江苏', '浙江', '上海', '山东', '北京', '四川', '深圳']
     if (province === '参加联考') {
         return data.filter(item => {
-            return !autonomyList.some(autonomy => item.source.includes(autonomy)) && !item.source.includes('国家');
+            return !autonomyList.some(autonomy => item.source.includes(autonomy)) && !item.source.includes('国家')
         })
     }
     if (province === '自主命题') {
         return data.filter(item => {
-            return autonomyList.some(autonomy => item.source.includes(autonomy));
+            return autonomyList.some(autonomy => item.source.includes(autonomy))
         })
     }
+    console.log('pro', province, data)
     return data.filter(item => {
         return item.source.includes(province)
     })
 }
 
 const filterDataByCorrectRatio = (data, correctRatio) => {
-    const newData = data.filter(item => item.questionMeta.correctRatio > correctRatio)
-    newData.sort((a, b) => a.questionMeta.correctRatio - b.questionMeta.correctRatio)
+    const newData = data.filter(item => item.questionMeta.correctRatio > correctRatio[0] && item.questionMeta.correctRatio <= correctRatio[1])
+    // newData.sort((a, b) => a.questionMeta.correctRatio - b.questionMeta.correctRatio)
     return newData
 }
 
@@ -110,32 +111,32 @@ const getFilterDataListBySortType = (dataSource, questionIds, { sortType, create
     return data
 }
 
-const keyPointFrequency = (questionList) => {
-  // 创建一个对象来存储考点的考频和对应的题目ID
-  const keyPointFrequency = {};
-  
-  // 遍历questionList来统计每个考点的考频和对应的题目ID
-  questionList.forEach(question => {
-    question.keypoints.forEach(keyPoint => {
-      // 如果考点ID在keyPointFrequency中还不存在，则初始化
-      if (!keyPointFrequency[keyPoint.name]) {
-        keyPointFrequency[keyPoint.name] = {
-          id: keyPoint.id,
-          name: keyPoint.name,
-          count: 0,
-          questionId: []
-        };
-      }
-      // 增加考点的考频计数，并且将当前题目的ID添加到对应的题目ID列表中
-      keyPointFrequency[keyPoint.name].count += 1;
-      keyPointFrequency[keyPoint.name].questionId.push(question.id);
-    });
-  });
-  
-  // 将keyPointFrequency对象的值转换为数组，并按count属性从大到小排序
-  const sortedKeyPoints = Object.values(keyPointFrequency).sort((a, b) => b.count - a.count);
-  
-  return sortedKeyPoints
+const keyPointFrequency = questionList => {
+    // 创建一个对象来存储考点的考频和对应的题目ID
+    const keyPointFrequency = {}
+
+    // 遍历questionList来统计每个考点的考频和对应的题目ID
+    questionList.forEach(question => {
+        question.keypoints.forEach(keyPoint => {
+            // 如果考点ID在keyPointFrequency中还不存在，则初始化
+            if (!keyPointFrequency[keyPoint.name]) {
+                keyPointFrequency[keyPoint.name] = {
+                    id: keyPoint.id,
+                    name: keyPoint.name,
+                    count: 0,
+                    questionId: [],
+                }
+            }
+            // 增加考点的考频计数，并且将当前题目的ID添加到对应的题目ID列表中
+            keyPointFrequency[keyPoint.name].count += 1
+            keyPointFrequency[keyPoint.name].questionId.push(question.id)
+        })
+    })
+
+    // 将keyPointFrequency对象的值转换为数组，并按count属性从大到小排序
+    const sortedKeyPoints = Object.values(keyPointFrequency).sort((a, b) => b.count - a.count)
+
+    return sortedKeyPoints
 }
 
 const initialState = {
@@ -147,9 +148,9 @@ const initialState = {
         count: 40, // 练习题数量
         createdTime: 3, // 创建时间
         province: '全部', // 省份
-        correctRatio: 0, // 正确率
+        correctRatio: [0, 100], // 正确率
     },
-    sortedKeyPoints: []
+    sortedKeyPoints: [],
 }
 
 export const Book = createSlice({
