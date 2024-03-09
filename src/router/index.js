@@ -3,7 +3,9 @@ import loadable from '@loadable/component'
 const Admin = loadable(() => import('../feature/admin/Admin'))
 const ShenLun = loadable(() => import('../feature/shenlun'))
 const Book = loadable(() => import('../feature/book/Book'))
+const TestBook = loadable(() => import('../feature/book/Test'))
 const BookList = loadable(() => import('../feature/book/BookList'))
+const TestBookList = loadable(() => import('../feature/book/TestBookList'))
 const Calc2 = loadable(() => import('../feature/calc/Calc2'))
 const WrongQuestion = loadable(() =>
     import('../feature/wrongQuestion/WrongQuestion')
@@ -55,8 +57,18 @@ const routes = [
         meta: { title: '习题集' },
     },
     {
+        path: '/test_book',
+        element: <TestBook />,
+        meta: { title: '测试习题集' },
+    },
+    {
         path: '/book/:objectId',
         element: <BookList />,
+        meta: { title: '练习' },
+    },
+    {
+        path: '/test_book/:objectId',
+        element: <TestBookList />,
         meta: { title: '练习' },
     },
     {

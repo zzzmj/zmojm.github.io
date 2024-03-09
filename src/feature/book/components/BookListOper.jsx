@@ -60,7 +60,7 @@ function BookListOper(props) {
                 <div className='btn-list'>
                     <div className='item'>
                         <h3 className='label'>选择排序方式：</h3>
-                        <Radio.Group onChange={e => handleChangeRadioValue('createdTime', e.target.value)} value={sortType}>
+                        <Radio.Group onChange={e => handleChangeRadioValue('sortType', e.target.value)} value={sortType}>
                             <Radio value={1}>按默认顺序</Radio>
                             <Radio value={2}>按做题次数</Radio>
                             <Radio value={3}>按正确率正序</Radio>

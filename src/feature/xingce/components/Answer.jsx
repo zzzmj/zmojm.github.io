@@ -87,7 +87,7 @@ const Answer = props => {
                         className='video-href'
                         type='link'
                         target='_blank'
-                        href={`https://www.fenbi.com/spa/tiku/report/preview/xingce/xingce/questions?questionIds=${id}&fromType=1`}
+                        href={`http://localhost:3456/comment?commentId=${id}`}
                     >
                         详细解析
                     </Button>

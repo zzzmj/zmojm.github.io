@@ -102,12 +102,13 @@ const XingCeList = () => {
         questionIds => {
             const requestList = []
             for (let i = 0; i < questionIds.length / 1000; i++) {
-                const request = getBookList(questionIds, i * 1000, bookType)
+                const request = getBookList(questionIds, i * 1000, 'TestQuestionBook')
                 requestList.push(request)
             }
             Promise.all(requestList)
                 .then(res => {
                     const data = res.map(item => formatDataSource(item, isMobile)).flat()
+                    console.log('data', data)
                     // setDataSource(data)
                     dispatch(setList(data))
                 })
