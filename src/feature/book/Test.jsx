@@ -18,23 +18,17 @@ const XingCe = () => {
 
     // 开始练习
     const handleClickPractice = (questionIds, id) => {
-        if(questionIds.length >= 10) {
-            const shuffled = [...questionIds].sort(() => 0.5 - Math.random());
-            const selectedIds = shuffled.slice(0, 10);
-    
-            navigate({
-                pathname: `/test_book/${selectedIds.toString()}`,
-            });
-            return 
-        }
         navigate({
             pathname: `/test_book/${questionIds.toString()}`,
         })
     }
     const handleClickRandomPractice = (questionIds, id) => {
+        const shuffled = [...questionIds].sort(() => 0.5 - Math.random());
+        const selectedIds = shuffled.slice(0, 10);
+
         navigate({
-            pathname: `/test_book/${questionIds.toString()}`,
-        })
+            pathname: `/test_book/${selectedIds.toString()}`,
+        });
     }
 
     const processCategoryList = data => {
@@ -56,7 +50,7 @@ const XingCe = () => {
                         </Button>
                         <Button
                             onClick={() =>
-                                handleClickPractice(item.questionIds, item.id)
+                                handleClickRandomPractice(item.questionIds, item.id)
                             }
                             shape='round'
                         >
