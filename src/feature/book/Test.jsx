@@ -18,20 +18,23 @@ const XingCe = () => {
 
     // 开始练习
     const handleClickPractice = (questionIds, id) => {
+        if(questionIds.length >= 10) {
+            const shuffled = [...questionIds].sort(() => 0.5 - Math.random());
+            const selectedIds = shuffled.slice(0, 10);
+    
+            navigate({
+                pathname: `/test_book/${selectedIds.toString()}`,
+            });
+            return 
+        }
         navigate({
             pathname: `/test_book/${questionIds.toString()}`,
         })
-
-        // getBookList(questionIds).then(res => {
-        //     console.log('res', res.length, questionIds.length)
-        //     const data = res
-        //         .map(item => item.toJSON())
-        //         .sort(
-        //             (a, b) =>
-        //                 b.questionMeta.totalCount - a.questionMeta.totalCount
-        //         )
-        //     window.localStorage.setItem('dataSource', JSON.stringify(data))
-        // })
+    }
+    const handleClickRandomPractice = (questionIds, id) => {
+        navigate({
+            pathname: `/test_book/${questionIds.toString()}`,
+        })
     }
 
     const processCategoryList = data => {
@@ -47,8 +50,17 @@ const XingCe = () => {
                                 handleClickPractice(item.questionIds, item.id)
                             }
                             shape='round'
+                            style={{ marginRight: 8 }}
                         >
                             练习
+                        </Button>
+                        <Button
+                            onClick={() =>
+                                handleClickPractice(item.questionIds, item.id)
+                            }
+                            shape='round'
+                        >
+                            随机练
                         </Button>
                     </div>
                 </div>
