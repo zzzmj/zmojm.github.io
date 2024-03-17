@@ -82,12 +82,23 @@ const Answer = props => {
                     <div className='content'>{id}</div>
                 </li>
                 <li>
-                    <span>粉笔：</span>
+                    <span>解析：</span>
                     <Button
                         className='video-href'
                         type='link'
                         target='_blank'
                         href={`http://localhost:3456/comment?commentId=${id}`}
+                    >
+                        详细解析
+                    </Button>
+                </li>
+                <li>
+                    <span>粉笔链接：</span>
+                    <Button
+                        className='video-href'
+                        type='link'
+                        target='_blank'
+                        href={`https://www.fenbi.com/spa/tiku/report/preview/xingce/xingce/question?id=${id}&checkId=C24Q5VJgtA&fromType=1`}
                     >
                         详细解析
                     </Button>
