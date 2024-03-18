@@ -1,6 +1,6 @@
 // 答案组件
 import React, { useEffect } from 'react'
-import { Button, Divider, Tag } from 'antd'
+import { Button, Divider, Tag, message } from 'antd'
 import './Answer.scss'
 
 const Answer = props => {
@@ -25,6 +25,18 @@ const Answer = props => {
     const handleClickNotes = () => {
         props.onChange && props.onChange(props.data)
     }
+
+    const handleClickCollect = async () => {
+        try {
+            const response = await fetch(`http://localhost:3456/collect?questionId=${id}`)
+            const data = await response.json()
+            message.success('添加成功')
+            console.log('data', data)
+        } catch (error) {
+            message.success('添加成功')
+        }
+    }
+
     return (
         <div className='answer'>
             <div className='correct'>
@@ -82,6 +94,17 @@ const Answer = props => {
                     <div className='content'>{id}</div>
                 </li>
                 <li>
+                    <span>收藏：</span>
+                    <Button
+                        className='video-href'
+                        type='link'
+                        target='_blank'
+                        onClick={handleClickCollect}
+                    >
+                        收藏一下呗
+                    </Button>
+                </li>
+                <li>
                     <span>解析：</span>
                     <Button
                         className='video-href'
@@ -93,14 +116,14 @@ const Answer = props => {
                     </Button>
                 </li>
                 <li>
-                    <span>粉笔链接：</span>
+                    <span>粉笔：</span>
                     <Button
                         className='video-href'
                         type='link'
                         target='_blank'
                         href={`https://www.fenbi.com/spa/tiku/report/preview/xingce/xingce/question?id=${id}&checkId=C24Q5VJgtA&fromType=1`}
                     >
-                        详细解析
+                        链接
                     </Button>
                 </li>
                 <li>
