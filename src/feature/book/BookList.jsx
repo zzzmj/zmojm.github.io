@@ -82,6 +82,14 @@ const prefixZero = number => {
     return number
 }
 
+const sleep = (timeout = 1000) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve()
+        }, timeout)
+    })
+}
+
 const XingCeList = () => {
     const [exerTitle, setExerTitle] = useState('')
     const testCount = useSelector(state => state.book.filter.count)
@@ -99,21 +107,25 @@ const XingCeList = () => {
     const bookType = getParams('type')
 
     const getAllBookList = useCallback(
-        questionIds => {
+        async questionIds => {
             const requestList = []
+            const result = []
             for (let i = 0; i < questionIds.length / 1000; i++) {
-                const request = getBookList(questionIds, i * 1000, bookType)
-                requestList.push(request)
+                const item = await getBookList(questionIds, i * 1000, bookType)
+                await sleep(1000)
+                result.push(formatDataSource(item, isMobile))
+                // requestList.push(request)
             }
-            Promise.all(requestList)
-                .then(res => {
-                    const data = res.map(item => formatDataSource(item, isMobile)).flat()
-                    // setDataSource(data)
-                    dispatch(setList(data))
-                })
-                .catch(err => {
-                    console.log('err', err)
-                })
+            dispatch(setList(result.flat()))
+            // Promise.all(requestList)
+            //     .then(res => {
+            //         const data = res.map(item => formatDataSource(item, isMobile)).flat()
+            //         // setDataSource(data)
+            //         dispatch(setList(data))
+            //     })
+            //     .catch(err => {
+            //         console.log('err', err)
+            //     })
         },
         [isMobile, bookType]
     )
@@ -241,10 +253,8 @@ const XingCeList = () => {
                         )
                     })}
                 </div>
-                <div>
+                <div className='data-any'>
                     <PieCharts dataSource={sortedKeyPoints} />
-                </div>
-                <div>
                     {/* 查看词频 */}
                     <WordFrequency />
                 </div>

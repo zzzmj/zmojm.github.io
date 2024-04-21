@@ -4,6 +4,13 @@ import { EditOutlined } from '@ant-design/icons'
 import Sketch from '../../../components/Sketch/Sketch'
 import './QuestionItem.scss'
 import MaterialModal from './MaterialModal'
+const cleanUpHtml = (html) => {
+    const maxSpaces = 3; // 最多允许的空格数量
+    const htmlWithSpaces = html.replace(/&nbsp;/gi, ' '); // 将&nbsp;转换为普通空格
+    const spaceRegex = /(\s\s\s\s+)/g; // 匹配四个或更多连续空格
+    return htmlWithSpaces.replace(spaceRegex, (match) => '&nbsp;&nbsp;'); // 限制为三个空格
+};
+
 
 function QuestionItem(props) {
     const { data, index, layout, className, status } = props
@@ -30,7 +37,7 @@ function QuestionItem(props) {
 
     return (
         <div className={cls}>
-            {data.material && <div dangerouslySetInnerHTML={{ __html: data.material.content }} />}
+            {data.material && <div dangerouslySetInnerHTML={{ __html: cleanUpHtml(data.material.content) }} />}
             <div className='question'>
                 <span>{index + 1}.</span>
                 <div className='content'>
