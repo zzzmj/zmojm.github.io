@@ -34,18 +34,19 @@ function QuestionItem(props) {
     const handleClose = () => {
         setSketchVisible(false)
     }
-
+    
     return (
         <div className={cls}>
             {data.material && <div dangerouslySetInnerHTML={{ __html: cleanUpHtml(data.material.content) }} />}
             <div className='question'>
                 <span>{index + 1}.</span>
+                
                 <div className='content'>
                     <div className='title'>
                         <span
                             dangerouslySetInnerHTML={{
-                                // __html: `<div><div class="fl">【${data.miniSource}】</div>${data.content}</div>`,
-                                __html: data.content,
+                                __html: `<div><div class="fl">（${data.source?.slice(0, 7)}）</div>${data.content}</div>`,
+                                // __html: data.content,
                             }}
                         ></span>
                     </div>
@@ -61,6 +62,7 @@ function QuestionItem(props) {
                                     option: true,
                                     [status]: pos === data.selectIndex,
                                 })
+                                // num在打印的时候显示data.source.slice(0, 3)
                                 return (
                                     <div key={pos} onClick={() => handleSelectOption(data, pos)} className={optionCls}>
                                         <span className='num'>{mapIndexToLetter[pos]}.</span>
