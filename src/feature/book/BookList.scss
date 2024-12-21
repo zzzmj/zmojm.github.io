@@ -79,11 +79,23 @@
 
 
 @media print {
+    .list {
+        padding: 0 5px;
+    }
     .book-wrap .wrap-print {
         font-size: 16px !important;
     }
+    .book-wrap .wrap-print .item {
+        border: 1px solid #7c7c7f !important;
+        padding-left: 10px;
+        padding-top: 10px;
+        padding-bottom: 50px;
+    }
     .data-any {
         display: none;
+    }
+    .edit-icon {
+        display: none !important;
     }
 }
 @media screen and (max-width: 1200px) {

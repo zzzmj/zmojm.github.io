@@ -117,20 +117,22 @@ const keyPointFrequency = questionList => {
 
     // 遍历questionList来统计每个考点的考频和对应的题目ID
     questionList.forEach(question => {
-        question.keypoints.forEach(keyPoint => {
-            // 如果考点ID在keyPointFrequency中还不存在，则初始化
-            if (!keyPointFrequency[keyPoint.name]) {
-                keyPointFrequency[keyPoint.name] = {
-                    id: keyPoint.id,
-                    name: keyPoint.name,
-                    count: 0,
-                    questionId: [],
+        if (question.keypoints) {
+            question.keypoints.forEach(keyPoint => {
+                // 如果考点ID在keyPointFrequency中还不存在，则初始化
+                if (!keyPointFrequency[keyPoint.name]) {
+                    keyPointFrequency[keyPoint.name] = {
+                        id: keyPoint.id,
+                        name: keyPoint.name,
+                        count: 0,
+                        questionId: [],
+                    }
                 }
-            }
-            // 增加考点的考频计数，并且将当前题目的ID添加到对应的题目ID列表中
-            keyPointFrequency[keyPoint.name].count += 1
-            keyPointFrequency[keyPoint.name].questionId.push(question.id)
-        })
+                // 增加考点的考频计数，并且将当前题目的ID添加到对应的题目ID列表中
+                keyPointFrequency[keyPoint.name].count += 1
+                keyPointFrequency[keyPoint.name].questionId.push(question.id)
+            })
+        }
     })
 
     // 将keyPointFrequency对象的值转换为数组，并按count属性从大到小排序

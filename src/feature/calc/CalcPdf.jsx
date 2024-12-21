@@ -44,6 +44,15 @@ const getData = (count = 20) => {
         }
         return [a, b, a * b]
     }
+
+    // 增长量
+    const zzl = () => {
+        const a = getNumberFromLen(5)
+        let b = getNumberFromLen(2)
+        
+        let rateB = b / 100
+        return [a, `${b}%`, parseInt(a * rateB / (1 + rateB))]
+    }
     // 加法
     const mapTypeToFn = {
         1: addAndSubFn,
@@ -53,10 +62,11 @@ const getData = (count = 20) => {
     const arr = []
     for (let i = 0; i < count; i++) {
         let a = mapTypeToFn[1]()
-        let b = mapTypeToFn[2]()
+        let b = zzl()
         let c = mapTypeToFn[3]()
         arr.push([i + 1, ...a, ...b, ...c])
     }
+    console.log('arr', arr)
     return arr
 }
 
@@ -98,7 +108,7 @@ const defaultColumn = [
     },
     {
         type: 'span',
-        label: 'A*B',
+        label: '增长量',
         span: 2,
     },
     {
