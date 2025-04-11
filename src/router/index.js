@@ -18,6 +18,7 @@ const EditCompoent = loadable(() => import('../feature/edit/Edit'))
 const Idiom = loadable(() => import('../feature/idiom'))
 const Interview = loadable(() => import('../feature/interview'))
 const Ps = loadable(() => import('../feature/ps/index'))
+const CategoryList = loadable(() => import('../feature/category/CategoryList'))
 
 const routes = [
     {
@@ -55,6 +56,11 @@ const routes = [
         path: '/book',
         element: <Book />,
         meta: { title: '习题集' },
+    },
+    {
+        path: '/category',
+        element: <CategoryList />,
+        meta: { title: '分类' },
     },
     {
         path: '/test_book',

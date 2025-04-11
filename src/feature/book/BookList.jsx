@@ -20,7 +20,7 @@ import PieCharts from '../../components/PieChart'
 import WordFrequency from './components/WordFrequency'
 
 // 格式化数据源
-const formatDataSource = (dataSource, isMobile) => {
+export const formatDataSource = (dataSource, isMobile) => {
     const data = dataSource
         .map(item => item.toJSON())
         // 选项栏布局
@@ -52,7 +52,7 @@ const formatDataSource = (dataSource, isMobile) => {
 }
 
 // 格式化被选中的数据
-const formatSelectedItem = (item, selectIndex) => {
+export const formatSelectedItem = (item, selectIndex) => {
     if (!selectIndex && selectIndex !== 0) {
         return {
             ...item,
