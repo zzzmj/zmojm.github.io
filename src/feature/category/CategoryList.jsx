@@ -172,7 +172,7 @@ const CategoryList = () => {
                                             return index % 5 === 0 ? (
                                                 <React.Fragment key={item.id}>
                                                     {index > 0 && <div style={{ height: 8 }} />}
-                                                    <span style={{ display: 'inline-block', width: 68 }}>
+                                                    <span style={{ display: 'inline-block', width: 88 }}>
                                                         {prefixZero(index + 1)}-{prefixZero(Math.min(index + 5, questions.length))}：
                                                     </span>
                                                     <span style={{ display: 'inline-block', width: 12 }}>
