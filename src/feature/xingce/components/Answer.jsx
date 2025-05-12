@@ -77,13 +77,13 @@ const Answer = props => {
                     <span>统计：</span>
                     <div className='content'>
                         <Tag color='green'>
-                            正确率：{questionMeta.correctRatio.toFixed(2)}%
+                            正确率：{questionMeta?.correctRatio?.toFixed(2)}%
                         </Tag>
                         <Tag color='magenta'>
                             易错项：
                             {
                                 mapIndexToLetter[
-                                    questionMeta.mostWrongAnswer.choice
+                                    questionMeta?.mostWrongAnswer?.choice
                                 ]
                             }
                         </Tag>
