@@ -45,7 +45,9 @@ function QuestionItem(props) {
                     <div className='title'>
                         <span
                             dangerouslySetInnerHTML={{
-                                __html: `<div><div class="fl">（${data.source?.slice(0, 7)}）</div>${data.content}</div>`,
+                                __html: `<div><div class="fl">${
+                                    data?.source ? `（${data?.source?.slice(0, 7)}）` : ''
+                                }</div>${data.content}</div>`,
                                 // __html: data.content,
                             }}
                         ></span>
@@ -54,10 +56,10 @@ function QuestionItem(props) {
                     data.material && !materialVisible && <div onClick={() => setMaterialVisible(true)} className='m-btn'>弹出材料</div>
                 } */}
                     <div className={`options ${layout}`}>
-                        {data.accessories[0] &&
-                            data.accessories[0].options.map((option, pos) => {
+                        {data?.accessories[0] &&
+                            data?.accessories[0]?.options.map((option, pos) => {
                                 const mapIndexToLetter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-                                let status = pos == data.selectIndex && data.status == 'correct' ? 'correct' : 'wrong'
+                                let status = pos == data.selectIndex && data?.status == 'correct' ? 'correct' : 'wrong'
                                 const optionCls = classNames({
                                     option: true,
                                     [status]: pos === data.selectIndex,
@@ -79,7 +81,7 @@ function QuestionItem(props) {
                 </div>
             </div>
             {sketchVisible && <Sketch onClose={handleClose} />}
-            {materialVisible && <MaterialModal content={data.material.content} onClose={() => setMaterialVisible(false)} />}
+            {materialVisible && <MaterialModal content={data?.material?.content} onClose={() => setMaterialVisible(false)} />}
         </div>
     )
 }

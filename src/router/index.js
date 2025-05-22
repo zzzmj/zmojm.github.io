@@ -19,6 +19,8 @@ const Idiom = loadable(() => import('../feature/idiom'))
 const Interview = loadable(() => import('../feature/interview'))
 const Ps = loadable(() => import('../feature/ps/index'))
 const CategoryList = loadable(() => import('../feature/category/CategoryList'))
+const ExtractPdf = loadable(() => import('../feature/extractPdf'))
+const PrintQuestion = loadable(() => import('../feature/printQuestion'))
 
 const routes = [
     {
@@ -111,6 +113,16 @@ const routes = [
         path: '/ps',
         element: <Ps />,
         meta: { title: '切图工具' },
+    },
+    {
+        path: '/extractPdf',
+        element: <ExtractPdf />,
+        meta: { title: '提取PDF' },
+    },
+    {
+        path: '/printQuestion',
+        element: <PrintQuestion />,
+        meta: { title: '打印题目' },
     },
 ]
 
