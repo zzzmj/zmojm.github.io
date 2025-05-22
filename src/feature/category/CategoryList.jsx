@@ -52,7 +52,11 @@ const CategoryList = () => {
                 await new Promise(resolve => setTimeout(resolve, 1000)) // 添加延迟避免请求过快
                 result.push(formatDataSource(item, isMobile))
             }
-            return result.flat()
+            const flatResult = result.flat()
+            // 创建一个 id 到索引的映射
+            const idToIndex = new Map(ids.map((id, index) => [id, index]))
+            // 按照原始 ids 的顺序排序
+            return flatResult.sort((a, b) => (idToIndex.get(a.id) || 0) - (idToIndex.get(b.id) || 0))
         } catch (error) {
             console.error('获取题目失败:', error)
             return []
@@ -64,8 +68,14 @@ const CategoryList = () => {
             const loadedData = {}
             for (const category of categories) {
                 const questions = await getCategoryQuestions(category.ids)
+                console.log('原始ids顺序:', category.ids)
+                console.log('获取到的questions顺序:', questions.map(q => q.id))
                 loadedData[category.category] = questions
             }
+            console.log('最终categoryData:', Object.entries(loadedData).map(([cat, qs]) => ({
+                category: cat,
+                questionIds: qs.map(q => q.id)
+            })))
             setCategoryData(loadedData)
         }
         
@@ -111,6 +121,7 @@ const CategoryList = () => {
             })
     }
 
+    console.log('题目数据', categoryData, Object.entries(categoryData))
     return (
         <div className='book-wrap'>
             <div className='category-input-section no-print' style={{ marginBottom: 20 }}>
