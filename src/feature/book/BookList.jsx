@@ -196,6 +196,13 @@ const XingCeList = () => {
         setNotesVisible(false)
     }
     console.log('filterDataList', filterDataList)
+    
+    // 将题目按testCount分组
+    const groupedQuestions = []
+    for (let i = 0; i < filterDataList.length; i += testCount) {
+        groupedQuestions.push(filterDataList.slice(i, i + testCount))
+    }
+    
     return (
         <div className='book-wrap'>
             <BookListOper />
@@ -203,56 +210,73 @@ const XingCeList = () => {
                 {filterDataList.length <= 0 ? (
                     <SkeletonList count={10} />
                 ) : (
-                    <div className='list'>
-                        {filterDataList.map((item, index) => {
-                            return (
-                                <div key={item.id} className='item-wrap'>
-                                    {index % testCount === 0 && (
-                                        <h2>{exerTitle ? exerTitle : ` 练习题${parseInt(index / testCount) + 1}`}</h2>
-                                    )}
-                                    <div className='item'>
-                                        <QuestionItem
-                                            status={item.status}
-                                            data={item}
-                                            index={index}
-                                            layout={item.layout}
-                                            onClick={handleSelectOption}
-                                        />
-                                        {item.answerVisible && (
-                                            <Answer
-                                                onChange={() => handleNotesChange(item)}
-                                                onClose={() => handleClose(item)}
-                                                data={item}
-                                            />
-                                        )}
+                    <>
+                        {groupedQuestions.map((group, groupIndex) => (
+                            <div key={groupIndex} className='question-group'>
+                                {/* 题目组标题 */}
+                                <h2>{exerTitle ? `${exerTitle} 第${groupIndex + 1}组` : `练习题${groupIndex + 1}`}</h2>
+                                
+                                {/* 题目列表 */}
+                                <div className='list'>
+                                    {group.map((item, index) => {
+                                        const globalIndex = groupIndex * testCount + index
+                                        return (
+                                            <div key={item.id} className='item-wrap'>
+                                                <div className='item'>
+                                                    <QuestionItem
+                                                        status={item.status}
+                                                        data={item}
+                                                        index={globalIndex}
+                                                        layout={item.layout}
+                                                        onClick={handleSelectOption}
+                                                    />
+                                                    {item.answerVisible && (
+                                                        <Answer
+                                                            onChange={() => handleNotesChange(item)}
+                                                            onClose={() => handleClose(item)}
+                                                            data={item}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                                
+                                {/* 每组答案 */}
+                                <div className='group-answer'>
+                                    <h3>第{groupIndex + 1}组答案</h3>
+                                    <div className='book-list-answer' style={{ fontSize: '14px' }}>
+                                        {group.map((item, index) => {
+                                            const globalIndex = groupIndex * testCount + index
+                                            const choice = item.correctAnswer.choice
+                                            const mapIndexToLetter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+                                            return index % 5 === 0 ? (
+                                                <React.Fragment key={item.id}>
+                                                    {index > 0 && <div style={{ height: 8 }} />}
+                                                    <span style={{ display: 'inline-block', width: 88 }}>
+                                                        {prefixZero(globalIndex + 1)}-{prefixZero(Math.min(globalIndex + 5, (groupIndex + 1) * testCount))}：
+                                                    </span>
+                                                    <span style={{ display: 'inline-block', width: 12 }}>
+                                                        {mapIndexToLetter[choice]}
+                                                    </span>
+                                                </React.Fragment>
+                                            ) : (
+                                                <span 
+                                                    style={{ display: 'inline-block', width: 12 }} 
+                                                    key={item.id}
+                                                >
+                                                    {mapIndexToLetter[choice]}
+                                                </span>
+                                            )
+                                        })}
                                     </div>
                                 </div>
-                            )
-                        })}
-                    </div>
+                            </div>
+                        ))}
+                    </>
                 )}
-                <div className='book-list-answer'>
-                    {filterDataList.map((item, index) => {
-                        const choice = item.correctAnswer.choice
-                        const mapIndexToLetter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-                        return index % testCount === 0 ? (
-                            <>
-                                <div style={{ height: 20 }} />
-                                <span style={{ display: 'inline-block', width: 78 }}>
-                                    {prefixZero(index + 1)}-{prefixZero(index + 1 + testCount)}：
-                                </span>
-                                <span style={{ display: 'inline-block', width: 12 }} key={index}>
-                                    {mapIndexToLetter[choice]}
-                                </span>
-                            </>
-                        ) : (
-                            <span style={{ display: 'inline-block', width: index % 5 === 0 ? 28 : 12 }} key={index}>
-                                {index % 5 === 0 && '，'}
-                                {mapIndexToLetter[choice]}
-                            </span>
-                        )
-                    })}
-                </div>
+                
                 <div className='data-any'>
                     <PieCharts dataSource={sortedKeyPoints} />
                     {/* 查看词频 */}

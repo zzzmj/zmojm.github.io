@@ -71,6 +71,7 @@ function BookListOper(props) {
                     <div className='item'>
                         <h3 className='label'>选择题量：</h3>
                         <Radio.Group onChange={e => handleChangeRadioValue('count',  Number(e.target.value))} value={count}>
+                            <Radio value={5}>5题</Radio>
                             <Radio value={10}>10题</Radio>
                             <Radio value={20}>20题</Radio>
                             <Radio value={30}>30题</Radio>
